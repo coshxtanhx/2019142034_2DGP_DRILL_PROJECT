@@ -1,6 +1,7 @@
 from pico2d import *
 from random import *
 from math import *
+from collections import deque
 
 UI_WIDTH, UI_HEIGHT = 920, 640
 open_canvas(UI_WIDTH, UI_HEIGHT)
@@ -10,6 +11,7 @@ img_snake_blue_head = \
     [load_image('img/snake_blue_head_' + str(i) + '.png') for i in range(4)]
 img_snake_blue_body = load_image('img/snake_blue_body.png')
 img_apple = load_image('img/apple.png')
+img_explode = load_image('img/explode.png')
 img_bomb = \
     [load_image('img/bomb_' + str(i) + '.png') for i in range(1, 6)]
 
@@ -20,16 +22,18 @@ cur_direction = 0
 snake_speed = 5
 dx = [snake_speed, 0, -snake_speed, 0, 0]
 dy = [0, +snake_speed, 0, -snake_speed, 0]
+bomb_cool_down = 0
 
 def field_array_reset():
-    global field_array
+    global field_array, bomb_cool_down
     field_array = [[16] * 11]
     for i in range(0, 15):
         field_array += [[16] + [0] * 9 + [16]]
     field_array += [[16] * 11]
+    if bomb_cool_down > 0: bomb_cool_down -= 1
 
 field_dict = {'empty': 0, 'player': 1, 'enemy':2, 'apple':4, \
-    'bomb':8, 'wall':16, 'head':32}
+    'bomb':8, 'wall':16, 'head':32, 'explode': 64}
 field_array = [] #0:empty, 1:player, 2:enemy, 4:apple, 8:bomb, 16:wall, 32:head
 field_array_reset()
 
@@ -56,8 +60,7 @@ class blue_body():
         if(self.number == len(char_blue) - 1):
             self.x, self.y = char_blue[0].x + dx[cur_direction], char_blue[0].y + dy[cur_direction]
             self.number = 0
-            new_head = char_blue.pop()
-            char_blue.insert(0, new_head)
+            char_blue.rotate(1)
         else:
             if(self.number == 0):
                 if(self.x % 60 == 40 and self.y % 60 == 40):
@@ -73,25 +76,47 @@ class blue_body():
             self.image = img_snake_blue_body
         self.image.draw(self.x, self.y)
 
+class explosion():
+    def __init__(self, gx, gy):
+        self.gx, self.gy = gx, gy
+        self.x, self.y = grid_to_coordinates(self.gx-1, self.gy-1)
+        self.image = img_explode
+        self.frame = 6
+    def draw(self):
+        self.image.clip_draw(0 + 60 * (self.frame // 2), 0, 60, 60, self.x, self.y)
+
 class bomb():
-    def __init__(self, x, y):
+    def __init__(self, x, y, damage):
         self.gx, self.gy = coordinates_to_grid(x, y)
         self.x, self.y = grid_to_coordinates(self.gx, self.gy)
         self.image = img_bomb[4]
-        self.counter = 5.00
+        self.counter = 500
+        self.damage = damage
     def explode(self):
-        del(bombs[0])
-        for i in range(self.gx+1, 0, -1):
-            pass
+        for x in range(self.gx+1, 0, -1):
+            field_array[x][self.gy+1] |= 64
+            explodes.appendleft(explosion(x, self.gy+1))
+        for x in range(self.gx+1, 17, +1):
+            field_array[x][self.gy+1] |= 64
+            explodes.appendleft(explosion(x, self.gy+1))
+        for y in range(self.gy+1, 11, +1):
+            field_array[self.gx+1][y] |= 64
+            explodes.appendleft(explosion(self.gx+1, y))
+        for y in range(self.gy+1, 0, -1):
+            field_array[self.gx+1][y] |= 64
+            explodes.appendleft(explosion(self.gx+1, y))
+        self.x = -65535
     def draw(self):
-        cnt = ceil(self.counter)
-        if(cnt > 0):
+        cnt = ceil(self.counter / 100)
+        if(self.counter > 0):
             global frame
             self.image = img_bomb[cnt - 1]
             self.image.clip_draw(0 + 60 * (frame % 3), 0, 60, 60, self.x, self.y)
             field_array[self.gx+1][self.gy+1] |= field_dict['bomb']
-        else:
+        elif(self.counter == 0 or self.counter <= -65535):
             self.explode()
+        else:
+            return
 
 class apple():
     def __init__(self, gx, gy):
@@ -106,12 +131,13 @@ class apple():
         else: return
 
 length = 12*(3-1)+1
-char_blue = [blue_body(i) for i in range(0, length)]
-appl = apple(randint(0, 14), randint(0, 8))
-bombs = []
+char_blue = deque([blue_body(i) for i in range(0, length)])
+apples = apple(randint(0, 14), randint(0, 8))
+bombs = deque()
+explodes = deque()
 
 def handle_events():
-    global acting, direction
+    global acting, direction, bomb_cool_down
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
@@ -127,10 +153,11 @@ def handle_events():
                 direction = 3
             elif event.key == SDLK_d and cur_direction not in (0,2):
                 direction = 0
-            elif event.key == SDLK_e:
+            elif event.key == SDLK_e and bomb_cool_down == 0:
                 le = len(char_blue)
                 bx, by = char_blue[le-1].x, char_blue[le-1].y
-                bombs.append(bomb(bx, by))
+                bombs.appendleft(bomb(bx, by, length))
+                bomb_cool_down = 100
 
 def snake_move_and_draw():
     le = len(char_blue)
@@ -142,12 +169,66 @@ def snake_move_and_draw():
 def bomb_count_and_draw():
     le = len(bombs)
     for i in range(le):
-        bombs[i].counter -= 0.01
-    for i in range(le):
         bombs[i].draw()
+    for i in range(le):
+        bombs[i].counter -= 1
+        
+
+def bomb_and_explode_delete():
+    le = len(bombs)
+    for i in range(le-1, -1, -1):
+        if(bombs[i].counter >= 0):
+            break
+        bombs.pop()
+    le = len(explodes)
+    for i in range(le-1, -1, -1):
+        if(explodes[i].frame >= 0):
+            break
+        explodes.pop()
+
+def explode_draw():
+    le = len(explodes)
+    for i in range(le):
+        explodes[i].frame -= 1
+    for i in range(le-1, -1, -1):
+        explodes[i].draw()
+
+def create_new_apple():
+    global apples
+    new_apple_x = 0
+    new_apple_y = 0
+    while(field_array[new_apple_x][new_apple_y] != 0 \
+        or field_array[new_apple_x][new_apple_y-1] != 0 \
+            or field_array[new_apple_x][new_apple_y+1] != 0 \
+                or field_array[new_apple_x-1][new_apple_y] != 0 \
+                    or field_array[new_apple_x-1][new_apple_y-1] != 0 \
+                        or field_array[new_apple_x-1][new_apple_y+1] != 0 \
+                            or field_array[new_apple_x+1][new_apple_y] != 0 \
+                                or field_array[new_apple_x+1][new_apple_y-1] != 0 \
+                                    or field_array[new_apple_x+1][new_apple_y+1] != 0):
+        new_apple_x = randint(0, 14)
+        new_apple_y = randint(0, 8)
+    apples = apple(new_apple_x, new_apple_y)
+
+def check_eat_bomb():
+    global bombs
+    x, y = char_blue[0].x, char_blue[0].y
+    gx, gy = coordinates_to_grid(x, y)
+    bomb_touched = None
+    if(field_array[gx+1][gy+1] & (field_dict['bomb']+field_dict['player']) \
+        == field_dict['bomb'] + field_dict['player']):
+        for bo in bombs:
+            if get_distance(x, y, bo.x, bo.y) < 20:
+                bo.counter = -65535
+                bomb_touched = bo
+                break
+        if bomb_touched != None:
+            bombs.remove(bomb_touched)
+            bombs.append(bomb_touched)
+
 
 def check_eat():
-    global length, appl
+    global length, apples
     gx, gy = coordinates_to_grid(char_blue[0].x, char_blue[0].y)
     if(field_array[gx+1][gy+1] & (field_dict['apple']+field_dict['player']) \
         == field_dict['apple'] + field_dict['player']):
@@ -156,21 +237,8 @@ def check_eat():
             for i in range(length, length + 12):
                 char_blue.append(blue_body(i, char_blue[length-1].x, char_blue[length-1].y))
             length += 12
-        del(appl)
-        new_apple_x = 0
-        new_apple_y = 0
-        while(field_array[new_apple_x][new_apple_y] != 0 \
-            or field_array[new_apple_x][new_apple_y-1] != 0 \
-                or field_array[new_apple_x][new_apple_y+1] != 0 \
-                    or field_array[new_apple_x-1][new_apple_y] != 0 \
-                        or field_array[new_apple_x-1][new_apple_y-1] != 0 \
-                            or field_array[new_apple_x-1][new_apple_y+1] != 0 \
-                                or field_array[new_apple_x+1][new_apple_y] != 0 \
-                                    or field_array[new_apple_x+1][new_apple_y-1] != 0 \
-                                        or field_array[new_apple_x+1][new_apple_y+1] != 0):
-            new_apple_x = randint(0, 14)
-            new_apple_y = randint(0, 8)
-        appl = apple(new_apple_x, new_apple_y)
+        del(apples)
+        create_new_apple()
 
 def get_distance(x1, y1, x2, y2):
     return sqrt((x1-x2)**2 + (y1-y2)**2)
@@ -184,21 +252,50 @@ def check_collide():
         for i in range(14, length):
             if(get_distance(char_blue[i].x, char_blue[i].y, char_blue[0].x, char_blue[0].y) <= 30):
                 exit(1)
+
+def check_explode():
+    global length, apples
+    attacked = False
+    apple_destroy = False
+    for x in range(1, 16):
+        for y in range(1, 10):
+            if field_array[x][y] & (field_dict['explode'] + field_dict['player']) == \
+                field_dict['explode'] + field_dict['player']:
+                attacked = True
+            if field_array[x][y] & (field_dict['explode'] + field_dict['apple']) == \
+                field_dict['explode'] + field_dict['apple']:
+                apple_destroy = True
+            if(apple_destroy and attacked): break
+        if(apple_destroy and attacked): break
+    if(apple_destroy):
+        del(apples)
+        create_new_apple()
+    if(attacked):
+        print(55)
+        length -= 12
+        for _ in range(12):
+            char_blue.pop()
+        if(length <= 1):
+            exit(1)
+
         
 
 while(acting):
     clear_canvas()
     field_array_reset()
     img_field.draw(UI_WIDTH // 2, UI_HEIGHT // 2)
-    appl.draw()
+    apples.draw()
     bomb_count_and_draw()
     snake_move_and_draw()
-    update_canvas()
-    frame = (frame + 1) % 8
-    #print(field_array)
+    bomb_and_explode_delete()
     check_eat()
+    check_eat_bomb()
     check_collide()
+    check_explode()
+    explode_draw()
+    update_canvas()
     handle_events()
+    frame = (frame + 1) % 8
     delay(0.01)
 
 close_canvas()
