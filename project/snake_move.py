@@ -1,8 +1,6 @@
-from gettext import find
 from pico2d import *
 from random import *
 from math import *
-from numpy import *
 
 UI_WIDTH, UI_HEIGHT = 920, 640
 open_canvas(UI_WIDTH, UI_HEIGHT)
@@ -12,6 +10,8 @@ img_snake_blue_head = \
     [load_image('img/snake_blue_head_' + str(i) + '.png') for i in range(4)]
 img_snake_blue_body = load_image('img/snake_blue_body.png')
 img_apple = load_image('img/apple.png')
+img_bomb = \
+    [load_image('img/bomb_' + str(i) + '.png') for i in range(1, 6)]
 
 acting = True
 frame = 0
@@ -73,6 +73,26 @@ class blue_body():
             self.image = img_snake_blue_body
         self.image.draw(self.x, self.y)
 
+class bomb():
+    def __init__(self, x, y):
+        self.gx, self.gy = coordinates_to_grid(x, y)
+        self.x, self.y = grid_to_coordinates(self.gx, self.gy)
+        self.image = img_bomb[4]
+        self.counter = 5.00
+    def explode(self):
+        del(bombs[0])
+        for i in range(self.gx+1, 0, -1):
+            pass
+    def draw(self):
+        cnt = ceil(self.counter)
+        if(cnt > 0):
+            global frame
+            self.image = img_bomb[cnt - 1]
+            self.image.clip_draw(0 + 60 * (frame % 3), 0, 60, 60, self.x, self.y)
+            field_array[self.gx+1][self.gy+1] |= field_dict['bomb']
+        else:
+            self.explode()
+
 class apple():
     def __init__(self, gx, gy):
         self.x, self.y = grid_to_coordinates(gx, gy)
@@ -88,6 +108,7 @@ class apple():
 length = 12*(3-1)+1
 char_blue = [blue_body(i) for i in range(0, length)]
 appl = apple(randint(0, 14), randint(0, 8))
+bombs = []
 
 def handle_events():
     global acting, direction
@@ -95,22 +116,35 @@ def handle_events():
     for event in events:
         if event.type == SDL_QUIT:
             acting = False
-        elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
-            acting = False
-        elif event.type == SDL_KEYDOWN and event.key == SDLK_w and cur_direction not in (1,3):
-            direction = 1
-        elif event.type == SDL_KEYDOWN and event.key == SDLK_a and cur_direction not in (0,2):
-            direction = 2
-        elif event.type == SDL_KEYDOWN and event.key == SDLK_s and cur_direction not in (1,3):
-            direction = 3
-        elif event.type == SDL_KEYDOWN and event.key == SDLK_d and cur_direction not in (0,2):
-            direction = 0
+        if event.type == SDL_KEYDOWN:
+            if event.key == SDLK_ESCAPE:
+                acting = False
+            elif event.key == SDLK_w and cur_direction not in (1,3):
+                direction = 1
+            elif event.key == SDLK_a and cur_direction not in (0,2):
+                direction = 2
+            elif event.key == SDLK_s and cur_direction not in (1,3):
+                direction = 3
+            elif event.key == SDLK_d and cur_direction not in (0,2):
+                direction = 0
+            elif event.key == SDLK_e:
+                le = len(char_blue)
+                bx, by = char_blue[le-1].x, char_blue[le-1].y
+                bombs.append(bomb(bx, by))
 
 def snake_move_and_draw():
-    for i in range(len(char_blue)):
+    le = len(char_blue)
+    for i in range(le):
         char_blue[i].moves()
-    for i in range(len(char_blue)-1, -1, -1):
+    for i in range(le-1, -1, -1):
         char_blue[i].draw()
+
+def bomb_count_and_draw():
+    le = len(bombs)
+    for i in range(le):
+        bombs[i].counter -= 0.01
+    for i in range(le):
+        bombs[i].draw()
 
 def check_eat():
     global length, appl
@@ -157,6 +191,7 @@ while(acting):
     field_array_reset()
     img_field.draw(UI_WIDTH // 2, UI_HEIGHT // 2)
     appl.draw()
+    bomb_count_and_draw()
     snake_move_and_draw()
     update_canvas()
     frame = (frame + 1) % 8
