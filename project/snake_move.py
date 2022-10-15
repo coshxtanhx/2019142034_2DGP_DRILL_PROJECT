@@ -1,50 +1,16 @@
 from pico2d import *
 from random import *
 from math import *
+from coordinates_module import *
 from collections import deque
-
-UI_WIDTH, UI_HEIGHT = 920, 640
-open_canvas(UI_WIDTH, UI_HEIGHT)
-
-img_field = load_image('img/field.png')
-img_snake_blue_head = \
-    [load_image('img/snake_blue_head_' + str(i) + '.png') for i in range(4)]
-img_snake_blue_body = load_image('img/snake_blue_body.png')
-img_apple = load_image('img/apple.png')
-img_explode = load_image('img/explode.png')
-img_bomb = \
-    [load_image('img/bomb_' + str(i) + '.png') for i in range(1, 6)]
+from snake_move_images import *
 
 acting = True
 frame = 0
 direction = 0 #0:D, 1:W, 2:A, 3:S
 cur_direction = 0
-snake_speed = 5
-dx = [snake_speed, 0, -snake_speed, 0, 0]
-dy = [0, +snake_speed, 0, -snake_speed, 0]
+field_array = []
 bomb_cool_down = 0
-
-def field_array_reset():
-    global field_array, bomb_cool_down
-    field_array = [[16] * 11]
-    for i in range(0, 15):
-        field_array += [[16] + [0] * 9 + [16]]
-    field_array += [[16] * 11]
-    if bomb_cool_down > 0: bomb_cool_down -= 1
-
-field_dict = {'empty': 0, 'player': 1, 'enemy':2, 'apple':4, \
-    'bomb':8, 'wall':16, 'head':32, 'explode': 64}
-field_array = [] #0:empty, 1:player, 2:enemy, 4:apple, 8:bomb, 16:wall, 32:head
-field_array_reset()
-
-def convert_coordinates(x, y):
-    return x, UI_HEIGHT - y
-
-def grid_to_coordinates(x, y):
-    return (x * 60 + 40), UI_HEIGHT - (y * 60 + 120)
-
-def coordinates_to_grid(x, y):
-    return (x - 40) // 60, (-y + UI_HEIGHT - 120) // 60
 
 class blue_body():
     def __init__(self, number, x=40, y=-1):
@@ -90,7 +56,7 @@ class bomb():
         self.gx, self.gy = coordinates_to_grid(x, y)
         self.x, self.y = grid_to_coordinates(self.gx, self.gy)
         self.image = img_bomb[4]
-        self.counter = 500
+        self.counter = 350
         self.damage = damage
     def explode(self):
         for x in range(self.gx+1, 0, -1):
@@ -107,7 +73,7 @@ class bomb():
             explodes.appendleft(explosion(self.gx+1, y))
         self.x = -65535
     def draw(self):
-        cnt = ceil(self.counter / 100)
+        cnt = ceil(self.counter / 70)
         if(self.counter > 0):
             global frame
             self.image = img_bomb[cnt - 1]
@@ -173,7 +139,6 @@ def bomb_count_and_draw():
     for i in range(le):
         bombs[i].counter -= 1
         
-
 def bomb_and_explode_delete():
     le = len(bombs)
     for i in range(le-1, -1, -1):
@@ -240,13 +205,12 @@ def check_eat():
         del(apples)
         create_new_apple()
 
-def get_distance(x1, y1, x2, y2):
-    return sqrt((x1-x2)**2 + (y1-y2)**2)
-
 def check_collide():
     global length, cur_direction
     gx, gy = coordinates_to_grid(char_blue[0].x, char_blue[0].y)
     if(field_array[gx+1][gy+1] & field_dict['wall']):
+        exit(1)
+    if(field_array[gx+1][gy+1] & field_dict['enemy']):
         exit(1)
     if(length >= 28):
         for i in range(14, length):
@@ -271,20 +235,19 @@ def check_explode():
         del(apples)
         create_new_apple()
     if(attacked):
-        print(55)
         length -= 12
         for _ in range(12):
             char_blue.pop()
         if(length <= 1):
-            exit(1)
-
-        
+            exit(1)        
 
 while(acting):
     clear_canvas()
-    field_array_reset()
+    field_array = field_array_reset()
     img_field.draw(UI_WIDTH // 2, UI_HEIGHT // 2)
     apples.draw()
+    img_snake_orange_head[0].draw(*grid_to_coordinates(0,8))
+    field_array[1][9] |= field_dict['enemy']
     bomb_count_and_draw()
     snake_move_and_draw()
     bomb_and_explode_delete()
@@ -295,6 +258,7 @@ while(acting):
     explode_draw()
     update_canvas()
     handle_events()
+    if bomb_cool_down > 0: bomb_cool_down -= 1
     frame = (frame + 1) % 8
     delay(0.01)
 
