@@ -20,9 +20,10 @@ def coordinates_to_grid(x, y):
     return (x - 40) // 60, (-y + UI_HEIGHT - 120) // 60
 
 UI_WIDTH, UI_HEIGHT = 920, 640
+MAX_BITS = 16777215
 
 field_dict = {'empty': 0, 'player': 1, 'enemy':2, 'apple':4, \
-    'bomb':8, 'wall':16, 'head':32, 'explode': 64}
+    'bomb':8, 'wall':16, 'head':32, 'explode': 64, 'skin':128}
 
-dx = (5, 0, -5, 0)
-dy = (0, 5, 0, -5)
+dx = (+5, +0, -5, +0)
+dy = (+0, +5, +0, -5)

@@ -10,13 +10,15 @@ def handle_events():
     global acting
     events = get_events()
     for event in events:
+        if event.type == SDL_QUIT:
+            acting = False
         if event.type == SDL_KEYDOWN:
             if event.key == SDLK_ESCAPE:
                 acting = False
         if event.type == SDL_MOUSEBUTTONDOWN:
             if event.button == SDL_BUTTON_LEFT:
-                if (UI_WIDTH//2 - 200 < event.x < UI_WIDTH//2 + 200 and \
-                    UI_HEIGHT - (520 + 53) < event.y < UI_HEIGHT - (520 - 53)):
+                if (UI_WIDTH//2 - 197 < event.x < UI_WIDTH//2 + 197 and \
+                    UI_HEIGHT - (520 + 50) < event.y < UI_HEIGHT - (520 - 50)):
                     acting = False
                     import snake_move
 

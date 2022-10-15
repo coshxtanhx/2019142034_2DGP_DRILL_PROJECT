@@ -62,7 +62,7 @@ class bomb():
         for x in range(self.gx+1, 0, -1):
             field_array[x][self.gy+1] |= 64
             explodes.appendleft(explosion(x, self.gy+1))
-        for x in range(self.gx+1, 17, +1):
+        for x in range(self.gx+1, 16, +1):
             field_array[x][self.gy+1] |= 64
             explodes.appendleft(explosion(x, self.gy+1))
         for y in range(self.gy+1, 10, +1):
@@ -98,7 +98,7 @@ class apple():
 
 length = 12*(3-1)+1
 char_blue = deque([blue_body(i) for i in range(0, length)])
-apples = apple(randint(0, 14), randint(0, 8))
+apples = apple(10, 0)
 bombs = deque()
 explodes = deque()
 
@@ -197,7 +197,7 @@ def check_eat():
     gx, gy = coordinates_to_grid(char_blue[0].x, char_blue[0].y)
     if(field_array[gx+1][gy+1] & (field_dict['apple']+field_dict['player']) \
         == field_dict['apple'] + field_dict['player']):
-        field_array[gx+1][gy+1] &= (65535- field_dict['apple'])
+        field_array[gx+1][gy+1] &= (MAX_BITS- field_dict['apple'])
         if(length < 109):
             for i in range(length, length + 12):
                 char_blue.append(blue_body(i, char_blue[length-1].x, char_blue[length-1].y))
