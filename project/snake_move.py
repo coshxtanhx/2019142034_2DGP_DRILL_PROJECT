@@ -65,7 +65,7 @@ class bomb():
         for x in range(self.gx+1, 17, +1):
             field_array[x][self.gy+1] |= 64
             explodes.appendleft(explosion(x, self.gy+1))
-        for y in range(self.gy+1, 11, +1):
+        for y in range(self.gy+1, 10, +1):
             field_array[self.gx+1][y] |= 64
             explodes.appendleft(explosion(self.gx+1, y))
         for y in range(self.gy+1, 0, -1):

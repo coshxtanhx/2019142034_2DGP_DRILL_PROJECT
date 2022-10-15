@@ -15,7 +15,10 @@ def handle_events():
                 acting = False
         if event.type == SDL_MOUSEBUTTONDOWN:
             if event.button == SDL_BUTTON_LEFT:
-                pass
+                if (UI_WIDTH//2 - 200 < event.x < UI_WIDTH//2 + 200 and \
+                    UI_HEIGHT - (520 + 53) < event.y < UI_HEIGHT - (520 - 53)):
+                    acting = False
+                    import snake_move
 
 acting = True
 frame = 0
