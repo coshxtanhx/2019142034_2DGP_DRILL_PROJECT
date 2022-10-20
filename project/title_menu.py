@@ -19,9 +19,31 @@ def handle_events():
                     acting = False
                     next_module = 'snake_move'
 
-def act():
-    global next_module, acting
+def enters():
+    global acting, frame, next_module
+    global img_menu_load, img_menu_new, img_title_bg, img_menu_quit
     acting = True
+    frame = 0
+    next_module = ''
+    img_title_bg = load_image('img/title_bg.png')
+    img_menu_new = load_image('img/title_menu_newgame.png')
+    img_menu_load = load_image('img/title_menu_loadgame.png')
+    img_menu_quit = load_image('img/title_menu_quit.png')
+
+def exits():
+    global acting, frame, next_module
+    global img_menu_load, img_menu_new, img_title_bg, img_menu_quit
+    acting = None
+    frame = None
+    next_module = None
+    img_title_bg = None
+    img_menu_new = None
+    img_menu_load = None
+    img_menu_quit = None
+
+def acts():
+    global next_module
+    enters()
     while(acting):
         clear_canvas()
         img_title_bg.draw(UI_WIDTH // 2, UI_HEIGHT // 2)
@@ -33,11 +55,10 @@ def act():
         delay(0.01)
     return next_module
 
-acting = True
-frame = 0
-next_module = ''
-
-img_title_bg = load_image('img/title_bg.png')
-img_menu_new = load_image('img/title_menu_newgame.png')
-img_menu_load = load_image('img/title_menu_loadgame.png')
-img_menu_quit = load_image('img/title_menu_quit.png')
+acting = None
+frame = None
+next_module = None
+img_title_bg = None
+img_menu_new = None
+img_menu_load = None
+img_menu_quit = None

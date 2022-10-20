@@ -230,7 +230,42 @@ def check_explode():
         if(length <= 1):
             exit(1)
 
-def act():
+def enters():
+    global acting, frame, direction, cur_direction, field_array, \
+        bomb_cool_down, next_module, length
+    global char_blue, apples, bombs, explodes
+    acting = True
+    frame = 0
+    direction = 0 #0:D, 1:W, 2:A, 3:S
+    cur_direction = 0
+    field_array = []
+    bomb_cool_down = 0
+    next_module = ''
+    length = 12*(3-1)+1
+    char_blue = deque([blue_body(i) for i in range(0, length)])
+    apples = apple(10, 0)
+    bombs = deque()
+    explodes = deque()
+
+def exits():
+    global acting, frame, direction, cur_direction, field_array, \
+        bomb_cool_down, next_module, length
+    global char_blue, apples, bombs, explodes
+    acting = None
+    frame = None
+    direction = None #0:D, 1:W, 2:A, 3:S
+    cur_direction = None
+    field_array = None
+    bomb_cool_down = None
+    next_module = None
+    length = None
+    char_blue = None
+    apples = None
+    bombs = None
+    explodes = None
+
+
+def acts():
     global acting, field_array, apples, frame, bomb_cool_down, next_module
     acting = True
     while(acting):
@@ -255,16 +290,15 @@ def act():
         delay(0.01)
     return next_module
 
-acting = True
-frame = 0
-direction = 0 #0:D, 1:W, 2:A, 3:S
-cur_direction = 0
-field_array = []
-bomb_cool_down = 0
-next_module = ''
-
-length = 12*(3-1)+1
-char_blue = deque([blue_body(i) for i in range(0, length)])
-apples = apple(10, 0)
-bombs = deque()
-explodes = deque()
+acting = None
+frame = None
+direction = None #0:D, 1:W, 2:A, 3:S
+cur_direction = None
+field_array = None
+bomb_cool_down = None
+next_module = None
+length = None
+char_blue = None
+apples = None
+bombs = None
+explodes = None

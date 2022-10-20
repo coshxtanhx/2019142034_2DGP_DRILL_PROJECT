@@ -2,10 +2,6 @@ from pico2d import *
 from coordinates_module import UI_HEIGHT, UI_WIDTH
 from math import *
 
-img_title_bg = load_image('img/title_bg.png')
-img_title = [load_image('img/title_' + str(i) + '.png') for i in range(2)]
-img_title_text = load_image('img/title_text.png')
-
 def handle_events():
     global next_module
     global acting
@@ -21,7 +17,27 @@ def handle_events():
             elif event.key == SDLK_ESCAPE:
                 acting = False
 
-def act():
+def enters():
+    global next_module, acting, frame
+    global img_title, img_title_bg, img_title_text
+    next_module = ''
+    acting = True
+    frame = 0
+    img_title_bg = load_image('img/title_bg.png')
+    img_title = [load_image('img/title_' + str(i) + '.png') for i in range(2)]
+    img_title_text = load_image('img/title_text.png')
+
+def exits():
+    global next_module, acting, frame
+    global img_title, img_title_bg, img_title_text
+    next_module = None
+    acting = None
+    frame = None
+    img_title_bg = None
+    img_title = None
+    img_title_text = None
+
+def acts():
     global acting, frame
     acting = True
     while(acting):
@@ -36,6 +52,9 @@ def act():
         delay(0.01)
     return next_module
 
-next_module = ''
-acting = True
-frame = 0
+next_module = None
+acting = None
+frame = None
+img_title_bg = None
+img_title = None
+img_title_text = None
