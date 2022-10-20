@@ -5,13 +5,6 @@ from coordinates_module import *
 from collections import deque
 from snake_move_images import *
 
-acting = True
-frame = 0
-direction = 0 #0:D, 1:W, 2:A, 3:S
-cur_direction = 0
-field_array = []
-bomb_cool_down = 0
-
 class blue_body():
     def __init__(self, number, x=40, y=-1):
         if(y == -1):
@@ -33,7 +26,7 @@ class blue_body():
                     cur_direction = direction
             self.number += 1
         gx, gy = coordinates_to_grid(self.x, self.y)
-        field_array[gx+1][gy+1] |= field_dict['player']
+        field_array[gx+1][gy+1] |= FIELD_DICT['player']
         
     def draw(self):
         if(self.number == 0):
@@ -78,7 +71,7 @@ class bomb():
             global frame
             self.image = img_bomb[cnt - 1]
             self.image.clip_draw(0 + 60 * (frame % 3), 0, 60, 60, self.x, self.y)
-            field_array[self.gx+1][self.gy+1] |= field_dict['bomb']
+            field_array[self.gx+1][self.gy+1] |= FIELD_DICT['bomb']
         elif(self.counter == 0 or self.counter <= -65535):
             self.explode()
         else:
@@ -93,24 +86,20 @@ class apple():
     def draw(self):
         if(self.exist):
             self.image.draw(self.x, self.y)
-            field_array[self.gx+1][self.gy+1] |= field_dict['apple']
+            field_array[self.gx+1][self.gy+1] |= FIELD_DICT['apple']
         else: return
 
-length = 12*(3-1)+1
-char_blue = deque([blue_body(i) for i in range(0, length)])
-apples = apple(10, 0)
-bombs = deque()
-explodes = deque()
-
 def handle_events():
-    global acting, direction, bomb_cool_down
+    global acting, direction, bomb_cool_down, next_module
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
             acting = False
+            next_module = ''
         if event.type == SDL_KEYDOWN:
             if event.key == SDLK_ESCAPE:
                 acting = False
+                next_module = 'title'
             elif event.key == SDLK_w and cur_direction not in (1,3):
                 direction = 1
             elif event.key == SDLK_a and cur_direction not in (0,2):
@@ -180,8 +169,8 @@ def check_eat_bomb():
     x, y = char_blue[0].x, char_blue[0].y
     gx, gy = coordinates_to_grid(x, y)
     bomb_touched = None
-    if(field_array[gx+1][gy+1] & (field_dict['bomb']+field_dict['player']) \
-        == field_dict['bomb'] + field_dict['player']):
+    if(field_array[gx+1][gy+1] & (FIELD_DICT['bomb']+FIELD_DICT['player']) \
+        == FIELD_DICT['bomb'] + FIELD_DICT['player']):
         for bo in bombs:
             if get_distance(x, y, bo.x, bo.y) < 20:
                 bo.counter = -65535
@@ -195,9 +184,9 @@ def check_eat_bomb():
 def check_eat():
     global length, apples
     gx, gy = coordinates_to_grid(char_blue[0].x, char_blue[0].y)
-    if(field_array[gx+1][gy+1] & (field_dict['apple']+field_dict['player']) \
-        == field_dict['apple'] + field_dict['player']):
-        field_array[gx+1][gy+1] &= (MAX_BITS- field_dict['apple'])
+    if(field_array[gx+1][gy+1] & (FIELD_DICT['apple']+FIELD_DICT['player']) \
+        == FIELD_DICT['apple'] + FIELD_DICT['player']):
+        field_array[gx+1][gy+1] &= (MAX_BITS- FIELD_DICT['apple'])
         if(length < 109):
             for i in range(length, length + 12):
                 char_blue.append(blue_body(i, char_blue[length-1].x, char_blue[length-1].y))
@@ -208,9 +197,9 @@ def check_eat():
 def check_collide():
     global length, cur_direction
     gx, gy = coordinates_to_grid(char_blue[0].x, char_blue[0].y)
-    if(field_array[gx+1][gy+1] & field_dict['wall']):
+    if(field_array[gx+1][gy+1] & FIELD_DICT['wall']):
         exit(1)
-    if(field_array[gx+1][gy+1] & field_dict['enemy']):
+    if(field_array[gx+1][gy+1] & FIELD_DICT['enemy']):
         exit(1)
     if(length >= 28):
         for i in range(14, length):
@@ -223,11 +212,11 @@ def check_explode():
     apple_destroy = False
     for x in range(1, 16):
         for y in range(1, 10):
-            if field_array[x][y] & (field_dict['explode'] + field_dict['player']) == \
-                field_dict['explode'] + field_dict['player']:
+            if field_array[x][y] & (FIELD_DICT['explode'] + FIELD_DICT['player']) == \
+                FIELD_DICT['explode'] + FIELD_DICT['player']:
                 attacked = True
-            if field_array[x][y] & (field_dict['explode'] + field_dict['apple']) == \
-                field_dict['explode'] + field_dict['apple']:
+            if field_array[x][y] & (FIELD_DICT['explode'] + FIELD_DICT['apple']) == \
+                FIELD_DICT['explode'] + FIELD_DICT['apple']:
                 apple_destroy = True
             if(apple_destroy and attacked): break
         if(apple_destroy and attacked): break
@@ -239,27 +228,43 @@ def check_explode():
         for _ in range(12):
             char_blue.pop()
         if(length <= 1):
-            exit(1)        
+            exit(1)
 
-while(acting):
-    clear_canvas()
-    field_array = field_array_reset()
-    img_field.draw(UI_WIDTH // 2, UI_HEIGHT // 2)
-    apples.draw()
-    img_snake_orange_head[0].draw(*grid_to_coordinates(0,8))
-    field_array[1][9] |= field_dict['enemy']
-    bomb_count_and_draw()
-    snake_move_and_draw()
-    bomb_and_explode_delete()
-    check_eat()
-    check_eat_bomb()
-    check_collide()
-    check_explode()
-    explode_draw()
-    update_canvas()
-    handle_events()
-    if bomb_cool_down > 0: bomb_cool_down -= 1
-    frame = (frame + 1) % 8
-    delay(0.01)
+def act():
+    global acting, field_array, apples, frame, bomb_cool_down, next_module
+    acting = True
+    while(acting):
+        clear_canvas()
+        field_array = field_array_reset()
+        img_field.draw(UI_WIDTH // 2, UI_HEIGHT // 2)
+        apples.draw()
+        img_snake_orange_head[0].draw(*grid_to_coordinates(0,8))
+        field_array[1][9] |= FIELD_DICT['enemy']
+        bomb_count_and_draw()
+        snake_move_and_draw()
+        bomb_and_explode_delete()
+        check_eat()
+        check_eat_bomb()
+        check_collide()
+        check_explode()
+        explode_draw()
+        update_canvas()
+        handle_events()
+        if bomb_cool_down > 0: bomb_cool_down -= 1
+        frame = (frame + 1) % 8
+        delay(0.01)
+    return next_module
 
-close_canvas()
+acting = True
+frame = 0
+direction = 0 #0:D, 1:W, 2:A, 3:S
+cur_direction = 0
+field_array = []
+bomb_cool_down = 0
+next_module = ''
+
+length = 12*(3-1)+1
+char_blue = deque([blue_body(i) for i in range(0, length)])
+apples = apple(10, 0)
+bombs = deque()
+explodes = deque()
