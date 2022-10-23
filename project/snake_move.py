@@ -287,6 +287,8 @@ def check_explode():
         if(length <= 1):
             exit(1)
     enemy_hp -= enemy_damaged
+    if(enemy_hp <= 0):
+        exit(2)
 
 def enemy_hp_bar_draw():
     img_hpbar.clip_draw(0, 0, 40, 40, 460, 590, enemy_hp//2, 40)
