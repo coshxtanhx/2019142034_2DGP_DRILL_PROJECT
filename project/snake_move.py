@@ -4,6 +4,41 @@ from math import *
 from coordinates_module import *
 from collections import deque
 from snake_move_images import *
+from enemy_movement_ai import *
+
+class enemy_body():
+    def __init__(self, number, x=40, y=-1, color = 'orange'):
+        if(y == -1):
+            self.x, self.y = grid_to_coordinates(0, 8)
+        else:
+            self.x, self.y = x, y
+        self.frame = 0
+        self.number = number
+        self.image = 0
+        self.color = color
+    def moves(self):
+        global enemy_direction
+        if(self.number == len(enemy_char) - 1):
+            self.x, self.y = enemy_char[0].x + dx[enemy_direction], \
+                enemy_char[0].y + dy[enemy_direction]
+            self.number = 0
+            enemy_char.rotate(1)
+        else:
+            if(self.number == 0):
+                if(self.x % 60 == 40 and self.y % 60 == 40):
+                    enemy_direction = enemy_order
+            self.number += 1
+        gx, gy = coordinates_to_grid(self.x, self.y)
+        field_array[gx+1][gy+1] |= FIELD_DICT['enemy']
+
+    def draw(self):
+        if(self.number == 0):
+            if(self.color == 'orange'):
+                self.image = img_snake_orange_head[enemy_direction]
+        else:
+            if(self.color == 'orange'):
+                self.image = img_snake_orange_body
+        self.image.draw(self.x, self.y)
 
 class blue_body():
     def __init__(self, number, x=40, y=-1):
@@ -115,11 +150,12 @@ def handle_events():
                 bomb_cool_down = 100
 
 def snake_move_and_draw():
-    le = len(char_blue)
-    for i in range(le):
-        char_blue[i].moves()
-    for i in range(le-1, -1, -1):
-        char_blue[i].draw()
+    for snakes in (char_blue, enemy_char):
+        le = len(snakes)
+        for i in range(le):
+            snakes[i].moves()
+        for i in range(le-1, -1, -1):
+            snakes[i].draw()
 
 def bomb_count_and_draw():
     le = len(bombs)
@@ -166,36 +202,43 @@ def create_new_apple():
 
 def check_eat_bomb():
     global bombs
-    x, y = char_blue[0].x, char_blue[0].y
-    gx, gy = coordinates_to_grid(x, y)
-    bomb_touched = None
-    if(field_array[gx+1][gy+1] & (FIELD_DICT['bomb']+FIELD_DICT['player']) \
-        == FIELD_DICT['bomb'] + FIELD_DICT['player']):
-        for bo in bombs:
-            if get_distance(x, y, bo.x, bo.y) < 20:
-                bo.counter = -65535
-                bomb_touched = bo
-                break
-        if bomb_touched != None:
-            bombs.remove(bomb_touched)
-            bombs.append(bomb_touched)
+    for snakes in (char_blue, enemy_char):
+        x, y = snakes[0].x, snakes[0].y
+        gx, gy = coordinates_to_grid(x, y)
+        bomb_touched = None
+        if(field_array[gx+1][gy+1] & (FIELD_DICT['bomb'])):
+            for bo in bombs:
+                if get_distance(x, y, bo.x, bo.y) < 20:
+                    bo.counter = -65535
+                    bomb_touched = bo
+                    break
+            if bomb_touched != None:
+                bombs.remove(bomb_touched)
+                bombs.append(bomb_touched)
 
 
 def check_eat():
     global length, apples
-    gx, gy = coordinates_to_grid(char_blue[0].x, char_blue[0].y)
-    if(field_array[gx+1][gy+1] & (FIELD_DICT['apple']+FIELD_DICT['player']) \
-        == FIELD_DICT['apple'] + FIELD_DICT['player']):
-        field_array[gx+1][gy+1] &= (MAX_BITS- FIELD_DICT['apple'])
-        if(length < 109):
-            for i in range(length, length + 12):
-                char_blue.append(blue_body(i, char_blue[length-1].x, char_blue[length-1].y))
-            length += 12
-        del(apples)
-        create_new_apple()
+    for snakes in (char_blue, enemy_char):
+        gx, gy = coordinates_to_grid(snakes[0].x, snakes[0].y)
+        if(field_array[gx+1][gy+1] & (FIELD_DICT['apple'])):
+            field_array[gx+1][gy+1] &= (MAX_BITS - FIELD_DICT['apple'])
+            if(length < 109 and snakes == char_blue):
+                for i in range(length, length + 12):
+                    char_blue.append(blue_body(i, char_blue[length-1].x, char_blue[length-1].y))
+                length += 12
+            del(apples)
+            create_new_apple()
+
+def enemy_set_bomb():
+    global bomb_cool_down_enemy
+    le = len(enemy_char)
+    bx, by = enemy_char[le-1].x, enemy_char[le-1].y
+    bombs.appendleft(bomb(bx, by, 0))
+    bomb_cool_down_enemy = 200
 
 def check_collide():
-    global length, cur_direction
+    global length
     gx, gy = coordinates_to_grid(char_blue[0].x, char_blue[0].y)
     if(field_array[gx+1][gy+1] & FIELD_DICT['wall']):
         exit(1)
@@ -205,6 +248,16 @@ def check_collide():
         for i in range(14, length):
             if(get_distance(char_blue[i].x, char_blue[i].y, char_blue[0].x, char_blue[0].y) <= 30):
                 exit(1)
+
+def check_touched_by_enemy():
+    global length
+    gx, gy = coordinates_to_grid(enemy_char[0].x, enemy_char[0].y)
+    if(field_array[gx+1][gy+1] & FIELD_DICT['player']):
+        length -= 12
+        for _ in range(12):
+            char_blue.pop()
+        if(length <= 1):
+            exit(1)
 
 def check_explode():
     global length, apples
@@ -232,8 +285,8 @@ def check_explode():
 
 def enters():
     global acting, frame, direction, cur_direction, field_array, \
-        bomb_cool_down, next_module, length
-    global char_blue, apples, bombs, explodes
+        bomb_cool_down, next_module, length, bomb_cool_down_enemy
+    global char_blue, apples, bombs, explodes, enemy_char, enemy_direction, enemy_order
     acting = True
     frame = 0
     direction = 0 #0:D, 1:W, 2:A, 3:S
@@ -246,15 +299,20 @@ def enters():
     apples = apple(10, 0)
     bombs = deque()
     explodes = deque()
+    enemy_char = deque([enemy_body(i) for i in range(0, 12*(6-1)+1)])
+    enemy_direction = 0
+    enemy_order = 0
+    bomb_cool_down_enemy = 500
 
 def exits():
     global acting, frame, direction, cur_direction, field_array, \
-        bomb_cool_down, next_module, length
-    global char_blue, apples, bombs, explodes
+        bomb_cool_down, next_module, length, bomb_cool_down_enemy
+    global char_blue, apples, bombs, explodes, enemy_char, enemy_direction, enemy_order
     acting = None
     frame = None
     direction = None #0:D, 1:W, 2:A, 3:S
     cur_direction = None
+    enemy_direction = None
     field_array = None
     bomb_cool_down = None
     next_module = None
@@ -263,18 +321,20 @@ def exits():
     apples = None
     bombs = None
     explodes = None
-
+    enemy_char = None
+    enemy_order = None
+    bomb_cool_down_enemy = None
 
 def acts():
     global acting, field_array, apples, frame, bomb_cool_down, next_module
+    global enemy_order, enemy_direction, enemy_char, bomb_cool_down_enemy
     acting = True
     while(acting):
         clear_canvas()
         field_array = field_array_reset()
         img_field.draw(UI_WIDTH // 2, UI_HEIGHT // 2)
         apples.draw()
-        img_snake_orange_head[0].draw(*grid_to_coordinates(0,8))
-        field_array[1][9] |= FIELD_DICT['enemy']
+        if bomb_cool_down_enemy == 0: enemy_set_bomb()
         bomb_count_and_draw()
         snake_move_and_draw()
         bomb_and_explode_delete()
@@ -282,10 +342,14 @@ def acts():
         check_eat_bomb()
         check_collide()
         check_explode()
+        check_touched_by_enemy()
         explode_draw()
+        enemy_order = enemy_ai(enemy_direction, \
+            *coordinates_to_grid(enemy_char[0].x, enemy_char[0].y), field_array)
         update_canvas()
         handle_events()
         if bomb_cool_down > 0: bomb_cool_down -= 1
+        if bomb_cool_down_enemy > 0: bomb_cool_down_enemy -= 1
         frame = (frame + 1) % 8
         delay(0.01)
     return next_module
@@ -302,3 +366,7 @@ char_blue = None
 apples = None
 bombs = None
 explodes = None
+enemy_char = None
+enemy_direction = None
+enemy_order = None
+bomb_cool_down_enemy = None
