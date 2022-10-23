@@ -71,11 +71,12 @@ class blue_body():
         self.image.draw(self.x, self.y)
 
 class explosion():
-    def __init__(self, gx, gy):
+    def __init__(self, gx, gy, damage):
         self.gx, self.gy = gx, gy
         self.x, self.y = grid_to_coordinates(self.gx-1, self.gy-1)
         self.image = img_explode
         self.frame = 6
+        self.damage = damage
     def draw(self):
         self.image.clip_draw(0 + 60 * (self.frame // 2), 0, 60, 60, self.x, self.y)
 
@@ -89,16 +90,16 @@ class bomb():
     def explode(self):
         for x in range(self.gx+1, 0, -1):
             field_array[x][self.gy+1] |= 64
-            explodes.appendleft(explosion(x, self.gy+1))
+            explodes.appendleft(explosion(x, self.gy+1, self.damage))
         for x in range(self.gx+1, 16, +1):
             field_array[x][self.gy+1] |= 64
-            explodes.appendleft(explosion(x, self.gy+1))
+            explodes.appendleft(explosion(x, self.gy+1, self.damage))
         for y in range(self.gy+1, 10, +1):
             field_array[self.gx+1][y] |= 64
-            explodes.appendleft(explosion(self.gx+1, y))
+            explodes.appendleft(explosion(self.gx+1, y, self.damage))
         for y in range(self.gy+1, 0, -1):
             field_array[self.gx+1][y] |= 64
-            explodes.appendleft(explosion(self.gx+1, y))
+            explodes.appendleft(explosion(self.gx+1, y, self.damage))
         self.x = -65535
     def draw(self):
         cnt = ceil(self.counter / 70)
@@ -260,19 +261,22 @@ def check_touched_by_enemy():
             exit(1)
 
 def check_explode():
-    global length, apples
+    global length, apples, enemy_hp
     attacked = False
     apple_destroy = False
-    for x in range(1, 16):
-        for y in range(1, 10):
-            if field_array[x][y] & (FIELD_DICT['explode'] + FIELD_DICT['player']) == \
-                FIELD_DICT['explode'] + FIELD_DICT['player']:
-                attacked = True
-            if field_array[x][y] & (FIELD_DICT['explode'] + FIELD_DICT['apple']) == \
-                FIELD_DICT['explode'] + FIELD_DICT['apple']:
-                apple_destroy = True
-            if(apple_destroy and attacked): break
-        if(apple_destroy and attacked): break
+    enemy_damaged = 0
+    for exploding in explodes:
+        if(exploding.frame != 5):
+            continue
+        x, y = exploding.gx, exploding.gy
+        if field_array[x][y] & (FIELD_DICT['player']):
+            attacked = True
+        if field_array[x][y] & ( FIELD_DICT['apple']):
+            apple_destroy = True
+        if field_array[x][y] & ( FIELD_DICT['enemy']):
+            enemy_damaged = exploding.damage \
+                if (exploding.damage > enemy_damaged) else enemy_damaged
+
     if(apple_destroy):
         del(apples)
         create_new_apple()
@@ -282,11 +286,16 @@ def check_explode():
             char_blue.pop()
         if(length <= 1):
             exit(1)
+    enemy_hp -= enemy_damaged
+
+def enemy_hp_bar_draw():
+    img_hpbar.clip_draw(0, 0, 40, 40, 460, 590, enemy_hp//2, 40)
 
 def enters():
     global acting, frame, direction, cur_direction, field_array, \
         bomb_cool_down, next_module, length, bomb_cool_down_enemy
-    global char_blue, apples, bombs, explodes, enemy_char, enemy_direction, enemy_order
+    global char_blue, apples, bombs, explodes, enemy_char, enemy_direction, \
+        enemy_hp, enemy_order
     acting = True
     frame = 0
     direction = 0 #0:D, 1:W, 2:A, 3:S
@@ -303,11 +312,13 @@ def enters():
     enemy_direction = 0
     enemy_order = 0
     bomb_cool_down_enemy = 500
+    enemy_hp = 500
 
 def exits():
     global acting, frame, direction, cur_direction, field_array, \
         bomb_cool_down, next_module, length, bomb_cool_down_enemy
-    global char_blue, apples, bombs, explodes, enemy_char, enemy_direction, enemy_order
+    global char_blue, apples, bombs, explodes, enemy_char, enemy_direction,\
+        enemy_order, enemy_hp
     acting = None
     frame = None
     direction = None #0:D, 1:W, 2:A, 3:S
@@ -324,6 +335,7 @@ def exits():
     enemy_char = None
     enemy_order = None
     bomb_cool_down_enemy = None
+    enemy_hp = None
 
 def acts():
     global acting, field_array, apples, frame, bomb_cool_down, next_module
@@ -344,6 +356,7 @@ def acts():
         check_explode()
         check_touched_by_enemy()
         explode_draw()
+        enemy_hp_bar_draw()
         enemy_order = enemy_ai(enemy_direction, \
             *coordinates_to_grid(enemy_char[0].x, enemy_char[0].y), field_array)
         update_canvas()
@@ -370,3 +383,4 @@ enemy_char = None
 enemy_direction = None
 enemy_order = None
 bomb_cool_down_enemy = None
+enemy_hp = None
