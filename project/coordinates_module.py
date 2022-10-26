@@ -17,7 +17,7 @@ def grid_to_coordinates(x, y):
     return (x * 60 + 40), UI_HEIGHT - (y * 60 + 120)
 
 def coordinates_to_grid(x, y):
-    return (x - 40) // 60, (-y + UI_HEIGHT - 120) // 60
+    return (x - 40 + 30) // 60, (-y + UI_HEIGHT - 120 + 30) // 60
 
 UI_WIDTH, UI_HEIGHT = 920, 640
 MAX_BITS = 16777215
