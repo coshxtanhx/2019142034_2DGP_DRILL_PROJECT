@@ -6,6 +6,7 @@ from collections import deque
 from snake_move_images import *
 from enemy_movement_ai import *
 from apple_obj import *
+from bomb_obj import *
 
 class enemy_body():
     def __init__(self, number, x=40, y=-1, color = 'orange'):
@@ -71,49 +72,6 @@ class blue_body():
             self.image = img_snake_blue_body
         self.image.draw(self.x, self.y)
 
-class explosion():
-    def __init__(self, gx, gy, damage):
-        self.gx, self.gy = gx, gy
-        self.x, self.y = grid_to_coordinates(self.gx-1, self.gy-1)
-        self.image = img_explode
-        self.frame = 6
-        self.damage = damage
-    def draw(self):
-        self.image.clip_draw(0 + 60 * (self.frame // 2), 0, 60, 60, self.x, self.y)
-
-class bomb():
-    def __init__(self, x, y, damage):
-        self.gx, self.gy = coordinates_to_grid(x, y)
-        self.x, self.y = grid_to_coordinates(self.gx, self.gy)
-        self.image = img_bomb[4]
-        self.counter = 350
-        self.damage = damage
-    def explode(self):
-        for x in range(self.gx+1, 0, -1):
-            field_array[x][self.gy+1] |= 64
-            explodes.appendleft(explosion(x, self.gy+1, self.damage))
-        for x in range(self.gx+1, 16, +1):
-            field_array[x][self.gy+1] |= 64
-            explodes.appendleft(explosion(x, self.gy+1, self.damage))
-        for y in range(self.gy+1, 10, +1):
-            field_array[self.gx+1][y] |= 64
-            explodes.appendleft(explosion(self.gx+1, y, self.damage))
-        for y in range(self.gy+1, 0, -1):
-            field_array[self.gx+1][y] |= 64
-            explodes.appendleft(explosion(self.gx+1, y, self.damage))
-        self.x = -65535
-    def draw(self):
-        cnt = ceil(self.counter / 70)
-        if(self.counter > 0):
-            global frame
-            self.image = img_bomb[cnt - 1]
-            self.image.clip_draw(0 + 60 * (frame % 3), 0, 60, 60, self.x, self.y)
-            field_array[self.gx+1][self.gy+1] |= FIELD_DICT['bomb']
-        elif(self.counter == 0 or self.counter <= -65535):
-            self.explode()
-        else:
-            return
-
 def handle_events():
     global acting, direction, bomb_cool_down, next_module
     events = get_events()
@@ -156,7 +114,7 @@ def snake_move_and_draw():
 def bomb_count_and_draw():
     le = len(bombs)
     for i in range(le):
-        bombs[i].draw()
+        bombs[i].draw(field_array, explodes, frame)
     for i in range(le):
         bombs[i].counter -= 1
         
