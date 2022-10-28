@@ -360,7 +360,7 @@ def acts():
         explode_draw()
         enemy_hp_bar_draw()
         enemy_order = enemy_ai(enemy_direction, \
-            *coordinates_to_grid(enemy_char[0].x, enemy_char[0].y), field_array)
+            *coordinates_to_grid(enemy_char[0].x, enemy_char[0].y), field_array, 2)
         update_canvas()
         handle_events()
         if bomb_cool_down > 0: bomb_cool_down -= 1
