@@ -7,6 +7,7 @@ from snake_move_images import *
 from enemy_movement_ai import *
 from apple_obj import *
 from bomb_obj import *
+from hpbar_obj import *
 
 class enemy_body():
     def __init__(self, number, x=40, y=-1, color = 'orange'):
@@ -244,13 +245,13 @@ def check_explode():
         exit(2)
 
 def enemy_hp_bar_draw():
-    img_hpbar.clip_draw(0, 0, 40, 40, 460, 590, enemy_hp//2, 40)
+    enemy_hpbar.draw(enemy_hp)
 
 def enters():
     global acting, frame, direction, cur_direction, field_array, \
         bomb_cool_down, next_module, length, bomb_cool_down_enemy
     global char_blue, apples, bombs, explodes, enemy_char, enemy_direction, \
-        enemy_hp, enemy_order
+        enemy_hp, enemy_order, enemy_hpbar
     acting = True
     frame = 0
     direction = 0 #0:D, 1:W, 2:A, 3:S
@@ -268,12 +269,13 @@ def enters():
     enemy_order = 0
     bomb_cool_down_enemy = 500
     enemy_hp = 500
+    enemy_hpbar = HP_bar(0)
 
 def exits():
     global acting, frame, direction, cur_direction, field_array, \
         bomb_cool_down, next_module, length, bomb_cool_down_enemy
     global char_blue, apples, bombs, explodes, enemy_char, enemy_direction,\
-        enemy_order, enemy_hp
+        enemy_order, enemy_hp, enemy_hpbar
     acting = None
     frame = None
     direction = None #0:D, 1:W, 2:A, 3:S
@@ -291,6 +293,7 @@ def exits():
     enemy_order = None
     bomb_cool_down_enemy = None
     enemy_hp = None
+    enemy_hpbar = None
 
 def acts():
     global acting, field_array, apples, frame, bomb_cool_down, next_module
@@ -339,3 +342,4 @@ enemy_direction = None
 enemy_order = None
 bomb_cool_down_enemy = None
 enemy_hp = None
+enemy_hpbar = None
