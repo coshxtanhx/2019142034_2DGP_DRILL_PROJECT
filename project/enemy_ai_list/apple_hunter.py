@@ -1,20 +1,12 @@
-from coordinates_module import FIELD_DICT, get_distance
+from coordinates_module import FIELD_DICT
 from enemy_ai_list.just_go import come_here
 
+apple_gx, apple_gy = 0, 0
 dx = (1, 0, -1, 0)
 dy = (0, -1, 0, 1)
 
-aim_points = [(1,1), (1,7), (13, 7), (13, 1)]
-aim_flag = 2
-
-def circle_move(enemy_dir, gx, gy, field):
-    global aim_flag
-    order = enemy_dir
-
-    order = come_here(enemy_dir, gx, gy, *(aim_points[aim_flag]))
-
-    if(order == -1):
-        aim_flag = (aim_flag + 1) % 4
+def apple_finding_move(enemy_dir, gx, gy, field):    
+    order = come_here(enemy_dir, gx, gy, apple_gx, apple_gy, 0)
 
     if((enemy_dir + 2) % 4 == order):
         return -1

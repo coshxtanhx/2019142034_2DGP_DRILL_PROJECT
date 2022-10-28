@@ -5,6 +5,7 @@ from coordinates_module import *
 from collections import deque
 from snake_move_images import *
 from enemy_movement_ai import *
+from apple_obj import *
 
 class enemy_body():
     def __init__(self, number, x=40, y=-1, color = 'orange'):
@@ -113,18 +114,6 @@ class bomb():
         else:
             return
 
-class apple():
-    def __init__(self, gx, gy):
-        self.x, self.y = grid_to_coordinates(gx, gy)
-        self.gx, self.gy = gx, gy
-        self.image = img_apple
-        self.exist = True
-    def draw(self):
-        if(self.exist):
-            self.image.draw(self.x, self.y)
-            field_array[self.gx+1][self.gy+1] |= FIELD_DICT['apple']
-        else: return
-
 def handle_events():
     global acting, direction, bomb_cool_down, next_module
     events = get_events()
@@ -149,7 +138,13 @@ def handle_events():
                 bx, by = char_blue[le-1].x, char_blue[le-1].y
                 bombs.appendleft(bomb(bx, by, length))
                 bomb_cool_down = 100
+            global zzz
+            if event.key == SDLK_u: zzz = 0
+            elif event.key == SDLK_i: zzz = 1
+            elif event.key == SDLK_o: zzz = 2
+            elif event.key == SDLK_p: zzz = 3
 
+zzz = 1
 def snake_move_and_draw():
     for snakes in (char_blue, enemy_char):
         le = len(snakes)
@@ -347,7 +342,7 @@ def acts():
         clear_canvas()
         field_array = field_array_reset()
         img_field.draw(UI_WIDTH // 2, UI_HEIGHT // 2)
-        apples.draw()
+        apples.draw(field_array)
         if bomb_cool_down_enemy == 0: enemy_set_bomb()
         bomb_count_and_draw()
         snake_move_and_draw()
@@ -360,7 +355,7 @@ def acts():
         explode_draw()
         enemy_hp_bar_draw()
         enemy_order = enemy_ai(enemy_direction, \
-            *coordinates_to_grid(enemy_char[0].x, enemy_char[0].y), field_array, 2)
+            *coordinates_to_grid(enemy_char[0].x, enemy_char[0].y), field_array, zzz)
         update_canvas()
         handle_events()
         if bomb_cool_down > 0: bomb_cool_down -= 1

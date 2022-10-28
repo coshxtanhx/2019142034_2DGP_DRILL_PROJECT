@@ -9,7 +9,6 @@ img_snake_orange_head = \
     [load_image('img/snake_orange_head_' + str(i) + '.png') for i in range(4)]
 img_snake_orange_body = load_image('img/snake_orange_body.png')
 
-img_apple = load_image('img/apple.png')
 img_explode = load_image('img/explode.png')
 img_bomb = \
     [load_image('img/bomb_' + str(i) + '.png') for i in range(1, 6)]

@@ -1,14 +1,22 @@
 from random import choice
 from coordinates_module import FIELD_DICT
-import enemy_ai_list.just_circle
-import enemy_ai_list.just_sweep
+from enemy_ai_list.just_circle import *
+from enemy_ai_list.just_sweep import *
+from enemy_ai_list.apple_hunter import *
 
 def enemy_ai(enemy_dir, gx, gy, field, option = 0):
+    ordered = -1
     if(option == 1):
-        return enemy_ai_list.just_circle.circle_move(gx, gy, enemy_dir)
+        ordered = circle_move(enemy_dir, gx, gy, field)
     elif(option == 2):
-        return enemy_ai_list.just_sweep.sweep_move(gx, gy, enemy_dir)
+        ordered = sweep_move(enemy_dir, gx, gy, field)
+    elif(option == 3):
+        ordered = apple_finding_move(enemy_dir, gx, gy, field)
 
+    if(ordered != -1):
+        return ordered
+
+    #random movement
     order_candi = [0, 1, 2, 3]
     order_2nd_candi = []
     order_3rd_candi = []
