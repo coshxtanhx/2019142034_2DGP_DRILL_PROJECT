@@ -1,3 +1,4 @@
+from os import remove
 from pico2d import *
 from random import *
 from math import *
@@ -11,7 +12,7 @@ from hpbar_obj import *
 from screen_hider_obj import *
 
 class enemy_body():
-    def __init__(self, number, x=40, y=-1, color = 'orange'):
+    def __init__(self, number, color = 'orange', x=40, y=-1):
         if(y == -1):
             self.x, self.y = grid_to_coordinates(0, 8)
         else:
@@ -37,11 +38,10 @@ class enemy_body():
 
     def draw(self):
         if(self.number == 0):
-            if(self.color == 'orange'):
-                self.image = img_snake_orange_head[enemy_direction]
+            self.image = \
+                (eval('img_snake_' + self.color + '_head'))[enemy_direction]
         else:
-            if(self.color == 'orange'):
-                self.image = img_snake_orange_body
+            self.image = eval('img_snake_' + self.color + '_body')
         self.image.draw(self.x, self.y)
 
 class blue_body():
@@ -116,7 +116,7 @@ def snake_move_and_draw():
 def bomb_count_and_draw():
     le = len(bombs)
     for i in range(le):
-        bombs[i].draw(field_array, explodes, frame)
+        bombs[i].draw(field_array, explodes, ices, frame)
     for i in range(le):
         bombs[i].counter -= 1
         
@@ -131,6 +131,10 @@ def bomb_and_explode_delete():
         if(explodes[i].frame >= 0):
             break
         explodes.pop()
+    le = len(ices)
+    for i in range(le-1, -1, -1):
+        if(ices[i].frame < 0):
+            del ices[i]
 
 def explode_draw():
     le = len(explodes)
@@ -138,6 +142,11 @@ def explode_draw():
         explodes[i].frame -= 1
     for i in range(le-1, -1, -1):
         explodes[i].draw()
+    le = len(ices)
+    for i in range(le):
+        ices[i].frame -= 1
+    for i in range(le-1, -1, -1):
+        ices[i].draw(field_array)
 
 def create_new_apple():
     global apples
@@ -181,7 +190,8 @@ def check_eat():
             field_array[gx+1][gy+1] &= (MAX_BITS - FIELD_DICT['apple'])
             if(length < 109 and snakes == char_blue):
                 for i in range(length, length + 12):
-                    char_blue.append(blue_body(i, char_blue[length-1].x, char_blue[length-1].y))
+                    char_blue.append(blue_body(i, char_blue[length-1].x, \
+                        char_blue[length-1].y))
                 length += 12
             del(apples)
             create_new_apple()
@@ -190,7 +200,7 @@ def enemy_set_bomb():
     global bomb_cool_down_enemy
     le = len(enemy_char)
     bx, by = enemy_char[le-1].x, enemy_char[le-1].y
-    bombs.appendleft(bomb(bx, by, 0))
+    bombs.appendleft(bomb(bx, by, 0, randint(0, 3)))
     bomb_cool_down_enemy = 200
 
 def check_collide():
@@ -202,7 +212,8 @@ def check_collide():
         exit(1)
     if(length >= 28):
         for i in range(14, length):
-            if(get_distance(char_blue[i].x, char_blue[i].y, char_blue[0].x, char_blue[0].y) <= 30):
+            if(get_distance(char_blue[i].x, char_blue[i].y,
+                char_blue[0].x, char_blue[0].y) <= 30):
                 exit(1)
 
 def check_touched_by_enemy():
@@ -214,6 +225,30 @@ def check_touched_by_enemy():
             char_blue.pop()
         if(length <= 1):
             exit(1)
+
+def check_attacked_by_ices():
+    global ices
+    ice_removing_obj = FIELD_DICT['enemy'] + FIELD_DICT['explode'] \
+        + FIELD_DICT['bomb'] + FIELD_DICT['apple']
+    remove_ice = []
+    player_attacked = False
+    for ice in ices:
+        global length
+        gx, gy = coordinates_to_grid(ice.x, ice.y)
+        if(not(player_attacked) and \
+            (field_array[gx+1][gy+1] & FIELD_DICT['player'])):
+            remove_ice.append(ice)
+            player_attacked = True
+        if(field_array[gx+1][gy+1] & ice_removing_obj):
+            remove_ice.append(ice)
+    if(player_attacked):
+        length -= 12
+        for _ in range(12):
+            char_blue.pop()
+        if(length <= 1):
+            exit(1)
+    for ice in remove_ice:
+        ices.remove(ice)
 
 def check_explode():
     global length, apples, enemy_hp
@@ -243,9 +278,11 @@ def check_explode():
             exit(1)
     enemy_hp -= enemy_damaged
     if(enemy_hp <= 0):
+        print('victory')
         exit(2)
 
 def screen_hider_draw():
+    return
     global cloud
     if(cloud.x < -170):
         cloud = Cloud()
@@ -261,7 +298,7 @@ def enters():
     global acting, frame, direction, cur_direction, field_array, \
         bomb_cool_down, next_module, length, bomb_cool_down_enemy
     global char_blue, apples, bombs, explodes, enemy_char, enemy_direction, \
-        enemy_hp, enemy_order, enemy_hpbar, broken_screen, screen_out, cloud
+        enemy_hp, enemy_order, enemy_hpbar, broken_screen, screen_out, cloud, ices
     acting = True
     frame = 0
     direction = 0 #0:D, 1:W, 2:A, 3:S
@@ -274,7 +311,8 @@ def enters():
     apples = apple(10, 0)
     bombs = deque()
     explodes = deque()
-    enemy_char = deque([enemy_body(i) for i in range(0, 12*(6-1)+1)])
+    enemy_char = deque([enemy_body(i, color='purple') \
+        for i in range(0, 12*(6-1)+1)])
     enemy_direction = 0
     enemy_order = 0
     bomb_cool_down_enemy = 500
@@ -283,12 +321,13 @@ def enters():
     broken_screen = [Broken() for _ in range(4)]
     screen_out = Screen_off()
     cloud = Cloud()
+    ices = []
 
 def exits():
     global acting, frame, direction, cur_direction, field_array, \
         bomb_cool_down, next_module, length, bomb_cool_down_enemy
     global char_blue, apples, bombs, explodes, enemy_char, enemy_direction,\
-        enemy_order, enemy_hp, enemy_hpbar, broken_screen, screen_out, cloud
+        enemy_order, enemy_hp, enemy_hpbar, broken_screen, screen_out, cloud, ices
     acting = None
     frame = None
     direction = None #0:D, 1:W, 2:A, 3:S
@@ -310,6 +349,7 @@ def exits():
     broken_screen = None
     screen_out = None
     cloud = None
+    ices = None
 
 def acts():
     global acting, field_array, apples, frame, bomb_cool_down, next_module
@@ -328,6 +368,7 @@ def acts():
         check_eat_bomb()
         check_collide()
         check_explode()
+        check_attacked_by_ices()
         check_touched_by_enemy()
         explode_draw()
         screen_hider_draw()
@@ -363,3 +404,4 @@ enemy_hpbar = None
 broken_screen = None
 screen_out = None
 cloud = None
+ices = None
