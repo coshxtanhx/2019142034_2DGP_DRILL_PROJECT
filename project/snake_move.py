@@ -268,7 +268,7 @@ def enters():
     enemy_direction = 0
     enemy_order = 0
     bomb_cool_down_enemy = 500
-    enemy_hp = 500
+    enemy_hp = 640
     enemy_hpbar = HP_bar(0)
 
 def exits():

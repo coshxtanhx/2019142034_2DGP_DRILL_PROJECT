@@ -1,4 +1,4 @@
-from coordinates_module import FIELD_DICT
+from enemy_ai_list.cannot_go import is_possible
 
 order_flag = True #T: vert / F: hori
 
@@ -43,11 +43,6 @@ def sweep_move(enemy_dir, gx, gy, field):
     else:
         order = hori_sweeps(gx, gy)
 
-    if((enemy_dir + 2) % 4 == order):
-        return -1
-    predict = field[gx + 1 + dx[order]][gy + 1 + dy[order]]
-    obj_to_avoid = FIELD_DICT['wall'] + FIELD_DICT['enemy']
-    if(predict & obj_to_avoid):
-        return -1
+    order = is_possible(order, enemy_dir, gx, gy, field)
 
     return order
