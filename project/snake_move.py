@@ -8,6 +8,7 @@ from enemy_movement_ai import *
 from apple_obj import *
 from bomb_obj import *
 from hpbar_obj import *
+from screen_hider_obj import *
 
 class enemy_body():
     def __init__(self, number, x=40, y=-1, color = 'orange'):
@@ -244,6 +245,15 @@ def check_explode():
     if(enemy_hp <= 0):
         exit(2)
 
+def screen_hider_draw():
+    global cloud
+    if(cloud.x < -170):
+        cloud = Cloud()
+    cloud.draw()
+    for i in broken_screen:
+        i.draw()
+    screen_out.draw(char_blue[0].x, char_blue[0].y)
+
 def enemy_hp_bar_draw():
     enemy_hpbar.draw(enemy_hp)
 
@@ -251,7 +261,7 @@ def enters():
     global acting, frame, direction, cur_direction, field_array, \
         bomb_cool_down, next_module, length, bomb_cool_down_enemy
     global char_blue, apples, bombs, explodes, enemy_char, enemy_direction, \
-        enemy_hp, enemy_order, enemy_hpbar
+        enemy_hp, enemy_order, enemy_hpbar, broken_screen, screen_out, cloud
     acting = True
     frame = 0
     direction = 0 #0:D, 1:W, 2:A, 3:S
@@ -270,12 +280,15 @@ def enters():
     bomb_cool_down_enemy = 500
     enemy_hp = 640
     enemy_hpbar = HP_bar(0)
+    broken_screen = [Broken() for _ in range(4)]
+    screen_out = Screen_off()
+    cloud = Cloud()
 
 def exits():
     global acting, frame, direction, cur_direction, field_array, \
         bomb_cool_down, next_module, length, bomb_cool_down_enemy
     global char_blue, apples, bombs, explodes, enemy_char, enemy_direction,\
-        enemy_order, enemy_hp, enemy_hpbar
+        enemy_order, enemy_hp, enemy_hpbar, broken_screen, screen_out, cloud
     acting = None
     frame = None
     direction = None #0:D, 1:W, 2:A, 3:S
@@ -294,6 +307,9 @@ def exits():
     bomb_cool_down_enemy = None
     enemy_hp = None
     enemy_hpbar = None
+    broken_screen = None
+    screen_out = None
+    cloud = None
 
 def acts():
     global acting, field_array, apples, frame, bomb_cool_down, next_module
@@ -314,6 +330,7 @@ def acts():
         check_explode()
         check_touched_by_enemy()
         explode_draw()
+        screen_hider_draw()
         enemy_hp_bar_draw()
         enemy_order = enemy_ai(enemy_direction, \
             *coordinates_to_grid(enemy_char[0].x, enemy_char[0].y), field_array, zzz)
@@ -343,3 +360,6 @@ enemy_order = None
 bomb_cool_down_enemy = None
 enemy_hp = None
 enemy_hpbar = None
+broken_screen = None
+screen_out = None
+cloud = None
