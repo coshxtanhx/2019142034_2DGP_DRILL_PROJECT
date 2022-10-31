@@ -241,7 +241,6 @@ def enters(option):
     global enemy_hpbar, broken_screen, screen_out, cloud, ices
     global cur_char, cur_stage
     cur_char, cur_stage = option[0], option[1]
-    print(cur_char, cur_stage)
     acting = True
     frame = 0
     field_array = []

@@ -11,8 +11,7 @@ def exits():
     pass
 
 def acts():
-    from state_changer import state_stack
-    return state_stack[-2], 'resume'
+    return 'lastest', 'resume'
 
 acting = None
 next_module = ''
