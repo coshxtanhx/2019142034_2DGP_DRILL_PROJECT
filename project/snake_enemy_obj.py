@@ -21,6 +21,8 @@ img_snake_brown_body = load_image('img/snake_brown_body.png')
 class Enemy_body():
     enemy_direction = 0
     enemy_order = 0
+    bomb_cool_down = 500
+    enemy_hp = 640
     def __init__(self, number, color = 'orange', x=40, y=-1):
         if(y == -1):
             self.x, self.y = grid_to_coordinates(0, 8)

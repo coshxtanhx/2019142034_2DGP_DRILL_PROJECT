@@ -47,9 +47,9 @@ def acts():
     while(acting):
         clear_canvas()
         img_title_bg.draw(UI_WIDTH // 2, UI_HEIGHT // 2)
-        img_menu_new.draw(UI_WIDTH // 2, 520)
-        img_menu_load.draw(UI_WIDTH // 2, 370)
-        img_menu_quit.draw(UI_WIDTH // 2, 220)
+        img_menu_new.draw(UI_WIDTH // 2, 550)
+        img_menu_load.draw(UI_WIDTH // 2, 400)
+        img_menu_quit.draw(UI_WIDTH // 2, 350)
         update_canvas()
         handle_events()
         delay(0.01)

@@ -13,7 +13,7 @@ from hpbar_obj import *
 from screen_hider_obj import *
 
 def handle_events():
-    global acting, direction, bomb_cool_down, next_module
+    global acting, direction, next_module
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
@@ -31,11 +31,11 @@ def handle_events():
                 Blue_body.direction = 3
             elif event.key == SDLK_d and Blue_body.cur_direction not in (0,2):
                 Blue_body.direction = 0
-            elif event.key == SDLK_e and bomb_cool_down == 0:
+            elif event.key == SDLK_e and Blue_body.bomb_cool_down == 0:
                 le = len(char_blue)
                 bx, by = char_blue[le-1].x, char_blue[le-1].y
-                bombs.appendleft(bomb(bx, by, length))
-                bomb_cool_down = 100
+                bombs.appendleft(bomb(bx, by, Blue_body.length))
+                Blue_body.bomb_cool_down = 100
             global zzz
             if event.key == SDLK_u: zzz = 0
             elif event.key == SDLK_i: zzz = 1
@@ -121,17 +121,17 @@ def check_eat_bomb():
 
 
 def check_eat():
-    global length, apples
+    global apples
     ap_loc = field_array[apples.gx+1][apples.gy+1]
     eaten = False
 
     if(ap_loc & FIELD_DICT['player']):
         eaten = True
-        if(length < 109):
-            for i in range(length, length + 12):
-                char_blue.append(Blue_body(i, char_blue[length-1].x, \
-                    char_blue[length-1].y))
-            length += 12
+        if(Blue_body.length < 109):
+            for i in range(Blue_body.length, Blue_body.length + 12):
+                char_blue.append(Blue_body(i, char_blue[Blue_body.length-1].x, \
+                    char_blue[Blue_body.length-1].y))
+            Blue_body.length += 12
     elif(ap_loc & (FIELD_DICT['enemy'])):
         eaten = True
     if(eaten):
@@ -139,33 +139,30 @@ def check_eat():
         create_new_apple()
 
 def enemy_set_bomb():
-    global bomb_cool_down_enemy
     le = len(enemy_char)
     bx, by = enemy_char[le-1].x, enemy_char[le-1].y
     bombs.appendleft(bomb(bx, by, 0, randint(0, 0)))
-    bomb_cool_down_enemy = 200
+    Enemy_body.bomb_cool_down = 200
 
 def check_collide():
-    global length
     gx, gy = coordinates_to_grid(char_blue[0].x, char_blue[0].y)
     if(field_array[gx+1][gy+1] & FIELD_DICT['wall']):
         exit(1)
     if(field_array[gx+1][gy+1] & (FIELD_DICT['enemy'])):
         exit(1)
-    if(length >= 28):
-        for i in range(14, length):
+    if(Blue_body.length >= 28):
+        for i in range(14, Blue_body.length):
             if(get_distance(char_blue[i].x, char_blue[i].y,
                 char_blue[0].x, char_blue[0].y) <= 30):
                 exit(1)
 
 def check_touched_by_enemy():
-    global length
     gx, gy = coordinates_to_grid(enemy_char[0].x, enemy_char[0].y)
     if(field_array[gx+1][gy+1] & FIELD_DICT['player']):
-        length -= 12
+        Blue_body.length -= 12
         for _ in range(12):
             char_blue.pop()
-        if(length <= 1):
+        if(Blue_body.length <= 1):
             exit(1)
 
 def check_attacked_by_ices():
@@ -175,7 +172,6 @@ def check_attacked_by_ices():
     remove_ice = []
     player_attacked = False
     for ice in ices:
-        global length
         gx, gy = coordinates_to_grid(ice.x, ice.y)
         if(not(player_attacked) and \
             (field_array[gx+1][gy+1] & FIELD_DICT['player'])):
@@ -184,16 +180,16 @@ def check_attacked_by_ices():
         if(field_array[gx+1][gy+1] & ice_removing_obj):
             remove_ice.append(ice)
     if(player_attacked):
-        length -= 12
+        Blue_body.length -= 12
         for _ in range(12):
             char_blue.pop()
-        if(length <= 1):
+        if(Blue_body.length <= 1):
             exit(1)
     for ice in remove_ice:
         ices.remove(ice)
 
 def check_explode():
-    global length, apples, enemy_hp
+    global apples
     attacked = False
     apple_destroy = False
     enemy_damaged = 0
@@ -213,13 +209,13 @@ def check_explode():
         del(apples)
         create_new_apple()
     if(attacked):
-        length -= 12
+        Blue_body.length -= 12
         for _ in range(12):
             char_blue.pop()
-        if(length <= 1):
+        if(Blue_body.length <= 1):
             exit(1)
-    enemy_hp -= enemy_damaged
-    if(enemy_hp <= 0):
+    Enemy_body.enemy_hp -= enemy_damaged
+    if(Enemy_body.enemy_hp <= 0):
         print('victory')
         exit(2)
 
@@ -234,31 +230,22 @@ def screen_hider_draw():
     screen_out.draw(char_blue[0].x, char_blue[0].y)
 
 def enemy_hp_bar_draw():
-    enemy_hpbar.draw(enemy_hp)
+    enemy_hpbar.draw(Enemy_body.enemy_hp)
 
 def enters():
-    global acting, frame, direction, cur_direction, field_array, \
-        bomb_cool_down, next_module, length, bomb_cool_down_enemy
-    global char_blue, apples, bombs, explodes, enemy_char, enemy_direction, \
-        enemy_hp, enemy_order, enemy_hpbar, broken_screen, screen_out, cloud, ices
+    global acting, frame, field_array, next_module
+    global char_blue, apples, bombs, explodes, enemy_char, \
+        enemy_hpbar, broken_screen, screen_out, cloud, ices
     acting = True
     frame = 0
-    direction = 0 #0:D, 1:W, 2:A, 3:S
-    cur_direction = 0
     field_array = []
-    bomb_cool_down = 0
     next_module = ''
-    length = 12*(3-1)+1
-    char_blue = deque([Blue_body(i) for i in range(0, length)])
+    char_blue = deque([Blue_body(i) for i in range(0, 12*(3-1)+1)])
     apples = apple(10, 0)
     bombs = deque()
     explodes = deque()
-    enemy_char = deque([Enemy_body(i, color='brown') \
+    enemy_char = deque([Enemy_body(i, color='purple') \
         for i in range(0, 12*(6-1)+1)])
-    enemy_direction = 0
-    enemy_order = 0
-    bomb_cool_down_enemy = 500
-    enemy_hp = 640
     enemy_hpbar = HP_bar(0)
     broken_screen = [Broken() for _ in range(4)]
     screen_out = Screen_off()
@@ -266,27 +253,18 @@ def enters():
     ices = []
 
 def exits():
-    global acting, frame, direction, cur_direction, field_array, \
-        bomb_cool_down, next_module, length, bomb_cool_down_enemy
-    global char_blue, apples, bombs, explodes, enemy_char, enemy_direction,\
-        enemy_order, enemy_hp, enemy_hpbar, broken_screen, screen_out, cloud, ices
+    global acting, frame, field_array, next_module
+    global char_blue, apples, bombs, explodes, enemy_char,\
+        enemy_hpbar, broken_screen, screen_out, cloud, ices
     acting = None
     frame = None
-    direction = None #0:D, 1:W, 2:A, 3:S
-    cur_direction = None
-    enemy_direction = None
     field_array = None
-    bomb_cool_down = None
     next_module = None
-    length = None
     char_blue = None
     apples = None
     bombs = None
     explodes = None
     enemy_char = None
-    enemy_order = None
-    bomb_cool_down_enemy = None
-    enemy_hp = None
     enemy_hpbar = None
     broken_screen = None
     screen_out = None
@@ -294,15 +272,15 @@ def exits():
     ices = None
 
 def acts():
-    global acting, field_array, apples, frame, bomb_cool_down, next_module
-    global enemy_order, enemy_direction, enemy_char, bomb_cool_down_enemy
+    global acting, field_array, apples, frame, next_module
+    global enemy_char
     acting = True
     while(acting):
         clear_canvas()
         field_array = field_array_reset()
         img_field.draw(UI_WIDTH // 2, UI_HEIGHT // 2)
         apples.draw(field_array)
-        if bomb_cool_down_enemy == 0: enemy_set_bomb()
+        if Enemy_body.bomb_cool_down == 0: enemy_set_bomb()
         bomb_count_and_draw()
         snake_move_and_draw()
         bomb_and_explode_delete()
@@ -319,29 +297,21 @@ def acts():
             *coordinates_to_grid(enemy_char[0].x, enemy_char[0].y), field_array, zzz)
         update_canvas()
         handle_events()
-        if bomb_cool_down > 0: bomb_cool_down -= 1
-        if bomb_cool_down_enemy > 0: bomb_cool_down_enemy -= 1
+        for snake in (Blue_body, Enemy_body):
+            if snake.bomb_cool_down > 0: snake.bomb_cool_down -= 1
         frame = (frame + 1) % 8
         delay(0.01)
     return next_module
 
 acting = None
 frame = None
-direction = None #0:D, 1:W, 2:A, 3:S
-cur_direction = None
 field_array = None
-bomb_cool_down = None
 next_module = None
-length = None
 char_blue = None
 apples = None
 bombs = None
 explodes = None
 enemy_char = None
-enemy_direction = None
-enemy_order = None
-bomb_cool_down_enemy = None
-enemy_hp = None
 enemy_hpbar = None
 broken_screen = None
 screen_out = None

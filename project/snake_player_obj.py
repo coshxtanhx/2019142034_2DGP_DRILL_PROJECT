@@ -7,6 +7,8 @@ class Blue_body():
     img_snake_blue_body = None
     cur_direction = 0
     direction = 0
+    bomb_cool_down = 10
+    length = 12*(3-1)+1
     def __init__(self, number, x=40, y=-1):
         if(y == -1):
             self.x, self.y = convert_coordinates(x, 120)
