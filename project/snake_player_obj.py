@@ -42,3 +42,8 @@ class Blue_body():
         else:
             self.image = Blue_body.img_snake_blue_body
         self.image.draw(self.x, self.y)
+    def reset():
+        Blue_body.cur_direction = 0
+        Blue_body.direction = 0
+        Blue_body.bomb_cool_down = 10
+        Blue_body.length = 12*(3-1)+1

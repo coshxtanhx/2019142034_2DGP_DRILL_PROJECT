@@ -17,7 +17,7 @@ def handle_events():
             elif event.key == SDLK_ESCAPE:
                 acting = False
 
-def enters():
+def enters(option):
     global next_module, acting, frame
     global img_title, img_title_bg, img_title_text
     next_module = ''
@@ -50,7 +50,7 @@ def acts():
         update_canvas()
         handle_events()
         delay(0.01)
-    return next_module
+    return next_module, None
 
 next_module = None
 acting = None

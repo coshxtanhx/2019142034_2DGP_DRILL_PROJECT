@@ -232,20 +232,24 @@ def screen_hider_draw():
 def enemy_hp_bar_draw():
     enemy_hpbar.draw(Enemy_body.enemy_hp)
 
-def enters():
-    global acting, frame, field_array, next_module
+def enters(option):
+    global acting, frame, field_array, next_module, next_module_option
     global char_blue, apples, bombs, explodes, enemy_char, \
         enemy_hpbar, broken_screen, screen_out, cloud, ices
+    if option == None: option = '11'
     acting = True
     frame = 0
     field_array = []
     next_module = ''
+    next_module_option = ''
     char_blue = deque([Blue_body(i) for i in range(0, 12*(3-1)+1)])
     apples = apple(10, 0)
     bombs = deque()
     explodes = deque()
-    enemy_char = deque([Enemy_body(i, color='purple') \
+    enemy_char = deque([Enemy_body(i, color=COLOR_DICT[option[0]]) \
         for i in range(0, 12*(6-1)+1)])
+    for snake in (Blue_body, Enemy_body):
+        snake.reset()
     enemy_hpbar = HP_bar(0)
     broken_screen = [Broken() for _ in range(4)]
     screen_out = Screen_off()
@@ -253,13 +257,14 @@ def enters():
     ices = []
 
 def exits():
-    global acting, frame, field_array, next_module
+    global acting, frame, field_array, next_module, next_module_option
     global char_blue, apples, bombs, explodes, enemy_char,\
         enemy_hpbar, broken_screen, screen_out, cloud, ices
     acting = None
     frame = None
     field_array = None
     next_module = None
+    next_module_option = None
     char_blue = None
     apples = None
     bombs = None
@@ -301,12 +306,13 @@ def acts():
             if snake.bomb_cool_down > 0: snake.bomb_cool_down -= 1
         frame = (frame + 1) % 8
         delay(0.01)
-    return next_module
+    return next_module, next_module_option
 
 acting = None
 frame = None
 field_array = None
 next_module = None
+next_module_option = None
 char_blue = None
 apples = None
 bombs = None

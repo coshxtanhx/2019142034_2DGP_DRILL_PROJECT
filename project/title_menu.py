@@ -3,16 +3,21 @@ from title_buttons_ui import *
 from coordinates_module import UI_HEIGHT, UI_WIDTH
 
 def is_able_load():
-    global file
+    global file, loaded_dat
     try:
         file = open('savedata.txt', 'r')
+        filestring = file.read(2)
+        for i in range(2):
+            if filestring[i] not in ('1','2','3','4'): 1/0
     except:
+        loaded_dat = 'failed'
         return load_image('img/title_menu_load_unable.png'), False
     else:
+        loaded_dat = filestring[0:2]
         return load_image('img/title_menu_loadgame.png'), True
 
 def handle_events():
-    global acting, next_module
+    global acting, next_module, next_module_option
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
@@ -31,18 +36,18 @@ def handle_events():
                         break
                 if(button_clicked == 0):
                     acting = False
-                    next_module = 'snake_move'
+                    next_module, next_module_option = 'snake_move', '10'
                 elif(button_clicked == 1):
                     acting = False
-                    next_module = 'snake_move'
+                    next_module, next_module_option = 'snake_move', loaded_dat
                 elif(button_clicked == 2):
                     acting = False
-                    next_module = 'snake_move'
+                    next_module, next_module_option = 'option_setting', None
                 elif(button_clicked == 3):
                     acting = False
-                    next_module = ''
+                    next_module, next_module_option = '', None
 
-def enters():
+def enters(option):
     global acting, frame, next_module, img_title_bg, buttons
     global img_menu_button, file
     acting = True
@@ -50,26 +55,28 @@ def enters():
     next_module = ''
     img_title_bg = load_image('img/title_bg.png')
     img_menu_button[0] = load_image('img/title_menu_newgame.png')
-    img_menu_button[1], loaded = is_able_load()
+    img_menu_button[1], loaded_suc = is_able_load()
     img_menu_button[2] = load_image('img/title_menu_option.png')
     img_menu_button[3] = load_image('img/title_menu_quit.png')
     buttons = [title_button(img_menu_button[i], 550 - i * 150)\
         for i in range(4)]
-    buttons[1].enabled = loaded
+    buttons[1].enabled = loaded_suc
 
 def exits():
     global acting, frame, next_module, buttons, img_menu_button, img_title_bg
-    global file
+    global file, loaded_dat, next_module_option
     acting = None
     frame = None
     next_module = None
+    next_module_option = None
     img_title_bg = None
     buttons = None
+    if(loaded_dat != 'failed'):
+        file.close()
     file = None
+    loaded_dat = None
 
 def acts():
-    global next_module
-    enters()
     while(acting):
         clear_canvas()
         img_title_bg.draw(UI_WIDTH // 2, UI_HEIGHT // 2)
@@ -78,12 +85,14 @@ def acts():
         update_canvas()
         handle_events()
         delay(0.01)
-    return next_module
+    return next_module, next_module_option
 
 acting = None
 frame = None
 next_module = None
+next_module_option = None
 img_title_bg = None
 img_menu_button = [0,0,0,0]
 buttons = None
 file = None
+loaded_dat = None

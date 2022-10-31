@@ -18,6 +18,8 @@ img_snake_brown_head = \
     [load_image('img/snake_brown_head_' + str(i) + '.png') for i in range(4)]
 img_snake_brown_body = load_image('img/snake_brown_body.png')
 
+COLOR_DICT = {'1': 'orange', '2': 'brown', '3': 'purple', '4': 'green'}
+
 class Enemy_body():
     enemy_direction = 0
     enemy_order = 0
@@ -54,3 +56,9 @@ class Enemy_body():
         else:
             self.image = eval('img_snake_' + self.color + '_body')
         self.image.draw(self.x, self.y)
+
+    def reset():
+        Enemy_body.enemy_direction = 0
+        Enemy_body.enemy_order = 0
+        Enemy_body.bomb_cool_down = 500
+        Enemy_body.enemy_hp = 640
