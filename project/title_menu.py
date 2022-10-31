@@ -42,7 +42,7 @@ def handle_events():
                     next_module, next_module_option = 'snake_move', loaded_dat
                 elif(button_clicked == 2):
                     acting = False
-                    next_module, next_module_option = 'option_setting', None
+                    next_module, next_module_option = 'option_setting', 'pause'
                 elif(button_clicked == 3):
                     acting = False
                     next_module, next_module_option = '', None

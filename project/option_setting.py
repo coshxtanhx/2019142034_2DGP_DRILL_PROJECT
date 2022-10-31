@@ -1,3 +1,5 @@
+from state_changer import state_stack
+
 msc_vol = 128
 eff_vol = 128
 
@@ -11,7 +13,7 @@ def exits():
     pass
 
 def acts():
-    return 'game_menu', 'pause'
+    return state_stack[-2], 'resume'
 
 acting = None
 next_module = ''

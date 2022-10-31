@@ -8,6 +8,7 @@ def state_changer_activate(start_module_str):
             eval(next_module_str).enters(option)
             state_stack.append(next_module_str)
             print(next_module_str + ' entered')
+        eval(next_module_str).acting = True
         next_module_str, option = eval(next_module_str).acts()
         if(option == 'exitall'):
             for i in range(len(state_stack)-1, -1, -1):
