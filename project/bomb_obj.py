@@ -91,22 +91,26 @@ class bomb():
             explodes.appendleft(explosion(self.gx-i+1, self.gy-i+1, self.damage))
         self.x = -65535
     def explode_ice(self, field_array, ices):
+        ice_removing_obj = FIELD_DICT['enemy'] + FIELD_DICT['explode'] \
+            + FIELD_DICT['bomb'] + FIELD_DICT['apple'] + FIELD_DICT['ice']
         for x in range(-3, 4, 1):
             if not(-1 < self.gx+x < 15): continue
-            if field_array[self.gx+x+1][self.gy+1] & FIELD_DICT['ice']: continue
+            if field_array[self.gx+x+1][self.gy+1] & ice_removing_obj: continue
             ices.append(Ice(self.gx+x+1, self.gy+1))
         for y in range(-3, 4, 1):
             if not(-1 < self.gy+y < 9): continue
-            if field_array[self.gx+1][self.gy+y+1] & FIELD_DICT['ice']: continue
+            if field_array[self.gx+1][self.gy+y+1] & ice_removing_obj: continue
             ices.append(Ice(self.gx+1, self.gy+1+y))
     def explode_ice_cross(self, field_array, ices):
+        ice_removing_obj = FIELD_DICT['enemy'] + FIELD_DICT['explode'] \
+            + FIELD_DICT['bomb'] + FIELD_DICT['apple'] + FIELD_DICT['ice']
         for i in range(-2, 3, 1):
             if not(-1 < self.gx+i < 15 and -1 < self.gy+i < 9): continue
-            if field_array[self.gx+i+1][self.gy+i+1] & FIELD_DICT['ice']: continue
+            if field_array[self.gx+i+1][self.gy+i+1] & ice_removing_obj: continue
             ices.append(Ice(self.gx+1+i, self.gy+1+i))
         for i in range(-2, 3, 1):
             if not(-1 < self.gx+i < 15 and -1 < self.gy-i < 9): continue
-            if field_array[self.gx+i+1][self.gy-i+1] & FIELD_DICT['ice']: continue
+            if field_array[self.gx+i+1][self.gy-i+1] & ice_removing_obj: continue
             ices.append(Ice(self.gx+1+i, self.gy+1-i))
     def draw(self, field_array, explodes, ices, frame):
         cnt = ceil(self.counter / 70)
