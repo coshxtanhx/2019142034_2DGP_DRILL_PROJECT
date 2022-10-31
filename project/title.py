@@ -10,7 +10,7 @@ def handle_events():
         if event.type == SDL_QUIT:
             acting = False
             next_module = ''
-        if event.type == SDL_KEYDOWN:
+        elif event.type == SDL_KEYDOWN:
             if event.key == SDLK_s:
                 acting = False
                 next_module = 'title_menu'

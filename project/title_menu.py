@@ -1,5 +1,5 @@
 from pico2d import *
-from title_buttons_ui import *
+from buttons_ui import *
 from coordinates_module import UI_HEIGHT, UI_WIDTH
 
 def is_able_load():
@@ -22,12 +22,12 @@ def handle_events():
     for event in events:
         if event.type == SDL_QUIT:
             acting = False
-            next_module = ''
-        if event.type == SDL_KEYDOWN:
+            next_module, next_module_option = '', None
+        elif event.type == SDL_KEYDOWN:
             if event.key == SDLK_ESCAPE:
                 acting = False
-                next_module = 'title'
-        if event.type == SDL_MOUSEBUTTONDOWN:
+                next_module, next_module_option = 'title', None
+        elif event.type == SDL_MOUSEBUTTONDOWN:
             if event.button == SDL_BUTTON_LEFT:
                 button_clicked = -1
                 for i in range(4):
@@ -36,7 +36,7 @@ def handle_events():
                         break
                 if(button_clicked == 0):
                     acting = False
-                    next_module, next_module_option = 'snake_move', '10'
+                    next_module, next_module_option = 'snake_move', '11'
                 elif(button_clicked == 1):
                     acting = False
                     next_module, next_module_option = 'snake_move', loaded_dat
@@ -58,7 +58,7 @@ def enters(option):
     img_menu_button[1], loaded_suc = is_able_load()
     img_menu_button[2] = load_image('img/title_menu_option.png')
     img_menu_button[3] = load_image('img/title_menu_quit.png')
-    buttons = [title_button(img_menu_button[i], 550 - i * 150)\
+    buttons = [Title_button(img_menu_button[i], 550 - i * 150)\
         for i in range(4)]
     buttons[1].enabled = loaded_suc
 

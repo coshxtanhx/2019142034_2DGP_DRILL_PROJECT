@@ -13,13 +13,13 @@ from hpbar_obj import *
 from screen_hider_obj import *
 
 def handle_events():
-    global acting, direction, next_module
+    global acting, next_module, next_module_option
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
             acting = False
             next_module = ''
-        if event.type == SDL_KEYDOWN:
+        elif event.type == SDL_KEYDOWN:
             if event.key == SDLK_ESCAPE:
                 acting = False
                 next_module = 'title'
@@ -41,6 +41,9 @@ def handle_events():
             elif event.key == SDLK_i: zzz = 1
             elif event.key == SDLK_o: zzz = 2
             elif event.key == SDLK_p: zzz = 3
+            elif event.key == SDLK_m:
+                acting = False
+                next_module, next_module_option = 'game_menu', 'pause'
 
 zzz = 1
 def snake_move_and_draw():
@@ -234,9 +237,11 @@ def enemy_hp_bar_draw():
 
 def enters(option):
     global acting, frame, field_array, next_module, next_module_option
-    global char_blue, apples, bombs, explodes, enemy_char, \
-        enemy_hpbar, broken_screen, screen_out, cloud, ices
-    if option == None: option = '11'
+    global char_blue, apples, bombs, explodes, enemy_char
+    global enemy_hpbar, broken_screen, screen_out, cloud, ices
+    global cur_char, cur_stage
+    cur_char, cur_stage = option[0], option[1]
+    print(cur_char, cur_stage)
     acting = True
     frame = 0
     field_array = []
@@ -246,7 +251,7 @@ def enters(option):
     apples = apple(10, 0)
     bombs = deque()
     explodes = deque()
-    enemy_char = deque([Enemy_body(i, color=COLOR_DICT[option[0]]) \
+    enemy_char = deque([Enemy_body(i, color=COLOR_DICT[cur_stage]) \
         for i in range(0, 12*(6-1)+1)])
     for snake in (Blue_body, Enemy_body):
         snake.reset()
@@ -258,8 +263,9 @@ def enters(option):
 
 def exits():
     global acting, frame, field_array, next_module, next_module_option
-    global char_blue, apples, bombs, explodes, enemy_char,\
-        enemy_hpbar, broken_screen, screen_out, cloud, ices
+    global char_blue, apples, bombs, explodes, enemy_char
+    global enemy_hpbar, broken_screen, screen_out, cloud, ices
+    global cur_char, cur_stage
     acting = None
     frame = None
     field_array = None
@@ -275,6 +281,8 @@ def exits():
     screen_out = None
     cloud = None
     ices = None
+    cur_char = None
+    cur_stage = None
 
 def acts():
     global acting, field_array, apples, frame, next_module
@@ -323,3 +331,5 @@ broken_screen = None
 screen_out = None
 cloud = None
 ices = None
+cur_char = None
+cur_stage = None
