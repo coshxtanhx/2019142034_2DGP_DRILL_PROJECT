@@ -1,4 +1,5 @@
 from coordinates_module import UI_WIDTH, UI_HEIGHT, get_distance
+from pico2d import *
 
 class Title_button():
     def __init__(self, image, y):
@@ -7,11 +8,11 @@ class Title_button():
         self.y = y
         self.enabled = True
     def isclicked(self, x, y):
-        if(self.enabled and self.x - 197 < x < self.x + 197 and \
-            UI_HEIGHT - (self.y + 50) < y < UI_HEIGHT - (self.y - 50)):
+        if(self.enabled and (self.x - 197 < x < self.x + 197) and \
+            (UI_HEIGHT - (self.y + 50) < y < UI_HEIGHT - (self.y - 50))):
             return True
         else:
-            False
+            return False
     def draw(self):
         self.image.draw(UI_WIDTH // 2, self.y)
 
@@ -24,4 +25,36 @@ class Game_menu_button():
         if(get_distance(x, y, self.x, self.y) < 60):
             return True
         else:
-            False
+            return False
+
+class Option_volume_line():
+    def __init__(self, y):
+        self.x = UI_WIDTH // 2
+        self.y = y
+    def isclicked(self, x, y):
+        if((self.x - 216 <= x <= self.x + 216) and \
+            (UI_HEIGHT - (self.y + 7) < y < UI_HEIGHT - (self.y - 7))):
+            return True
+        else:
+            return False
+
+class Option_volume_button():
+    image = None
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.clicked = False
+        if(Option_volume_button.image == None):
+            Option_volume_button.image = load_image('img/option_button.png')
+    def isclicked(self, x, y):
+        if(get_distance(x, y, self.x, UI_HEIGHT - self.y) < 12):
+            self.clicked = True
+            return True
+        else:
+            return False
+    def draw(self):
+        self.image.draw(self.x, self.y)
+    def drag_move(self, x):
+        if(self.clicked):
+            self.x = clamp(256, x, 664)
+            
