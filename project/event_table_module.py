@@ -21,7 +21,7 @@ EVENT_DICT = {
 
 def convert_event(event):
     event_tuple = (event.type, event.key, event.button)
-    print(event_tuple)
+    #print(event_tuple)
     if(event_tuple in EVENT_DICT):
         return EVENT_DICT[event_tuple]
     else:

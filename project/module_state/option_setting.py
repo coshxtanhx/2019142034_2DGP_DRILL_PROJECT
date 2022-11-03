@@ -7,10 +7,27 @@ from module_object.buttons_obj \
 volumes = [128, 128]
 volumes_before = [128, 128]
 
+def load_volume_data():
+    try:
+        file = open('savevolume.txt', 'r')
+        volume_str = file.read(7)
+        file.close()
+        volume_read = [int(data) for data in volume_str.split()]
+        if not(0 <= volume_read[0] <= 255 and 0 <= volume_read[1] <= 255):
+            1/0
+        volumes[0], volumes[1] = volume_read[0], volume_read[1]
+    except:
+        volumes[0], volumes[1] = 128, 128
+        volumes[0], volumes[1] = 128, 128
+
+
 def change_volume_and_quit(i):
     global acting, next_module, next_module_option
     if(i == 0):
         volumes_before[0], volumes_before[1] = volumes[0], volumes[1]
+        file = open('savevolume.txt', 'w')
+        file.write(str(volumes[0]) + ' ' + str(volumes[1]))
+        file.close()
     elif(i == 1):
         volumes[0], volumes[1] = volumes_before[0], volumes_before[1]
     acting = False
@@ -29,7 +46,7 @@ def handle_events():
         elif event == MM:
             for i in range(2):
                 volume_buttons[i].drag_move(raw_event.x)
-                volumes[i] = button_pos_to_volmume(volume_buttons[i].x)
+                volumes[i] = button_pos_to_volume(volume_buttons[i].x)
         elif event == MLD:
             for i in range(2):
                 if(volume_buttons[i].isclicked(raw_event.x, raw_event.y)):
@@ -50,6 +67,7 @@ def enters(option):
     acting = True
     next_module = ''
     next_module_option = None
+    load_volume_data()
     img_ui = load_image('img/option_ui.png')
     img_button = load_image('img/option_button.png')
     volume_buttons = [Option_volume_button(volume_to_button_pos(volumes[i]), \

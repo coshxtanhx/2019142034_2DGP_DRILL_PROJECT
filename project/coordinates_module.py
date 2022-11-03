@@ -7,11 +7,11 @@ def field_array_reset():
     field_array += [[16] * 11]
     return field_array
 
-def button_pos_to_volmume(x):
-    return (x - 256) / 408 * 256
+def button_pos_to_volume(x):
+    return int((x - 256) / 408 * 255)
 
 def volume_to_button_pos(vol):
-    return vol / 256 * 408 + 256
+    return int(vol / 255 * 408 + 256)
 
 def get_distance(x1, y1, x2, y2):
     return sqrt((x1-x2)**2 + (y1-y2)**2)

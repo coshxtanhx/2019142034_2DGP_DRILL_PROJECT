@@ -1,40 +1,40 @@
 from pico2d import *
 from coordinates_module import UI_HEIGHT, UI_WIDTH
 from module_object.buttons_obj import *
+from event_table_module import *
 
 def handle_events():
     global acting, next_module, next_module_option, img_ui_check_mark
     events = get_events()
-    for event in events:
-        if event.type == SDL_QUIT:
+    for raw_event in events:
+        event = convert_event(raw_event)
+        if event == QUIT:
             acting = False
             next_module, next_module_option = '', None
-        elif event.type == SDL_KEYDOWN:
-            if event.key == SDLK_ESCAPE:
+        elif event == KESCD:
+            acting = False
+            next_module, next_module_option = 'snake_move', 'resume'
+        elif event == MLD:
+            button_clicked = -1
+            for i in range(4):
+                if(buttons[i].isclicked(raw_event.x, raw_event.y)):
+                    button_clicked = i
+                    break
+            if(button_clicked == 0):
+                acting = False
+                next_module, next_module_option = 'title', 'exitall'
+            elif(button_clicked == 1):
+                from module_state.snake_move import cur_char, cur_stage
+                file = open('savedata.txt', 'w')
+                file.write(cur_char + cur_stage)
+                file.close()
+                img_ui_check_mark = load_image('img/check_saved.png')
+            elif(button_clicked == 2):
+                acting = False
+                next_module, next_module_option = 'option_setting', 'pause'
+            elif(button_clicked == 3):
                 acting = False
                 next_module, next_module_option = 'snake_move', 'resume'
-        elif event.type == SDL_MOUSEBUTTONDOWN:
-            if event.button == SDL_BUTTON_LEFT:
-                button_clicked = -1
-                for i in range(4):
-                    if(buttons[i].isclicked(event.x, event.y)):
-                        button_clicked = i
-                        break
-                if(button_clicked == 0):
-                    acting = False
-                    next_module, next_module_option = 'title', 'exitall'
-                elif(button_clicked == 1):
-                    from module_state.snake_move import cur_char, cur_stage
-                    file = open('savedata.txt', 'w')
-                    file.write(cur_char + cur_stage)
-                    file.close()
-                    img_ui_check_mark = load_image('img/check_saved.png')
-                elif(button_clicked == 2):
-                    acting = False
-                    next_module, next_module_option = 'option_setting', 'pause'
-                elif(button_clicked == 3):
-                    acting = False
-                    next_module, next_module_option = 'snake_move', 'resume'
 
 def enters(option):
     global acting, next_module, next_module_option

@@ -12,6 +12,7 @@ from module_object.snake_player_obj import *
 from module_object.snake_enemy_obj import *
 from module_object.hpbar_obj import *
 from module_object.screen_hider_obj import *
+from module_object.background_obj import *
 
 def handle_events():
     global acting, next_module, next_module_option
