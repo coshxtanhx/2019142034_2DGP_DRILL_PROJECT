@@ -1,5 +1,6 @@
 from coordinates_module import *
 from pico2d import *
+from event_table_module import *
 from buttons_ui import Option_volume_button, Option_volume_line, Option_button
 
 volumes = [128, 128]
@@ -17,33 +18,30 @@ def change_volume_and_quit(i):
 def handle_events():
     global acting, next_module, next_module_option
     events = get_events()
-    for event in events:
-        if event.type == SDL_QUIT:
+    for raw_event in events:
+        event = convert_event(raw_event)
+        if event == QUIT:
             acting = False
             next_module, next_module_option = '', None
-        elif event.type == SDL_KEYDOWN:
-            if event.key == SDLK_ESCAPE:
-                acting = False
-                next_module, next_module_option = 'lastest', 'resume'
-        elif event.type == SDL_MOUSEMOTION:
+        elif event == KESCD:
+            change_volume_and_quit(1)
+        elif event == MM:
             for i in range(2):
-                volume_buttons[i].drag_move(event.x)
+                volume_buttons[i].drag_move(raw_event.x)
                 volumes[i] = button_pos_to_volmume(volume_buttons[i].x)
-        elif event.type == SDL_MOUSEBUTTONDOWN:
-            if event.button == SDL_BUTTON_LEFT:
-                for i in range(2):
-                    if(volume_buttons[i].isclicked(event.x, event.y)):
-                        break
-                    elif(volume_lines[i].isclicked(event.x, event.y)):
-                        volume_buttons[i].x = clamp(256, event.x, 664)
-                        volume_buttons[i].clicked = True
-                        break
-                    elif(option_buttons[i].isclicked(event.x, event.y)):
-                        change_volume_and_quit(i)
-                        break
-        elif event.type == SDL_MOUSEBUTTONUP:
-            if event.button == SDL_BUTTON_LEFT:
-                for i in range(2): volume_buttons[i].clicked = False
+        elif event == MLD:
+            for i in range(2):
+                if(volume_buttons[i].isclicked(raw_event.x, raw_event.y)):
+                    break
+                elif(volume_lines[i].isclicked(raw_event.x, raw_event.y)):
+                    volume_buttons[i].x = clamp(256, raw_event.x, 664)
+                    volume_buttons[i].clicked = True
+                    break
+                elif(option_buttons[i].isclicked(raw_event.x, raw_event.y)):
+                    change_volume_and_quit(i)
+                    break
+        elif event == MLU:
+            for i in range(2): volume_buttons[i].clicked = False
 
 def enters(option):
     global acting, next_module, next_module_option
