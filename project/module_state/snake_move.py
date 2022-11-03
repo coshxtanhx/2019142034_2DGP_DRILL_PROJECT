@@ -2,48 +2,49 @@ from pico2d import *
 from random import *
 from math import *
 from coordinates_module import *
+from event_table_module import *
 from collections import deque
 from snake_move_images import *
 from enemy_movement_ai import *
-from apple_obj import *
-from bomb_obj import *
-from snake_player_obj import *
-from snake_enemy_obj import *
-from hpbar_obj import *
-from screen_hider_obj import *
+from module_object.apple_obj import *
+from module_object.bomb_obj import *
+from module_object.snake_player_obj import *
+from module_object.snake_enemy_obj import *
+from module_object.hpbar_obj import *
+from module_object.screen_hider_obj import *
 
 def handle_events():
     global acting, next_module, next_module_option
     events = get_events()
-    for event in events:
-        if event.type == SDL_QUIT:
+    for raw_event in events:
+        event = convert_event(raw_event)
+        if event == QUIT:
             acting = False
-            next_module = ''
-        elif event.type == SDL_KEYDOWN:
-            if event.key == SDLK_ESCAPE:
-                acting = False
-                next_module = 'title'
-            elif event.key == SDLK_w and Blue_body.cur_direction not in (1,3):
-                Blue_body.direction = 1
-            elif event.key == SDLK_a and Blue_body.cur_direction not in (0,2):
-                Blue_body.direction = 2
-            elif event.key == SDLK_s and Blue_body.cur_direction not in (1,3):
-                Blue_body.direction = 3
-            elif event.key == SDLK_d and Blue_body.cur_direction not in (0,2):
-                Blue_body.direction = 0
-            elif event.key == SDLK_e and Blue_body.bomb_cool_down == 0:
-                le = len(char_blue)
-                bx, by = char_blue[le-1].x, char_blue[le-1].y
-                bombs.appendleft(bomb(bx, by, Blue_body.length))
-                Blue_body.bomb_cool_down = 100
-            global zzz
-            if event.key == SDLK_u: zzz = 0
-            elif event.key == SDLK_i: zzz = 1
-            elif event.key == SDLK_o: zzz = 2
-            elif event.key == SDLK_p: zzz = 3
-            elif event.key == SDLK_m:
-                acting = False
-                next_module, next_module_option = 'game_menu', 'pause'
+            next_module, next_module_option = '', None
+        elif event == KESCD:
+            acting = False
+            next_module, next_module_option = '', None
+        elif event == KWD and Blue_body.cur_direction not in (1,3):
+            Blue_body.direction = 1
+        elif event == KAD and Blue_body.cur_direction not in (0,2):
+            Blue_body.direction = 2
+        elif event == KSD and Blue_body.cur_direction not in (1,3):
+            Blue_body.direction = 3
+        elif event == KDD and Blue_body.cur_direction not in (0,2):
+            Blue_body.direction = 0
+        elif event == KED and Blue_body.bomb_cool_down == 0:
+            le = len(char_blue)
+            bx, by = char_blue[le-1].x, char_blue[le-1].y
+            bombs.appendleft(bomb(bx, by, Blue_body.length))
+            Blue_body.bomb_cool_down = 100
+        global zzz
+        if raw_event.key == SDLK_u: zzz = 0
+        elif raw_event.key == SDLK_i: zzz = 1
+        elif raw_event.key == SDLK_o: zzz = 2
+        elif raw_event.key == SDLK_p: zzz = 3
+        elif event == KMD:
+            acting = False
+            next_module, next_module_option = 'game_menu', 'pause'
 
 zzz = 1
 def snake_move_and_draw():

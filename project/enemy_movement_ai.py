@@ -1,8 +1,8 @@
 from random import choice
 from coordinates_module import FIELD_DICT
-from enemy_ai_list.just_circle import *
-from enemy_ai_list.just_sweep import *
-from enemy_ai_list.apple_hunter import *
+from module_enemy_ai.just_circle import *
+from module_enemy_ai.just_sweep import *
+from module_enemy_ai.apple_hunter import *
 
 def enemy_ai(enemy_dir, gx, gy, field, option = 0):
     ordered = -1

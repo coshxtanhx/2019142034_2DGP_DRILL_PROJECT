@@ -1,4 +1,4 @@
-from enemy_ai_list.cannot_go import is_possible
+from module_enemy_ai.cannot_go import is_possible
 
 order_flag = True #T: vert / F: hori
 

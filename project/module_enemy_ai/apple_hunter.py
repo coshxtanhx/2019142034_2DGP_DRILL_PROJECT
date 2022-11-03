@@ -1,5 +1,5 @@
-from enemy_ai_list.just_go import come_here
-from enemy_ai_list.cannot_go import is_possible
+from module_enemy_ai.just_go import come_here
+from module_enemy_ai.cannot_go import is_possible
 
 apple_gx, apple_gy = 0, 0
 dx = (1, 0, -1, 0)

@@ -1,6 +1,6 @@
 from pico2d import *
 from coordinates_module import UI_HEIGHT, UI_WIDTH
-from buttons_ui import *
+from module_object.buttons_obj import *
 
 def handle_events():
     global acting, next_module, next_module_option, img_ui_check_mark
@@ -24,7 +24,7 @@ def handle_events():
                     acting = False
                     next_module, next_module_option = 'title', 'exitall'
                 elif(button_clicked == 1):
-                    from snake_move import cur_char, cur_stage
+                    from module_state.snake_move import cur_char, cur_stage
                     file = open('savedata.txt', 'w')
                     file.write(cur_char + cur_stage)
                     file.close()

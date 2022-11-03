@@ -1,6 +1,6 @@
 from pico2d import *
 
-KWD, KAD, KSD, KDD, KESCD, KMD, \
+KWD, KAD, KSD, KDD, KED, KESCD, KMD, \
 MM, MLD, MLU, \
 QUIT, *_ = range(1, 30)
 
@@ -10,6 +10,7 @@ EVENT_DICT = {
     (SDL_KEYDOWN, SDLK_a, None): KAD,
     (SDL_KEYDOWN, SDLK_s, None): KSD,
     (SDL_KEYDOWN, SDLK_d, None): KDD,
+    (SDL_KEYDOWN, SDLK_e, None): KED,
     (SDL_KEYDOWN, SDLK_m, None): KMD,
     (SDL_KEYDOWN, SDLK_ESCAPE, None): KESCD,
     (SDL_MOUSEMOTION, None, None): MM,
@@ -20,6 +21,7 @@ EVENT_DICT = {
 
 def convert_event(event):
     event_tuple = (event.type, event.key, event.button)
+    print(event_tuple)
     if(event_tuple in EVENT_DICT):
         return EVENT_DICT[event_tuple]
     else:

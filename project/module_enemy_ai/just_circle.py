@@ -1,5 +1,5 @@
-from enemy_ai_list.just_go import come_here
-from enemy_ai_list.cannot_go import is_possible
+from module_enemy_ai.just_go import come_here
+from module_enemy_ai.cannot_go import is_possible
 
 aim_points = [(1,1), (1,7), (13, 7), (13, 1)]
 aim_flag = 2

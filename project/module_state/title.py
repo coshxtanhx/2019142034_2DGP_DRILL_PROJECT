@@ -1,21 +1,21 @@
 from pico2d import *
 from coordinates_module import UI_HEIGHT, UI_WIDTH
+from event_table_module import *
 from math import *
 
 def handle_events():
-    global next_module
-    global acting
+    global next_module, acting
     events = get_events()
-    for event in events:
-        if event.type == SDL_QUIT:
+    for raw_event in events:
+        event = convert_event(raw_event)
+        if event == QUIT:
             acting = False
             next_module = ''
-        elif event.type == SDL_KEYDOWN:
-            if event.key == SDLK_s:
-                acting = False
-                next_module = 'title_menu'
-            elif event.key == SDLK_ESCAPE:
-                acting = False
+        elif event == KSD:
+            acting = False
+            next_module = 'title_menu'
+        elif event == KESCD:
+            acting = False
 
 def enters(option):
     global next_module, acting, frame

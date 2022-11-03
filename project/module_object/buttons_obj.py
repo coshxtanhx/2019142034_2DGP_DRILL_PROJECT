@@ -45,7 +45,6 @@ class Option_button():
     def isclicked(self, x, y):
         if((self.x - 70 <= x <= self.x + 70) and \
             (UI_HEIGHT - (self.y + 35) < y < UI_HEIGHT - (self.y - 35))):
-            print('ts')
             return True
         else:
             return False

@@ -1,6 +1,6 @@
 from coordinates_module import *
 from pico2d import *
-import enemy_ai_list.apple_hunter
+import module_enemy_ai.apple_hunter
 
 class apple():
     image = None
@@ -15,7 +15,7 @@ class apple():
             self.image.draw(self.x, self.y)
             field_array[self.gx+1][self.gy+1] |= FIELD_DICT['apple']
             global apple_gx, apple_gy
-            enemy_ai_list.apple_hunter.apple_gx = self.gx
-            enemy_ai_list.apple_hunter.apple_gy = self.gy
+            module_enemy_ai.apple_hunter.apple_gx = self.gx
+            module_enemy_ai.apple_hunter.apple_gy = self.gy
         else: return
         

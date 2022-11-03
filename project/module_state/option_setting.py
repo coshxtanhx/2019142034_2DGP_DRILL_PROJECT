@@ -1,7 +1,8 @@
 from coordinates_module import *
 from pico2d import *
 from event_table_module import *
-from buttons_ui import Option_volume_button, Option_volume_line, Option_button
+from module_object.buttons_obj \
+    import Option_volume_button, Option_volume_line, Option_button
 
 volumes = [128, 128]
 volumes_before = [128, 128]
@@ -72,8 +73,10 @@ def exits():
 def acts():
     global img_bg
     from state_changer import state_stack
-    if(state_stack[-2] == 'game_menu'): img_bg = load_image('img/field_menu.png')
-    elif(state_stack[-2] == 'title_menu'): img_bg = load_image('img/title_bg.png')
+    if(state_stack[-2] == 'game_menu'):
+        img_bg = load_image('img/field_menu.png')
+    elif(state_stack[-2] == 'title_menu'):
+        img_bg = load_image('img/title_bg.png')
     while(acting):
         clear_canvas()
         img_bg.draw(UI_WIDTH // 2, UI_HEIGHT // 2)
