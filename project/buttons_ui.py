@@ -38,6 +38,18 @@ class Option_volume_line():
         else:
             return False
 
+class Option_button():
+    def __init__(self, x):
+        self.x = x
+        self.y = 230
+    def isclicked(self, x, y):
+        if((self.x - 70 <= x <= self.x + 70) and \
+            (UI_HEIGHT - (self.y + 35) < y < UI_HEIGHT - (self.y - 35))):
+            print('ts')
+            return True
+        else:
+            return False
+
 class Option_volume_button():
     image = None
     def __init__(self, x, y):

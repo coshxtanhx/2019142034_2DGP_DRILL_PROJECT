@@ -1,8 +1,18 @@
 from coordinates_module import *
 from pico2d import *
-from buttons_ui import Option_volume_button, Option_volume_line
+from buttons_ui import Option_volume_button, Option_volume_line, Option_button
 
 volumes = [128, 128]
+volumes_before = [128, 128]
+
+def change_volume_and_quit(i):
+    global acting, next_module, next_module_option
+    if(i == 0):
+        volumes_before[0], volumes_before[1] = volumes[0], volumes[1]
+    elif(i == 1):
+        volumes[0], volumes[1] = volumes_before[0], volumes_before[1]
+    acting = False
+    next_module, next_module_option = 'lastest', 'resume'
 
 def handle_events():
     global acting, next_module, next_module_option
@@ -24,8 +34,12 @@ def handle_events():
                 for i in range(2):
                     if(volume_buttons[i].isclicked(event.x, event.y)):
                         break
-                    if(volume_lines[i].isclicked(event.x, event.y)):
+                    elif(volume_lines[i].isclicked(event.x, event.y)):
                         volume_buttons[i].x = clamp(256, event.x, 664)
+                        volume_buttons[i].clicked = True
+                        break
+                    elif(option_buttons[i].isclicked(event.x, event.y)):
+                        change_volume_and_quit(i)
                         break
         elif event.type == SDL_MOUSEBUTTONUP:
             if event.button == SDL_BUTTON_LEFT:
@@ -33,7 +47,7 @@ def handle_events():
 
 def enters(option):
     global acting, next_module, next_module_option
-    global img_ui, img_button, volume_buttons, volume_lines
+    global img_ui, img_button, volume_buttons, volume_lines, option_buttons
     acting = True
     next_module = ''
     next_module_option = None
@@ -42,10 +56,11 @@ def enters(option):
     volume_buttons = [Option_volume_button(volume_to_button_pos(volumes[i]), \
         UI_HEIGHT//2 + i * 90) for i in range(2)]
     volume_lines = [Option_volume_line(UI_HEIGHT//2 + i * 90) for i in range(2)]
+    option_buttons = [Option_button(UI_WIDTH//2 + i) for i in (-135, 135)]
 
 def exits():
     global acting, next_module, next_module_option
-    global img_ui, img_button, img_bg, volume_buttons, volume_lines
+    global img_ui, img_button, img_bg, volume_buttons, volume_lines, option_buttons
     acting = None
     next_module = ''
     next_module_option = None
@@ -54,6 +69,7 @@ def exits():
     img_bg = None
     volume_buttons = None
     volume_lines = None
+    option_buttons = None
 
 def acts():
     global img_bg
@@ -78,3 +94,4 @@ img_button = None
 img_bg = None
 volume_buttons = None
 volume_lines = None
+option_buttons = None

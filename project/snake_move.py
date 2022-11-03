@@ -144,7 +144,7 @@ def check_eat():
 def enemy_set_bomb():
     le = len(enemy_char)
     bx, by = enemy_char[le-1].x, enemy_char[le-1].y
-    bombs.appendleft(bomb(bx, by, 0, randint(0, 0)))
+    bombs.appendleft(bomb(bx, by, 0, randint(0, 3)))
     Enemy_body.bomb_cool_down = 200
 
 def check_collide():
@@ -254,7 +254,7 @@ def enters(option):
         for i in range(0, 12*(6-1)+1)])
     for snake in (Blue_body, Enemy_body):
         snake.reset()
-    enemy_hpbar = HP_bar(0)
+    enemy_hpbar = HP_bar(int(option[1])-1)
     broken_screen = [Broken() for _ in range(4)]
     screen_out = Screen_off()
     cloud = Cloud()
