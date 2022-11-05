@@ -17,6 +17,6 @@ class HP_bar():
     def draw(self, enemy_hp):
         self.image_frame1.draw(105+160, 590)
         self.image_bar.clip_draw(0, 0, 40, 40, \
-            105 + ceil(enemy_hp/4), 590, enemy_hp//2, 40)
+            105 + ceil(enemy_hp/6), 590, enemy_hp//3, 40)
         self.image_text[self.num].draw(55, 590)
         self.image_frame2.draw(105+160, 590)

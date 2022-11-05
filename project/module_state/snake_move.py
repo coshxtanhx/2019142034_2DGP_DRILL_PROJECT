@@ -13,6 +13,11 @@ from module_object.hpbar_obj import *
 from module_object.screen_hider_obj import *
 from module_object.background_obj import *
 
+def game_over():
+    global acting, next_module, next_module_option
+    acting = False
+    next_module, next_module_option = 'title_menu', None
+
 def handle_events():
     global acting, next_module, next_module_option
     events = get_events()
@@ -151,12 +156,12 @@ def enemy_set_bomb():
 def check_collide():
     gx, gy = coordinates_to_grid(char_blue[0].x, char_blue[0].y)
     if(field_array[gx+1][gy+1] & (FIELD_DICT['enemy'] + FIELD_DICT['wall'])):
-        exit(1)
+        game_over()
     if(Blue_body.length >= 28):
         for i in range(14, Blue_body.length):
             if(get_distance(char_blue[i].x, char_blue[i].y,
                 char_blue[0].x, char_blue[0].y) <= 30):
-                exit(1)
+                game_over()
 
 def check_touched_by_enemy():
     gx, gy = coordinates_to_grid(enemy_char[0].x, enemy_char[0].y)
@@ -165,7 +170,7 @@ def check_touched_by_enemy():
         for _ in range(12):
             char_blue.pop()
         if(Blue_body.length <= 1):
-            exit(1)
+            game_over()
 
 def check_attacked_by_ices():
     global ices
@@ -188,7 +193,7 @@ def check_attacked_by_ices():
         for _ in range(12):
             char_blue.pop()
         if(Blue_body.length <= 1):
-            exit(1)
+            game_over()
 
 def check_explode():
     global apples
@@ -218,7 +223,7 @@ def check_explode():
         for _ in range(12):
             char_blue.pop()
         if(Blue_body.length <= 1):
-            exit(1)
+            game_over()
     Enemy_body.enemy_hp -= enemy_damaged
     if(Enemy_body.enemy_hp <= 0):
         print('victory')

@@ -22,13 +22,22 @@ img_snake_brown_body = load_image('img/snake_brown_body.png')
 img_armor = load_image('img/armor.png')
 
 COLOR_DICT = {'1': 'orange', '2': 'brown', '3': 'purple', '4': 'green'}
+COLOR_DICT2 = {'orange': 1, 'brown': 2, 'purple': 3, 'green': 4}
+
+AI_DICT = {
+    (3, 1): 1, (2, 1): 2, (1, 1): 0, (0, 1): 3,
+    (3, 1): 1, (2, 1): 2, (1, 1): 0, (0, 1): 3,
+    (3, 1): 1, (2, 1): 2, (1, 1): 0, (0, 1): 3,
+    (3, 1): 1, (2, 1): 2, (1, 1): 0, (0, 1): 3,
+}
 
 class Enemy_body():
     enemy_direction = 0
     enemy_order = 0
     bomb_cool_down = 500
-    enemy_hp = 640
+    enemy_hp = 960
     armored = []
+    color = None
     ai = 0
     def __init__(self, number, color = 'orange', x=40, y=-1):
         if(y == -1):
@@ -38,7 +47,7 @@ class Enemy_body():
         self.frame = 0
         self.number = number
         self.image = 0
-        self.color = color
+        Enemy_body.color = color
         self.armored = False
     def moves(self, enemy_char, field_array):
         if(self.number == len(enemy_char) - 1):
@@ -60,10 +69,10 @@ class Enemy_body():
     def draw(self):
         if(self.number == 0):
             self.image = \
-                (eval('img_snake_' + self.color + \
+                (eval('img_snake_' + Enemy_body.color + \
                     '_head'))[Enemy_body.enemy_direction]
         else:
-            self.image = eval('img_snake_' + self.color + '_body')
+            self.image = eval('img_snake_' + Enemy_body.color + '_body')
         self.image.draw(self.x, self.y)
         if(self.number-4 in Enemy_body.armored or \
             self.number-2 in Enemy_body.armored or \
@@ -73,6 +82,7 @@ class Enemy_body():
             img_armor.draw(self.x, self.y)
     
     def enemy_ai_update(enemy_head, field_array):
+        Enemy_body.change_ai()
         if(enemy_head.x % 60 == 40 and enemy_head.y % 60 == 40):
             Enemy_body.enemy_direction = enemy_ai(Enemy_body.enemy_direction, \
                 *coordinates_to_grid(enemy_head.x, enemy_head.y), \
@@ -82,6 +92,10 @@ class Enemy_body():
         Enemy_body.enemy_direction = 0
         Enemy_body.enemy_order = 0
         Enemy_body.bomb_cool_down = 500
-        Enemy_body.enemy_hp = 640
+        Enemy_body.enemy_hp = 960
         Enemy_body.armored = []
         Enemy_body.ai = 0
+
+    def change_ai():
+        Enemy_body.ai = \
+            AI_DICT[(Enemy_body.enemy_hp // 241, COLOR_DICT2[Enemy_body.color])]
