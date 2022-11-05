@@ -1,6 +1,7 @@
 from coordinates_module import *
 from collections import deque
 from pico2d import *
+from enemy_movement_ai import enemy_ai
 
 img_snake_orange_head = \
     [load_image('img/snake_orange_head_' + str(i) + '.png') for i in range(4)]
@@ -28,6 +29,7 @@ class Enemy_body():
     bomb_cool_down = 500
     enemy_hp = 640
     armored = []
+    ai = 0
     def __init__(self, number, color = 'orange', x=40, y=-1):
         if(y == -1):
             self.x, self.y = grid_to_coordinates(0, 8)
@@ -45,9 +47,6 @@ class Enemy_body():
             self.number = 0
             enemy_char.rotate(1)
         else:
-            if(self.number == 0):
-                if(self.x % 60 == 40 and self.y % 60 == 40):
-                    Enemy_body.enemy_direction = Enemy_body.enemy_order
             self.number += 1
         gx, gy = coordinates_to_grid(self.x, self.y)
         field_array[gx+1][gy+1] |= FIELD_DICT['enemy']
@@ -72,10 +71,17 @@ class Enemy_body():
             self.number+2 in Enemy_body.armored or \
             self.number+4 in Enemy_body.armored):
             img_armor.draw(self.x, self.y)
-            
+    
+    def enemy_ai_update(enemy_head, field_array):
+        if(enemy_head.x % 60 == 40 and enemy_head.y % 60 == 40):
+            Enemy_body.enemy_direction = enemy_ai(Enemy_body.enemy_direction, \
+                *coordinates_to_grid(enemy_head.x, enemy_head.y), \
+                field_array, Enemy_body.ai)
 
     def reset():
         Enemy_body.enemy_direction = 0
         Enemy_body.enemy_order = 0
         Enemy_body.bomb_cool_down = 500
         Enemy_body.enemy_hp = 640
+        Enemy_body.armored = []
+        Enemy_body.ai = 0

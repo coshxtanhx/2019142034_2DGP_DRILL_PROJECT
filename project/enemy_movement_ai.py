@@ -27,6 +27,7 @@ def enemy_ai(enemy_dir, gx, gy, field, option = 0):
     order_3rd_candi = []
     dx = (1, 0, -1, 0)
     dy = (0, -1, 0, 1)
+    corner = [(0,0), (14,0), (0,8), (14,8)]
     order_candi.remove((enemy_dir + 2) % 4)
 
     condition2 = FIELD_DICT['bomb']
@@ -43,7 +44,7 @@ def enemy_ai(enemy_dir, gx, gy, field, option = 0):
     
     for mov in order_candi:
         predict = field[gx+1+dx[mov]][gy+1+dy[mov]]
-        if(predict & condition2):
+        if((predict & condition2) or ((gx+dx[mov], gy+dy[mov]) in corner)):
             order_2nd_candi.append(mov)
 
     for items in order_2nd_candi:

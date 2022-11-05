@@ -5,7 +5,6 @@ from coordinates_module import *
 from event_table_module import *
 from collections import deque
 from snake_move_images import *
-from enemy_movement_ai import *
 from module_object.apple_obj import *
 from module_object.bomb_obj import *
 from module_object.snake_player_obj import *
@@ -39,16 +38,15 @@ def handle_events():
             bombs.appendleft(bomb(bx, by, Blue_body.length))
             Blue_body.bomb_cool_down = 100
         global zzz
-        if raw_event.key == SDLK_u: zzz = 0
-        elif raw_event.key == SDLK_i: zzz = 5
-        elif raw_event.key == SDLK_o: zzz = 4
-        elif raw_event.key == SDLK_p: zzz = 3
+        if raw_event.key == SDLK_u: Enemy_body.ai = 0
+        elif raw_event.key == SDLK_i: Enemy_body.ai = 5
+        elif raw_event.key == SDLK_o: Enemy_body.ai = 4
+        elif raw_event.key == SDLK_p: Enemy_body.ai = 3
         elif raw_event.key == SDLK_l: Enemy_body.armored.append(randint(0,5)*12)
         elif event == KMD:
             acting = False
             next_module, next_module_option = 'game_menu', 'pause'
 
-zzz = 1
 def snake_move_and_draw():
     for snakes in (char_blue, enemy_char):
         le = len(snakes)
@@ -310,12 +308,11 @@ def acts():
         explode_draw()
         screen_hider_draw()
         enemy_hp_bar_draw()
-        Enemy_body.enemy_order = enemy_ai(Enemy_body.enemy_direction, \
-            *coordinates_to_grid(enemy_char[0].x, enemy_char[0].y), field_array, zzz)
         update_canvas()
         handle_events()
         for snake in (Blue_body, Enemy_body):
             if snake.bomb_cool_down > 0: snake.bomb_cool_down -= 1
+        Enemy_body.enemy_ai_update(enemy_char[0], field_array)
         frame = (frame + 1) % 8
         delay(0.01)
     return next_module, next_module_option
