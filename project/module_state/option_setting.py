@@ -4,8 +4,10 @@ from event_table_module import *
 from module_object.buttons_obj \
     import Option_volume_button, Option_volume_line, Option_button
 
-volumes = [128, 128]
-volumes_before = [128, 128]
+MAX_VOL = 128
+
+volumes = [64, 64]
+volumes_before = [64, 64]
 
 def load_volume_data():
     try:
@@ -13,12 +15,12 @@ def load_volume_data():
         volume_str = file.read(7)
         file.close()
         volume_read = [int(data) for data in volume_str.split()]
-        if not(0 <= volume_read[0] <= 255 and 0 <= volume_read[1] <= 255):
+        if not(0 <= volume_read[0] <= MAX_VOL and 0 <= volume_read[1] <= MAX_VOL):
             1/0
         volumes[0], volumes[1] = volume_read[0], volume_read[1]
     except:
-        volumes[0], volumes[1] = 128, 128
-        volumes[0], volumes[1] = 128, 128
+        volumes[0], volumes[1] = 64, 64
+        volumes[0], volumes[1] = 64, 64
 
 
 def change_volume_and_quit(i):

@@ -18,6 +18,8 @@ img_snake_brown_head = \
     [load_image('img/snake_brown_head_' + str(i) + '.png') for i in range(4)]
 img_snake_brown_body = load_image('img/snake_brown_body.png')
 
+img_armor = load_image('img/armor.png')
+
 COLOR_DICT = {'1': 'orange', '2': 'brown', '3': 'purple', '4': 'green'}
 
 class Enemy_body():
@@ -25,6 +27,7 @@ class Enemy_body():
     enemy_order = 0
     bomb_cool_down = 500
     enemy_hp = 640
+    armored = []
     def __init__(self, number, color = 'orange', x=40, y=-1):
         if(y == -1):
             self.x, self.y = grid_to_coordinates(0, 8)
@@ -34,6 +37,7 @@ class Enemy_body():
         self.number = number
         self.image = 0
         self.color = color
+        self.armored = False
     def moves(self, enemy_char, field_array):
         if(self.number == len(enemy_char) - 1):
             self.x, self.y = enemy_char[0].x + dx[Enemy_body.enemy_direction], \
@@ -47,6 +51,12 @@ class Enemy_body():
             self.number += 1
         gx, gy = coordinates_to_grid(self.x, self.y)
         field_array[gx+1][gy+1] |= FIELD_DICT['enemy']
+        if(self.number-4 in Enemy_body.armored or \
+            self.number-2 in Enemy_body.armored or \
+            self.number+0 in Enemy_body.armored or \
+            self.number+2 in Enemy_body.armored or \
+            self.number+4 in Enemy_body.armored):
+            field_array[gx+1][gy+1] |= FIELD_DICT['armor']
 
     def draw(self):
         if(self.number == 0):
@@ -56,6 +66,13 @@ class Enemy_body():
         else:
             self.image = eval('img_snake_' + self.color + '_body')
         self.image.draw(self.x, self.y)
+        if(self.number-4 in Enemy_body.armored or \
+            self.number-2 in Enemy_body.armored or \
+            self.number+0 in Enemy_body.armored or \
+            self.number+2 in Enemy_body.armored or \
+            self.number+4 in Enemy_body.armored):
+            img_armor.draw(self.x, self.y)
+            
 
     def reset():
         Enemy_body.enemy_direction = 0

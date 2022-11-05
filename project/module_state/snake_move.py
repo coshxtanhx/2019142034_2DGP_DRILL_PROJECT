@@ -40,9 +40,10 @@ def handle_events():
             Blue_body.bomb_cool_down = 100
         global zzz
         if raw_event.key == SDLK_u: zzz = 0
-        elif raw_event.key == SDLK_i: zzz = 1
-        elif raw_event.key == SDLK_o: zzz = 2
+        elif raw_event.key == SDLK_i: zzz = 5
+        elif raw_event.key == SDLK_o: zzz = 4
         elif raw_event.key == SDLK_p: zzz = 3
+        elif raw_event.key == SDLK_l: Enemy_body.armored.append(randint(0,5)*12)
         elif event == KMD:
             acting = False
             next_module, next_module_option = 'game_menu', 'pause'
@@ -146,14 +147,12 @@ def check_eat():
 def enemy_set_bomb():
     le = len(enemy_char)
     bx, by = enemy_char[le-1].x, enemy_char[le-1].y
-    bombs.appendleft(bomb(bx, by, 0, randint(0, 3)))
+    bombs.appendleft(bomb(bx, by, 0, randint(0, 0)))
     Enemy_body.bomb_cool_down = 200
 
 def check_collide():
     gx, gy = coordinates_to_grid(char_blue[0].x, char_blue[0].y)
-    if(field_array[gx+1][gy+1] & FIELD_DICT['wall']):
-        exit(1)
-    if(field_array[gx+1][gy+1] & (FIELD_DICT['enemy'])):
+    if(field_array[gx+1][gy+1] & (FIELD_DICT['enemy'] + FIELD_DICT['wall'])):
         exit(1)
     if(Blue_body.length >= 28):
         for i in range(14, Blue_body.length):
@@ -178,26 +177,27 @@ def check_attacked_by_ices():
     player_attacked = False
     for ice in ices:
         gx, gy = coordinates_to_grid(ice.x, ice.y)
-        if(not(player_attacked) and \
-            (field_array[gx+1][gy+1] & FIELD_DICT['player'])):
+        if(field_array[gx+1][gy+1] & FIELD_DICT['player']):
+            field_array[gx+1][gy+1] &= MAX_BITS - FIELD_DICT['ice']
             remove_ice.append(ice)
             player_attacked = True
-        if(field_array[gx+1][gy+1] & ice_removing_obj):
+        elif(field_array[gx+1][gy+1] & ice_removing_obj):
             remove_ice.append(ice)
+    for ice in remove_ice:
+        ices.remove(ice)
     if(player_attacked):
         Blue_body.length -= 12
         for _ in range(12):
             char_blue.pop()
         if(Blue_body.length <= 1):
             exit(1)
-    for ice in remove_ice:
-        ices.remove(ice)
 
 def check_explode():
     global apples
     attacked = False
     apple_destroy = False
     enemy_damaged = 0
+    armor_not_touched = True
     for exploding in explodes:
         if(exploding.frame != 5):
             continue
@@ -206,7 +206,9 @@ def check_explode():
             attacked = True
         if field_array[x][y] & ( FIELD_DICT['apple']):
             apple_destroy = True
-        if field_array[x][y] & FIELD_DICT['enemy']:
+        if field_array[x][y] & ( FIELD_DICT['armor']):
+            armor_not_touched = False
+        if armor_not_touched and (field_array[x][y] & FIELD_DICT['enemy']):
             enemy_damaged = exploding.damage \
                 if (exploding.damage > enemy_damaged) else enemy_damaged
 
@@ -242,6 +244,7 @@ def enters(option):
     global char_blue, apples, bombs, explodes, enemy_char
     global enemy_hpbar, broken_screen, screen_out, cloud, ices
     global cur_char, cur_stage
+    if(option == None): option = '11'
     cur_char, cur_stage = option[0], option[1]
     acting = True
     frame = 0

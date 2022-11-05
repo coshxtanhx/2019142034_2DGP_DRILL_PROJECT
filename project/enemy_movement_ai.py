@@ -3,6 +3,7 @@ from coordinates_module import FIELD_DICT
 from module_enemy_ai.just_circle import *
 from module_enemy_ai.just_sweep import *
 from module_enemy_ai.apple_hunter import *
+from module_enemy_ai.touch_bomb import *
 
 def enemy_ai(enemy_dir, gx, gy, field, option = 0):
     ordered = -1
@@ -12,6 +13,10 @@ def enemy_ai(enemy_dir, gx, gy, field, option = 0):
         ordered = sweep_move(enemy_dir, gx, gy, field)
     elif(option == 3):
         ordered = apple_finding_move(enemy_dir, gx, gy, field)
+    elif(option == 4):
+        ordered = bomb_finding_move(enemy_dir, gx, gy, field)
+    elif(option == 5):
+        ordered = apple_finding_move(enemy_dir, gx, gy, field, 2.2)
 
     if(ordered != -1):
         return ordered
