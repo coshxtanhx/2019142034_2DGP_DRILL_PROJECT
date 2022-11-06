@@ -26,9 +26,9 @@ COLOR_DICT2 = {'orange': 1, 'brown': 2, 'purple': 3, 'green': 4}
 
 AI_DICT = {
     (3, 1): 1, (2, 1): 2, (1, 1): 0, (0, 1): 3,
-    (3, 1): 1, (2, 1): 2, (1, 1): 0, (0, 1): 3,
-    (3, 1): 1, (2, 1): 2, (1, 1): 0, (0, 1): 3,
-    (3, 1): 1, (2, 1): 2, (1, 1): 0, (0, 1): 3,
+    (3, 2): 1, (2, 2): 2, (1, 2): 0, (0, 2): 3,
+    (3, 3): 1, (2, 3): 2, (1, 3): 0, (0, 3): 3,
+    (3, 4): 1, (2, 4): 2, (1, 4): 0, (0, 4): 3,
 }
 
 class Enemy_body():
@@ -92,7 +92,7 @@ class Enemy_body():
         Enemy_body.enemy_direction = 0
         Enemy_body.enemy_order = 0
         Enemy_body.bomb_cool_down = 500
-        Enemy_body.enemy_hp = 960
+        Enemy_body.enemy_hp = 960//4
         Enemy_body.armored = []
         Enemy_body.ai = 0
 

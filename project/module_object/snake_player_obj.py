@@ -1,6 +1,8 @@
 from coordinates_module import *
 from collections import deque
 from pico2d import *
+from event_table_module import *
+from module_object.bomb_obj import bomb
 
 class Blue_body():
     img_snake_blue_head = None
@@ -47,3 +49,17 @@ class Blue_body():
         Blue_body.direction = 0
         Blue_body.bomb_cool_down = 10
         Blue_body.length = 12*(3-1)+1
+
+    def handle_events(event, tail, bombs):
+        if event == KWD and Blue_body.cur_direction not in (1,3):
+            Blue_body.direction = 1
+        elif event == KAD and Blue_body.cur_direction not in (0,2):
+            Blue_body.direction = 2
+        elif event == KSD and Blue_body.cur_direction not in (1,3):
+            Blue_body.direction = 3
+        elif event == KDD and Blue_body.cur_direction not in (0,2):
+            Blue_body.direction = 0
+        elif event == KED and Blue_body.bomb_cool_down == 0:
+            bx, by = tail.x, tail.y
+            bombs.appendleft(bomb(bx, by, Blue_body.length))
+            Blue_body.bomb_cool_down = 100

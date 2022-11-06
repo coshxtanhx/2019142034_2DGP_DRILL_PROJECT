@@ -29,19 +29,8 @@ def handle_events():
         elif event == KESCD:
             acting = False
             next_module, next_module_option = '', None
-        elif event == KWD and Blue_body.cur_direction not in (1,3):
-            Blue_body.direction = 1
-        elif event == KAD and Blue_body.cur_direction not in (0,2):
-            Blue_body.direction = 2
-        elif event == KSD and Blue_body.cur_direction not in (1,3):
-            Blue_body.direction = 3
-        elif event == KDD and Blue_body.cur_direction not in (0,2):
-            Blue_body.direction = 0
-        elif event == KED and Blue_body.bomb_cool_down == 0:
-            le = len(char_blue)
-            bx, by = char_blue[le-1].x, char_blue[le-1].y
-            bombs.appendleft(bomb(bx, by, Blue_body.length))
-            Blue_body.bomb_cool_down = 100
+        else:
+            Blue_body.handle_events(event, char_blue[-1], bombs)
         global zzz
         if raw_event.key == SDLK_u: Enemy_body.ai = 0
         elif raw_event.key == SDLK_i: Enemy_body.ai = 5
@@ -242,6 +231,14 @@ def screen_hider_draw():
 def enemy_hp_bar_draw():
     enemy_hpbar.draw(Enemy_body.enemy_hp)
 
+def check_interaction():
+    check_eat()
+    check_eat_bomb()
+    check_collide()
+    check_explode()
+    check_attacked_by_ices()
+    check_touched_by_enemy()
+
 def enters(option):
     global acting, frame, field_array, next_module, next_module_option
     global char_blue, apples, bombs, explodes, enemy_char
@@ -303,16 +300,11 @@ def acts():
         if Enemy_body.bomb_cool_down == 0: enemy_set_bomb()
         bomb_count_and_draw()
         snake_move_and_draw()
-        bomb_and_explode_delete()
-        check_eat()
-        check_eat_bomb()
-        check_collide()
-        check_explode()
-        check_attacked_by_ices()
-        check_touched_by_enemy()
         explode_draw()
         screen_hider_draw()
         enemy_hp_bar_draw()
+        bomb_and_explode_delete()
+        check_interaction()
         update_canvas()
         handle_events()
         for snake in (Blue_body, Enemy_body):
