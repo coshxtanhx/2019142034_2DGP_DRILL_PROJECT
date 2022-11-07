@@ -86,20 +86,14 @@ def explode_draw():
 
 def create_new_apple():
     global apples
-    new_apple_x = 0
-    new_apple_y = 0
-    while(field_array[new_apple_x][new_apple_y] != 0 \
-        or field_array[new_apple_x][new_apple_y-1] != 0 \
-            or field_array[new_apple_x][new_apple_y+1] != 0 \
-                or field_array[new_apple_x-1][new_apple_y] != 0 \
-                    or field_array[new_apple_x-1][new_apple_y-1] != 0 \
-                        or field_array[new_apple_x-1][new_apple_y+1] != 0 \
-                            or field_array[new_apple_x+1][new_apple_y] != 0 \
-                                or field_array[new_apple_x+1][new_apple_y-1] != 0 \
-                                    or field_array[new_apple_x+1][new_apple_y+1] != 0):
-        new_apple_x = randint(0, 14)
-        new_apple_y = randint(0, 8)
-    apples = apple(new_apple_x, new_apple_y)
+    able_to_create = []
+
+    for x in range(0, 15):
+        for y in range(0, 9):
+            if(field_array[x+1][y+1] == 0):
+                able_to_create.append((x,y))
+
+    apples = apple(*choice(able_to_create))
 
 def check_eat_bomb():
     global bombs

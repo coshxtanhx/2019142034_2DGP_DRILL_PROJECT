@@ -8,7 +8,8 @@ class Blue_body():
     img_snake_blue_head = None
     img_snake_blue_body = None
     cur_direction = 0
-    direction = 0
+    # direction = 0
+    direction = deque(maxlen=4)
     bomb_cool_down = 10
     length = 12*(3-1)+1
     def __init__(self, number, x=40, y=-1):
@@ -32,8 +33,9 @@ class Blue_body():
             char_blue.rotate(1)
         else:
             if(self.number == 0):
-                if(self.x % 60 == 40 and self.y % 60 == 40):
-                    Blue_body.cur_direction = Blue_body.direction
+                if(Blue_body.direction and self.x % 60 == 40 and self.y % 60 == 40):
+                    Blue_body.cur_direction = \
+                        next_state[Blue_body.cur_direction][Blue_body.direction.pop()]
             self.number += 1
         gx, gy = coordinates_to_grid(self.x, self.y)
         field_array[gx+1][gy+1] |= FIELD_DICT['player']
@@ -46,20 +48,26 @@ class Blue_body():
         self.image.draw(self.x, self.y)
     def reset():
         Blue_body.cur_direction = 0
-        Blue_body.direction = 0
+        Blue_body.direction = deque(maxlen=2)
         Blue_body.bomb_cool_down = 10
         Blue_body.length = 12*(3-1)+1
 
     def handle_events(event, tail, bombs):
-        if event == KWD and Blue_body.cur_direction not in (1,3):
-            Blue_body.direction = 1
-        elif event == KAD and Blue_body.cur_direction not in (0,2):
-            Blue_body.direction = 2
-        elif event == KSD and Blue_body.cur_direction not in (1,3):
-            Blue_body.direction = 3
-        elif event == KDD and Blue_body.cur_direction not in (0,2):
-            Blue_body.direction = 0
-        elif event == KED and Blue_body.bomb_cool_down == 0:
-            bx, by = tail.x, tail.y
-            bombs.appendleft(bomb(bx, by, Blue_body.length))
-            Blue_body.bomb_cool_down = 100
+        print(Blue_body.direction)
+        if event in next_state[Blue_body.cur_direction]:
+            if event == KED:
+                if Blue_body.bomb_cool_down == 0:
+                    bx, by = tail.x, tail.y
+                    bombs.appendleft(bomb(bx, by, Blue_body.length))
+                    Blue_body.bomb_cool_down = 100
+            else:
+                Blue_body.direction.appendleft(event)
+
+GO_D, GO_W, GO_A, GO_S = range(4)
+
+next_state = {
+    GO_D: {KDD: GO_D, KWD: GO_W, KAD: GO_D, KSD: GO_S, KED: GO_D},
+    GO_W: {KDD: GO_D, KWD: GO_W, KAD: GO_A, KSD: GO_W, KED: GO_W},
+    GO_A: {KDD: GO_A, KWD: GO_W, KAD: GO_A, KSD: GO_S, KED: GO_A},
+    GO_S: {KDD: GO_D, KWD: GO_S, KAD: GO_A, KSD: GO_S, KED: GO_S}
+}
