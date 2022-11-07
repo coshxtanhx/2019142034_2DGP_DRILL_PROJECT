@@ -9,7 +9,7 @@ class Blue_body():
     img_snake_blue_body = None
     cur_direction = 0
     # direction = 0
-    direction = deque(maxlen=4)
+    direction = deque(maxlen=2)
     bomb_cool_down = 10
     length = 12*(3-1)+1
     def __init__(self, number, x=40, y=-1):
@@ -53,7 +53,6 @@ class Blue_body():
         Blue_body.length = 12*(3-1)+1
 
     def handle_events(event, tail, bombs):
-        print(Blue_body.direction)
         if event in next_state[Blue_body.cur_direction]:
             if event == KED:
                 if Blue_body.bomb_cool_down == 0:

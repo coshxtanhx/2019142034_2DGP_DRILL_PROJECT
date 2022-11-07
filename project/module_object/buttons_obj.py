@@ -69,3 +69,24 @@ class Option_volume_button():
         if(self.clicked):
             self.x = clamp(256, x, 664)
             
+class Start_and_Guide_Button():
+    def __init__(self, x):
+        self.x = x
+        self.y = UI_HEIGHT - 525
+    def isclicked(self, x, y):
+        if((self.x - 145 <= x <= self.x + 145) and \
+            (UI_HEIGHT - (self.y + 65) < y < UI_HEIGHT - (self.y - 65))):
+            return True
+        else:
+            return False
+
+class Char_sel_button():
+    def __init__(self, x):
+        self.x = x
+        self.y = UI_HEIGHT - 277
+    def isclicked(self, x, y):
+        if((self.x - 27 <= x <= self.x + 27) and \
+            (UI_HEIGHT - (self.y + 33) < y < UI_HEIGHT - (self.y - 33))):
+            return True
+        else:
+            return False

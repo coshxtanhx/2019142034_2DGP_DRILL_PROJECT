@@ -36,7 +36,7 @@ def handle_events():
                     break
             if(button_clicked == 0):
                 acting = False
-                next_module, next_module_option = 'snake_move', '11'
+                next_module, next_module_option = 'select_char', None
             elif(button_clicked == 1):
                 acting = False
                 next_module, next_module_option = 'snake_move', loaded_dat

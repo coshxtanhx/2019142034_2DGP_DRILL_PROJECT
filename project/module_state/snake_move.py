@@ -28,7 +28,7 @@ def handle_events():
             next_module, next_module_option = '', None
         elif event == KESCD:
             acting = False
-            next_module, next_module_option = '', None
+            next_module, next_module_option = 'title', None
         else:
             Blue_body.handle_events(event, char_blue[-1], bombs)
         global zzz

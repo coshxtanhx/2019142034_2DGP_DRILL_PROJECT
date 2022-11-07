@@ -4,6 +4,7 @@ import module_state.title_menu
 import module_state.snake_move
 import module_state.option_setting
 import module_state.game_menu
+import module_state.select_char
 
 def state_enter(next_module_str, option):
     eval('module_state.' + next_module_str).enters(option)
