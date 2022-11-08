@@ -15,6 +15,8 @@ def get_previous_state():
     return state_stack[-2]
 
 def state_enter(next_module_str, option):
+    import game_world
+    game_world.cur_world = next_module_str
     state_stack.append(next_module_str)
     eval('module_state.' + next_module_str).enters(option)
     print(next_module_str + ' entered')
@@ -32,9 +34,9 @@ def state_exit_all():
 
 def state_act(next_module_str):
     import game_world
+    game_world.cur_world = next_module_str
     global running, next_module, next_module_option
     running = True
-    game_world.cur_world = next_module_str
     cur_module = eval('module_state.' + next_module_str)
     while(running):
         cur_module.handle_events()

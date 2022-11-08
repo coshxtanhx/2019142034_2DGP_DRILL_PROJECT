@@ -2,7 +2,9 @@ from pico2d import *
 from module_object.buttons_obj import *
 from coordinates_module import UI_HEIGHT, UI_WIDTH
 from event_table_module import *
+from module_object.background_obj import *
 import state_changer
+import game_world
 
 def is_able_load():
     global file, loaded_dat
@@ -19,7 +21,6 @@ def is_able_load():
         return load_image('img/title_menu_loadgame.png'), True
 
 def handle_events():
-    global acting, next_module, next_module_option
     events = get_events()
     for raw_event in events:
         event = convert_event(raw_event)
@@ -43,10 +44,10 @@ def handle_events():
                 state_changer.change_state('', None)
 
 def enters(option):
-    global frame, img_title_bg, buttons
+    global frame, title_bg, buttons
     global img_menu_button, file
     frame = 0
-    img_title_bg = load_image('img/title_bg.png')
+    title_bg = Background('main')
     img_menu_button[0] = load_image('img/title_menu_newgame.png')
     img_menu_button[1], loaded_suc = is_able_load()
     img_menu_button[2] = load_image('img/title_menu_option.png')
@@ -54,12 +55,14 @@ def enters(option):
     buttons = [Title_button(img_menu_button[i], 550 - i * 150)\
         for i in range(4)]
     buttons[1].enabled = loaded_suc
+    game_world.add_object(title_bg, 'bg')
+    game_world.add_objects(buttons, 'ui')
 
 def exits():
-    global frame, buttons, img_menu_button, img_title_bg
+    global frame, buttons, img_menu_button, title_bg
     global file, loaded_dat
     frame = None
-    img_title_bg = None
+    title_bg = None
     buttons = None
     if(loaded_dat != 'failed'):
         file.close()
@@ -68,16 +71,18 @@ def exits():
 
 def draw_all():
     clear_canvas()
-    img_title_bg.draw(UI_WIDTH // 2, UI_HEIGHT // 2)
-    for button in buttons:
-        button.draw()
+    for objs in game_world.all_objects():
+        objs.draw()
+    # title_bg.draw()
+    # for button in buttons:
+    #     button.draw()
     update_canvas()
 
 def update():
-    pass #Null Func
+    pass
 
 frame = None
-img_title_bg = None
+title_bg = None
 img_menu_button = [0,0,0,0]
 buttons = None
 file = None

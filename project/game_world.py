@@ -8,13 +8,13 @@ DEPTH_DICT = {
 world = dict()
 cur_world = None
 
-world['title'] = [[], [], [], [], [], []]
-world['title_menu'] = [[], [], [], [], [], []]
-world['snake_move'] = [[], [], [], [], [], []]
-world['select_char'] = [[], [], [], [], [], []]
-world['option_setting'] = [[], [], [], [], [], []]
-world['how_to_play'] = [[], [], [], [], [], []]
-world['game_menu'] = [[], [], [], [], [], []]
+state_list = [
+    'title', 'title_menu', 'snake_move', 'select_char',
+    'option_setting', 'how_to_play', 'game_menu'
+]
+
+for state_name in state_list:
+    world[state_name] = [[] for _ in range(len(DEPTH_DICT))]
 
 def all_objects():
     for layer in world[cur_world]:
