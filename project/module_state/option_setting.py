@@ -3,6 +3,7 @@ from pico2d import *
 from event_table_module import *
 from module_object.buttons_obj \
     import Option_volume_button, Option_volume_line, Option_button
+import state_changer
 
 MAX_VOL = 128
 
@@ -23,8 +24,7 @@ def load_volume_data():
         volumes[0], volumes[1] = 64, 64
 
 
-def change_volume_and_quit(i):
-    global acting, next_module, next_module_option
+def change_volume(i):
     if(i == 0):
         volumes_before[0], volumes_before[1] = volumes[0], volumes[1]
         file = open('savevolume.txt', 'w')
@@ -32,19 +32,16 @@ def change_volume_and_quit(i):
         file.close()
     elif(i == 1):
         volumes[0], volumes[1] = volumes_before[0], volumes_before[1]
-    acting = False
-    next_module, next_module_option = 'lastest', 'resume'
 
 def handle_events():
-    global acting, next_module, next_module_option
     events = get_events()
     for raw_event in events:
         event = convert_event(raw_event)
         if event == QUIT:
-            acting = False
-            next_module, next_module_option = '', None
+            state_changer.change_state('', None)
         elif event == KESCD:
-            change_volume_and_quit(1)
+            change_volume(1)
+            state_changer.change_state('lastest', 'resume')
         elif event == MM:
             for i in range(2):
                 volume_buttons[i].drag_move(raw_event.x)
@@ -58,17 +55,15 @@ def handle_events():
                     volume_buttons[i].clicked = True
                     break
                 elif(option_buttons[i].isclicked(raw_event.x, raw_event.y)):
-                    change_volume_and_quit(i)
+                    change_volume(i)
+                    state_changer.change_state('lastest', 'resume')
                     break
         elif event == MLU:
             for i in range(2): volume_buttons[i].clicked = False
 
 def enters(option):
-    global acting, next_module, next_module_option
+    global img_bg
     global img_ui, img_button, volume_buttons, volume_lines, option_buttons
-    acting = True
-    next_module = ''
-    next_module_option = None
     load_volume_data()
     img_ui = load_image('img/option_ui.png')
     img_button = load_image('img/option_button.png')
@@ -77,12 +72,14 @@ def enters(option):
     volume_lines = [Option_volume_line(UI_HEIGHT//2 + i * 90) for i in range(2)]
     option_buttons = [Option_button(UI_WIDTH//2 + i) for i in (-135, 135)]
 
+    previous_state = state_changer.get_previous_state()
+    if(previous_state == 'game_menu'):
+        img_bg = load_image('img/field_menu.png')
+    elif(previous_state == 'title_menu'):
+        img_bg = load_image('img/title_bg.png')
+
 def exits():
-    global acting, next_module, next_module_option
     global img_ui, img_button, img_bg, volume_buttons, volume_lines, option_buttons
-    acting = None
-    next_module = ''
-    next_module_option = None
     img_ui = None
     img_button = None
     img_bg = None
@@ -90,26 +87,16 @@ def exits():
     volume_lines = None
     option_buttons = None
 
-def acts():
-    global img_bg
-    from state_changer import state_stack
-    if(state_stack[-2] == 'game_menu'):
-        img_bg = load_image('img/field_menu.png')
-    elif(state_stack[-2] == 'title_menu'):
-        img_bg = load_image('img/title_bg.png')
-    while(acting):
-        clear_canvas()
-        img_bg.draw(UI_WIDTH // 2, UI_HEIGHT // 2)
-        img_ui.draw(UI_WIDTH // 2, UI_HEIGHT // 2)
-        for i in range(2): volume_buttons[i].draw()
-        update_canvas()
-        handle_events()
-        delay(0.01)
-    return next_module, next_module_option
+def draw_all():
+    clear_canvas()
+    img_bg.draw(UI_WIDTH // 2, UI_HEIGHT // 2)
+    img_ui.draw(UI_WIDTH // 2, UI_HEIGHT // 2)
+    for i in range(2): volume_buttons[i].draw()
+    update_canvas()
 
-acting = None
-next_module = ''
-next_module_option = None
+def update():
+    pass
+
 img_ui = None
 img_button = None
 img_bg = None

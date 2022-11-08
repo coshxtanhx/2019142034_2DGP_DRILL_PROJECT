@@ -12,23 +12,19 @@ from module_object.snake_enemy_obj import *
 from module_object.hpbar_obj import *
 from module_object.screen_hider_obj import *
 from module_object.background_obj import *
+import state_changer
 
 def game_over():
-    global acting, next_module, next_module_option
-    acting = False
-    next_module, next_module_option = 'title_menu', None
+    state_changer.change_state('title_menu', None)
 
 def handle_events():
-    global acting, next_module, next_module_option
     events = get_events()
     for raw_event in events:
         event = convert_event(raw_event)
         if event == QUIT:
-            acting = False
-            next_module, next_module_option = '', None
+            state_changer.change_state('', None)
         elif event == KESCD:
-            acting = False
-            next_module, next_module_option = 'title', None
+            state_changer.change_state('title', None)
         else:
             Blue_body.handle_events(event, char_blue[-1], bombs)
         global zzz
@@ -38,8 +34,7 @@ def handle_events():
         elif raw_event.key == SDLK_p: Enemy_body.ai = 3
         elif raw_event.key == SDLK_l: Enemy_body.armored.append(randint(0,5)*12)
         elif event == KMD:
-            acting = False
-            next_module, next_module_option = 'game_menu', 'pause'
+            state_changer.change_state('game_menu', 'pause')
 
 def snake_move_and_draw():
     for snakes in (char_blue, enemy_char):
@@ -234,17 +229,14 @@ def check_interaction():
     check_touched_by_enemy()
 
 def enters(option):
-    global acting, frame, field_array, next_module, next_module_option
+    global frame, field_array
     global char_blue, apples, bombs, explodes, enemy_char
     global enemy_hpbar, broken_screen, screen_out, cloud, ices
     global cur_char, cur_stage
     if(option == None): option = '11'
     cur_char, cur_stage = option[0], option[1]
-    acting = True
     frame = 0
     field_array = []
-    next_module = ''
-    next_module_option = ''
     char_blue = deque([Blue_body(i) for i in range(0, 12*(3-1)+1)])
     apples = apple(10, 0)
     bombs = deque()
@@ -260,15 +252,12 @@ def enters(option):
     ices = []
 
 def exits():
-    global acting, frame, field_array, next_module, next_module_option
+    global frame, field_array
     global char_blue, apples, bombs, explodes, enemy_char
     global enemy_hpbar, broken_screen, screen_out, cloud, ices
     global cur_char, cur_stage
-    acting = None
     frame = None
     field_array = None
-    next_module = None
-    next_module_option = None
     char_blue = None
     apples = None
     bombs = None
@@ -282,37 +271,33 @@ def exits():
     cur_char = None
     cur_stage = None
 
-def acts():
-    global acting, field_array, apples, frame, next_module
+def draw_all():
+    global field_array, apples, frame
     global enemy_char
-    acting = True
-    while(acting):
-        clear_canvas()
-        field_array = field_array_reset()
-        img_field.draw(UI_WIDTH // 2, UI_HEIGHT // 2)
-        apples.draw(field_array)
-        if Enemy_body.bomb_cool_down == 0: enemy_set_bomb()
-        bomb_count_and_draw()
-        snake_move_and_draw()
-        explode_draw()
-        screen_hider_draw()
-        enemy_hp_bar_draw()
-        bomb_and_explode_delete()
-        check_interaction()
-        update_canvas()
-        handle_events()
-        for snake in (Blue_body, Enemy_body):
-            if snake.bomb_cool_down > 0: snake.bomb_cool_down -= 1
-        Enemy_body.enemy_ai_update(enemy_char[0], field_array)
-        frame = (frame + 1) % 8
-        delay(0.01)
-    return next_module, next_module_option
+    clear_canvas()
+    field_array = field_array_reset()
+    img_field.draw(UI_WIDTH // 2, UI_HEIGHT // 2)
+    apples.draw(field_array)
+    if Enemy_body.bomb_cool_down == 0: enemy_set_bomb()
+    bomb_count_and_draw()
+    snake_move_and_draw()
+    explode_draw()
+    screen_hider_draw()
+    enemy_hp_bar_draw()
+    update_canvas()
 
-acting = None
+def update():
+    global field_array, apples, frame
+    global enemy_char
+    bomb_and_explode_delete()
+    check_interaction()
+    for snake in (Blue_body, Enemy_body):
+        if snake.bomb_cool_down > 0: snake.bomb_cool_down -= 1
+    Enemy_body.enemy_ai_update(enemy_char[0], field_array)
+    frame = (frame + 1) % 8
+
 frame = None
 field_array = None
-next_module = None
-next_module_option = None
 char_blue = None
 apples = None
 bombs = None
