@@ -5,7 +5,6 @@ from math import *
 import state_changer
 
 def handle_events():
-    global next_module, acting
     events = get_events()
     for raw_event in events:
         event = convert_event(raw_event)

@@ -5,6 +5,7 @@ import module_state.snake_move
 import module_state.option_setting
 import module_state.game_menu
 import module_state.select_char
+from time import time
 
 def change_state(next_module_str, next_module_option_str):
     global running, next_module, next_module_option
@@ -37,12 +38,14 @@ def state_act(next_module_str):
     game_world.cur_world = next_module_str
     global running, next_module, next_module_option
     running = True
+    start_time = time()
     cur_module = eval('module_state.' + next_module_str)
     while(running):
-        cur_module.handle_events()
-        cur_module.draw_all()
-        cur_module.update()
-        delay(0.01)
+        if(time() > start_time + 0.014):
+            start_time += 0.014
+            cur_module.handle_events()
+            cur_module.draw_all()
+            cur_module.update()
     return next_module, next_module_option
 
 
