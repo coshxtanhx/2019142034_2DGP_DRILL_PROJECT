@@ -73,9 +73,6 @@ def draw_all():
     clear_canvas()
     for objs in game_world.all_objects():
         objs.draw()
-    # title_bg.draw()
-    # for button in buttons:
-    #     button.draw()
     update_canvas()
 
 def update():

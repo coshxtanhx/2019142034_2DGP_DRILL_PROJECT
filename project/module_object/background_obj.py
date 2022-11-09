@@ -19,3 +19,19 @@ class Background():
         self.image = eval('Background.image_' + self.type)
     def draw(self):
         self.image.draw(UI_WIDTH//2, UI_HEIGHT//2)
+
+class Title_text():
+    frame = 0
+    image = None
+    def __init__(self):
+        pass
+    def draw(self):
+        self.image.draw()
+
+class Title_message():
+    frame = 0
+    image = None
+    def __init__(self):
+        pass
+    def __draw(self):
+        pass
