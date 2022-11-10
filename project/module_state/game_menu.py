@@ -7,7 +7,6 @@ import state_changer
 import game_world
 
 def handle_events():
-    global img_ui_check_mark
     events = get_events()
     for raw_event in events:
         event = convert_event(raw_event)
@@ -33,8 +32,7 @@ def handle_events():
                 state_changer.change_state('snake_move', 'resume')
 
 def enters(option):
-    global frame, img_ui_bg, img_ui_text, buttons
-    frame = 0
+    global img_ui_bg, img_ui_text, buttons
     img_ui_bg = Background('menu')
     img_ui_text = Blinking_message('menu')
     buttons = [Game_menu_button(190 + 180 * i) for i in range(4)]
@@ -42,8 +40,7 @@ def enters(option):
     game_world.add_object(img_ui_text, 'obj')
 
 def exits():
-    global frame, img_ui_bg, img_ui_text, buttons
-    frame = None
+    global img_ui_bg, img_ui_text, buttons
     img_ui_bg = None
     img_ui_text = None
     buttons = None

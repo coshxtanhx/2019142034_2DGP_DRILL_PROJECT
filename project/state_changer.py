@@ -43,11 +43,12 @@ def state_act(next_module_str):
     start_time = time()
     cur_module = eval('module_state.' + next_module_str)
     while(running):
-        if(time() > start_time + 0.014):
+        while(time() > start_time + 0.014 and running):
             start_time += 0.014
             cur_module.handle_events()
             cur_module.draw_all()
             cur_module.update()
+        # delay(0.5)
     return next_module, next_module_option, data
 
 
