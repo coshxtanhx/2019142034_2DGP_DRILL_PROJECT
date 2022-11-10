@@ -1,8 +1,10 @@
 from pico2d import *
 from coordinates_module import UI_HEIGHT, UI_WIDTH
 from module_object.buttons_obj import *
+from module_object.background_obj import *
 from event_table_module import *
 import state_changer
+import game_world
 
 def handle_events():
     global img_ui_check_mark
@@ -35,10 +37,12 @@ def handle_events():
 def enters(option):
     global frame, img_ui_bg, img_ui_text, img_ui_check_mark, buttons
     frame = 0
-    img_ui_bg = load_image('img/field_menu.png')
-    img_ui_text = load_image('img/field_menu_msg.png')
+    img_ui_bg = Background('menu')
+    img_ui_text = Blinking_message('menu')
     img_ui_check_mark = None
     buttons = [Game_menu_button(190 + 180 * i) for i in range(4)]
+    game_world.add_object(img_ui_bg, 'bg')
+    game_world.add_object(img_ui_text, 'obj')
 
 def exits():
     global frame, img_ui_bg, img_ui_text, buttons, img_ui_check_mark
@@ -47,18 +51,19 @@ def exits():
     img_ui_text = None
     img_ui_check_mark = None
     buttons = None
+    game_world.clear_world()
 
 def draw_all():
     global frame
     clear_canvas()
-    img_ui_bg.draw(UI_WIDTH // 2, UI_HEIGHT // 2)
-    if(frame < 45): img_ui_text.draw(UI_WIDTH // 2, 520)
+    for objs in game_world.all_objects():
+        objs.draw()
     if(img_ui_check_mark): img_ui_check_mark.draw(370, 310)
     update_canvas()
 
 def update():
-    global frame
-    frame = (frame + 1) % 90
+    for objs in game_world.all_objects():
+        objs.update()
 
 frame = None
 img_ui_bg = None

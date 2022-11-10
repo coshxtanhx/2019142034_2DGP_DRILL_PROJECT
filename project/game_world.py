@@ -29,8 +29,7 @@ def add_objects(ol, depth):
 
 def clear_world():
     for layer in world[cur_world]:
-        for _ in range(len(layer)-1):
-            layer.pop()
+        layer.clear()
 
 def remove_object(o):
     for layer in world[cur_world]:

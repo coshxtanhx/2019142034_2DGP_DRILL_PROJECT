@@ -83,7 +83,6 @@ def enters(option):
     game_world.add_object(img_ui, 'obj')
     game_world.add_objects(volume_buttons, 'ui')
 
-
 def exits():
     global img_ui, img_button, img_bg, volume_buttons, volume_lines, option_buttons
     img_ui = None

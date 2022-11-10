@@ -23,7 +23,7 @@ def enters(option):
     frame = 0
     img_title_bg = Background('main')
     img_title_text = [Title_text(num) for num in range(2)]
-    img_title_msg = Title_message()
+    img_title_msg = Blinking_message('main')
     game_world.add_object(img_title_bg, 'bg')
     game_world.add_objects(img_title_text, 'obj')
     game_world.add_object(img_title_msg, 'obj')
