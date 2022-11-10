@@ -68,6 +68,7 @@ def exits():
         file.close()
     file = None
     loaded_dat = None
+    game_world.clear_world()
 
 def draw_all():
     clear_canvas()

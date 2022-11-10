@@ -1,9 +1,11 @@
 from coordinates_module import *
 from pico2d import *
 from event_table_module import *
+from module_object.background_obj import *
 from module_object.buttons_obj \
     import Option_volume_button, Option_volume_line, Option_button
 import state_changer
+import game_world
 
 MAX_VOL = 128
 
@@ -63,10 +65,9 @@ def handle_events():
 
 def enters(option):
     global img_bg
-    global img_ui, img_button, volume_buttons, volume_lines, option_buttons
+    global img_ui, volume_buttons, volume_lines, option_buttons
     load_volume_data()
-    img_ui = load_image('img/option_ui.png')
-    img_button = load_image('img/option_button.png')
+    img_ui = Option_ui()
     volume_buttons = [Option_volume_button(volume_to_button_pos(volumes[i]), \
         UI_HEIGHT//2 + i * 90) for i in range(2)]
     volume_lines = [Option_volume_line(UI_HEIGHT//2 + i * 90) for i in range(2)]
@@ -74,9 +75,14 @@ def enters(option):
 
     previous_state = state_changer.get_previous_state()
     if(previous_state == 'game_menu'):
-        img_bg = load_image('img/field_menu.png')
+        img_bg = Background('menu')
     elif(previous_state == 'title_menu'):
-        img_bg = load_image('img/title_bg.png')
+        img_bg = Background('main')
+
+    game_world.add_object(img_bg, 'bg')
+    game_world.add_object(img_ui, 'obj')
+    game_world.add_objects(volume_buttons, 'ui')
+
 
 def exits():
     global img_ui, img_button, img_bg, volume_buttons, volume_lines, option_buttons
@@ -86,12 +92,13 @@ def exits():
     volume_buttons = None
     volume_lines = None
     option_buttons = None
+    game_world.clear_world()
 
 def draw_all():
     clear_canvas()
-    img_bg.draw(UI_WIDTH // 2, UI_HEIGHT // 2)
-    img_ui.draw(UI_WIDTH // 2, UI_HEIGHT // 2)
-    for i in range(2): volume_buttons[i].draw()
+    img_bg.draw()
+    for objs in game_world.all_objects():
+        objs.draw()
     update_canvas()
 
 def update():

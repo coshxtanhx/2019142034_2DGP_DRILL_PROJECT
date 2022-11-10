@@ -1,7 +1,9 @@
 from pico2d import *
 from coordinates_module import UI_HEIGHT, UI_WIDTH
 from event_table_module import *
+from module_object.background_obj import *
 from math import *
+import game_world
 import state_changer
 
 def handle_events():
@@ -17,30 +19,33 @@ def handle_events():
 
 def enters(option):
     global frame
-    global img_title, img_title_bg, img_title_text
+    global img_title_msg, img_title_bg, img_title_text
     frame = 0
-    img_title_bg = load_image('img/title_bg.png')
-    img_title = [load_image('img/title_' + str(i) + '.png') for i in range(2)]
-    img_title_text = load_image('img/title_text.png')
+    img_title_bg = Background('main')
+    img_title_text = [Title_text(num) for num in range(2)]
+    img_title_msg = Title_message()
+    game_world.add_object(img_title_bg, 'bg')
+    game_world.add_objects(img_title_text, 'obj')
+    game_world.add_object(img_title_msg, 'obj')
+
 
 def exits():
-    global img_title, img_title_bg, img_title_text
+    global img_title_msg, img_title_bg, img_title_text
     img_title_bg = None
-    img_title = None
+    img_title_msg = None
     img_title_text = None
+    game_world.clear_world()
 
 def draw_all():
     clear_canvas()
-    img_title_bg.draw(UI_WIDTH // 2, UI_HEIGHT // 2)
-    img_title[0].draw(UI_WIDTH // 2, 520 + 5 * sin(radians(frame * 2)))
-    img_title[1].draw(UI_WIDTH // 2, 400 + 5 * sin(radians(frame * 2)))
-    if (frame % 90) < 45: img_title_text.draw(UI_WIDTH // 2, UI_HEIGHT // 2 - 100)
+    for objs in game_world.all_objects():
+        objs.draw()
     update_canvas()
 
 def update():
-    global frame
-    frame = (frame + 1) % 180
+    for objs in game_world.all_objects():
+        objs.update()
 
 img_title_bg = None
-img_title = None
+img_title_msg = None
 img_title_text = None

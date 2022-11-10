@@ -1,5 +1,6 @@
 from pico2d import *
 from coordinates_module import UI_HEIGHT, UI_WIDTH
+from math import *
 
 class Background():
     image_main = None
@@ -19,19 +20,40 @@ class Background():
         self.image = eval('Background.image_' + self.type)
     def draw(self):
         self.image.draw(UI_WIDTH//2, UI_HEIGHT//2)
+    def update(self):
+        pass
 
 class Title_text():
-    frame = 0
     image = None
-    def __init__(self):
-        pass
+    def __init__(self, num):
+        self.frame = 0
+        if Title_text.image == None:
+            Title_text.image = [load_image('img/title_' + str(i) + '.png') \
+                for i in range(2)]
+        self.image = Title_text.image[num]
+        self.num = num
     def draw(self):
-        self.image.draw()
+        self.image.draw(UI_WIDTH // 2, \
+            520 - self.num * 120 + 5 * sin(radians(self.frame * 2)))
+    def update(self):
+        self.frame = (self.frame + 1) % 180
 
 class Title_message():
-    frame = 0
     image = None
     def __init__(self):
-        pass
-    def __draw(self):
-        pass
+        self.frame = 0
+        if Title_message.image == None:
+            Title_message.image = load_image('img/title_text.png')
+    def draw(self):
+        if (self.frame % 90) < 45:
+            self.image.draw(UI_WIDTH // 2, UI_HEIGHT // 2 - 100)
+    def update(self):
+        self.frame = (self.frame + 1) % 180
+
+class Option_ui():
+    image = None
+    def __init__(self):
+        if Option_ui.image == None:
+            Option_ui.image = load_image('img/option_ui.png')
+    def draw(self):
+        self.image.draw(UI_WIDTH//2, UI_HEIGHT//2)
