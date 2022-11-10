@@ -54,7 +54,6 @@ def exits():
     game_world.clear_world()
 
 def draw_all():
-    global frame
     clear_canvas()
     for objs in game_world.all_objects():
         objs.draw()

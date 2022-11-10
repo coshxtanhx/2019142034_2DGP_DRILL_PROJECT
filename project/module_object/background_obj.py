@@ -67,3 +67,16 @@ class Option_ui():
             Option_ui.image = load_image('img/option_ui.png')
     def draw(self):
         self.image.draw(UI_WIDTH//2, UI_HEIGHT//2)
+
+class Selection():
+    image = None
+    num = 0
+    def __init__(self):
+        Selection.num = 0
+        if Selection.image == None:
+            Selection.image = [load_image('img/select_char_' + str(i) + '.png') \
+        for i in range(4)]
+    def draw(self):
+        self.image[Selection.num].draw(UI_WIDTH//2, UI_HEIGHT - 275)
+    def change_img(option):
+        Selection.num = (Selection.num + option) % 4
