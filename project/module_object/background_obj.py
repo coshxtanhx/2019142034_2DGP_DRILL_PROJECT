@@ -7,6 +7,7 @@ class Background():
     image_menu = None
     image_play = None
     image_selc = None
+    image_howt = None
     def __init__(self, type):
         self.type = type
         if(Background.image_main == None and self.type == 'main'):
@@ -17,6 +18,8 @@ class Background():
             Background.image_play = load_image('img/field.png')
         elif(Background.image_selc == None and self.type == 'selc'):
             Background.image_selc = load_image('img/character_select_bg.png')
+        elif(Background.image_howt == None and self.type == 'howt'):
+            Background.image_howt = load_image('img/book.png')
         self.image = eval('Background.image_' + self.type)
     def draw(self):
         self.image.draw(UI_WIDTH//2, UI_HEIGHT//2)
@@ -80,3 +83,21 @@ class Selection():
         self.image[Selection.num].draw(UI_WIDTH//2, UI_HEIGHT - 275)
     def change_img(option):
         Selection.num = (Selection.num + option) % 4
+
+class Book_page():
+    MAX_PAGE = 6
+    image = [None for _ in range(MAX_PAGE)]
+    page = 0
+    def __init__(self):
+        Book_page.page = 0
+        if Book_page.image[Book_page.page] == None:
+            for i in range(2):
+                Book_page.image[Book_page.page + i] = load_image('img/help' \
+                    + str(Book_page.page//2) + str(i) + '.png')
+    def change_page(option):
+        Book_page.page = (Book_page.page + option * 2) % Book_page.MAX_PAGE
+    def draw(self):
+        gap = 195
+        for i in range(2):
+            self.image[Book_page.page+i].draw(\
+                UI_WIDTH//2 + gap*2*i - gap, UI_HEIGHT//2)

@@ -5,6 +5,7 @@ import module_state.snake_move
 import module_state.option_setting
 import module_state.game_menu
 import module_state.select_char
+import module_state.how_to_play
 from time import time
 
 def change_state(next_module_str, next_module_option_str):

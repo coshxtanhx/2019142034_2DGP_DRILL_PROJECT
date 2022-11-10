@@ -1,6 +1,5 @@
 from pico2d import *
 from module_object.buttons_obj import *
-from coordinates_module import UI_HEIGHT, UI_WIDTH
 from event_table_module import *
 from module_object.background_obj import Background, Selection
 import state_changer
