@@ -79,17 +79,6 @@ def explode_draw():
     for i in range(le-1, -1, -1):
         ices[i].draw(field_array)
 
-def create_new_apple():
-    global apples
-    able_to_create = []
-
-    for x in range(0, 15):
-        for y in range(0, 9):
-            if(field_array[x+1][y+1] == 0):
-                able_to_create.append((x,y))
-
-    apples = apple(*choice(able_to_create))
-
 def check_eat_bomb():
     global bombs
     for snakes in (char_blue, enemy_char):
@@ -114,16 +103,24 @@ def check_eat():
 
     if(ap_loc & FIELD_DICT['player']):
         eaten = True
-        if(Blue_body.length < 109):
+        if(apples.poisoned == False and Blue_body.length < 109):
             for i in range(Blue_body.length, Blue_body.length + 12):
                 char_blue.append(Blue_body(i, char_blue[Blue_body.length-1].x, \
                     char_blue[Blue_body.length-1].y))
             Blue_body.length += 12
+        elif(apples.poisoned):
+            if(Blue_body.length < 15):
+                game_over()
+            else:
+                Blue_body.length -= 12
+                for _ in range(12):
+                    char_blue.pop()
+
     elif(ap_loc & (FIELD_DICT['enemy'])):
         eaten = True
     if(eaten):
         del(apples)
-        create_new_apple()
+        apples = create_new_apple(field_array, cur_char)
 
 def enemy_set_bomb():
     le = len(enemy_char)
@@ -185,7 +182,7 @@ def check_explode():
         x, y = exploding.gx, exploding.gy
         if field_array[x][y] & (FIELD_DICT['player']):
             attacked = True
-        if field_array[x][y] & ( FIELD_DICT['apple']):
+        if field_array[x][y] & (FIELD_DICT['poison'] + FIELD_DICT['apple']):
             apple_destroy = True
         if field_array[x][y] & ( FIELD_DICT['armor']):
             armor_not_touched = False
@@ -195,7 +192,7 @@ def check_explode():
 
     if(apple_destroy):
         del(apples)
-        create_new_apple()
+        apples = create_new_apple(field_array, cur_char)
     if(attacked):
         Blue_body.length -= 12
         for _ in range(12):
@@ -238,7 +235,7 @@ def enters(option):
     frame = 0
     field_array = []
     char_blue = deque([Blue_body(i) for i in range(0, 12*(3-1)+1)])
-    apples = apple(10, 0)
+    apples = create_first_apple(field_array, cur_char)
     bombs = deque()
     explodes = deque()
     enemy_char = deque([Enemy_body(i, color=COLOR_DICT[cur_stage]) \

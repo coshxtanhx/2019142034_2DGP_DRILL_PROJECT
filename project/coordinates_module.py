@@ -31,7 +31,7 @@ MAX_BITS = 16777215
 FIELD_DICT = {
     'empty': 0, 'player': 1, 'enemy':2, 'apple':4, \
     'bomb':8, 'wall':16, 'head':32, 'explode': 64, 'skin': 128,\
-    'box': 256, 'ice': 512, 'armor': 1024
+    'box': 256, 'ice': 512, 'armor': 1024, 'poison': 2048
 }
 
 dx = (+5, +0, -5, +0)
