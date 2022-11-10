@@ -16,26 +16,23 @@ def handle_events():
             state_changer.change_state('select_char', 'resume')
         elif event == MLD:
             button_clicked = -1
-            for i in range(4):
+            for i in range(3):
                 if(buttons[i].isclicked(raw_event.x, raw_event.y)):
                     button_clicked = i
                     break
             if button_clicked == 0:
-                pass
+                Book_page.change_page(-1)
             if button_clicked == 1:
-                pass
+                Book_page.change_page(+1)
             elif button_clicked == 2:
-                pass
-            elif button_clicked == 3:
-                pass
+                state_changer.change_state('select_char', 'resume')
 
 def enters(option):
     global bg, book, cur_selecting, buttons
     bg = Background('howt')
     cur_selecting = 0
     book = Book_page()
-    buttons = [Start_and_Guide_Button(x) for x in (250, 670)] \
-        + [Char_sel_button(x) for x in (260, 660)]
+    buttons = [Next_page_button(i) for i in range(2)] + [Close_book_button()]
     game_world.add_object(bg, 'bg')
     game_world.add_object(book, 'obj')
 

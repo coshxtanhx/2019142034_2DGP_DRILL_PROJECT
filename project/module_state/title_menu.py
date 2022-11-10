@@ -37,7 +37,7 @@ def handle_events():
             if(button_clicked == 0):
                 state_changer.change_state('select_char', None)
             elif(button_clicked == 1):
-                state_changer.change_state('snake_move', loaded_dat)
+                state_changer.change_state('snake_move', None, loaded_dat)
             elif(button_clicked == 2):
                 state_changer.change_state('option_setting', 'pause')
             elif(button_clicked == 3):

@@ -92,7 +92,7 @@ class Enemy_body():
         Enemy_body.enemy_direction = 0
         Enemy_body.enemy_order = 0
         Enemy_body.bomb_cool_down = 500
-        Enemy_body.enemy_hp = 960 // 6
+        Enemy_body.enemy_hp = 960 // 96
         Enemy_body.armored = []
         Enemy_body.ai = 0
 

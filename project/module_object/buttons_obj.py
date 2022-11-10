@@ -90,3 +90,28 @@ class Char_sel_button():
             return True
         else:
             return False
+
+class Next_page_button():
+    def __init__(self, num):
+        self.num = num
+        if self.num == 1:
+            self.x, self.y = 774, 107
+        else:
+            self.x, self.y = 133, 100
+    def isclicked(self, x, y):
+        if((self.x - 40 <= x <= self.x + 40) and \
+            (UI_HEIGHT - (self.y + 16) < y < UI_HEIGHT - (self.y - 16))):
+            return True
+        else:
+            return False
+
+class Close_book_button():
+    def __init__(self):
+        self.x = 802
+        self.y = 544
+    def isclicked(self, x, y):
+        if(get_distance(x, y, self.x, UI_HEIGHT - self.y) < 30):
+            self.clicked = True
+            return True
+        else:
+            return False

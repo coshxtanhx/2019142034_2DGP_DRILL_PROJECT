@@ -90,12 +90,15 @@ class Book_page():
     page = 0
     def __init__(self):
         Book_page.page = 0
+        Book_page.load_new_image()
+    def change_page(option):
+        Book_page.page = (Book_page.page + option * 2) % Book_page.MAX_PAGE
+        Book_page.load_new_image()
+    def load_new_image():
         if Book_page.image[Book_page.page] == None:
             for i in range(2):
                 Book_page.image[Book_page.page + i] = load_image('img/help' \
                     + str(Book_page.page//2) + str(i) + '.png')
-    def change_page(option):
-        Book_page.page = (Book_page.page + option * 2) % Book_page.MAX_PAGE
     def draw(self):
         gap = 195
         for i in range(2):

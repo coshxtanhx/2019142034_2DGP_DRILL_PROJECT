@@ -17,6 +17,12 @@ import state_changer
 def game_over():
     state_changer.change_state('title_menu', None)
 
+def go_next_stage():
+    next_stage = str(int(cur_stage) + 1)
+    if next_stage == '5':
+        exit(2)
+    state_changer.change_state('snake_move', 'exitall', cur_char + next_stage)
+
 def handle_events():
     events = get_events()
     for raw_event in events:
@@ -201,8 +207,9 @@ def check_explode():
             game_over()
     Enemy_body.enemy_hp -= enemy_damaged
     if(Enemy_body.enemy_hp <= 0):
+        Enemy_body.enemy_hp = 0
         print('victory')
-        exit(2)
+        go_next_stage()
 
 def screen_hider_draw():
     return
@@ -225,13 +232,13 @@ def check_interaction():
     check_attacked_by_ices()
     check_touched_by_enemy()
 
-def enters(option):
+def enters(data):
     global frame, field_array
     global char_blue, apples, bombs, explodes, enemy_char
     global enemy_hpbar, broken_screen, screen_out, cloud, ices
     global cur_char, cur_stage
-    if(option == None): option = '11'
-    cur_char, cur_stage = option[0], option[1]
+    if(data == None): data = '11'
+    cur_char, cur_stage = data[0], data[1]
     frame = 0
     field_array = []
     char_blue = deque([Blue_body(i) for i in range(0, 12*(3-1)+1)])
@@ -242,7 +249,7 @@ def enters(option):
         for i in range(0, 12*(6-1)+1)])
     for snake in (Blue_body, Enemy_body):
         snake.reset()
-    enemy_hpbar = HP_bar(int(option[1])-1)
+    enemy_hpbar = HP_bar(int(cur_stage)-1)
     broken_screen = [Broken() for _ in range(4)]
     screen_out = Screen_off()
     cloud = Cloud()
