@@ -1,6 +1,7 @@
 from coordinates_module import *
 from collections import deque
 from pico2d import *
+from module_object.bomb_obj import bomb
 from enemy_movement_ai import enemy_ai
 import game_world
 
@@ -40,6 +41,9 @@ class Enemy_body():
     armored = []
     color = None
     ai = 0
+    length = 12*(6-1)+1
+    hx, hy = grid_to_coordinates(0, 8)
+    tx, ty = hx, hy
     def __init__(self, number, color = 'orange', x=40, y=-1):
         if(y == -1):
             self.x, self.y = grid_to_coordinates(0, 8)
@@ -51,24 +55,33 @@ class Enemy_body():
         self.image = 0
         Enemy_body.color = color
         self.armored = False
-    def moves(self, enemy_char):
-        if(self.number == len(enemy_char) - 1):
-            self.x, self.y = enemy_char[0].x + dx[Enemy_body.enemy_direction], \
-                enemy_char[0].y + dy[Enemy_body.enemy_direction]
+    def update(self):
+        if(self.number == self.length - 1):
+            self.x, self.y = Enemy_body.hx + dx[Enemy_body.enemy_direction], \
+                Enemy_body.hy + dy[Enemy_body.enemy_direction]
             self.number = 0
-            enemy_char.rotate(1)
+            if Enemy_body.bomb_cool_down > 0: Enemy_body.bomb_cool_down -= 1 
         else:
-            self.number += 1            
+            if(self.number == 0):
+                self.enemy_ai_update()
+            self.number += 1     
 
     def draw(self):
+        self.gx, self.gy = coordinates_to_grid(self.x, self.y)
         if(self.number == 0):
-            self.image = \
-                (eval('img_snake_' + Enemy_body.color + \
-                    '_head'))[Enemy_body.enemy_direction]
+            game_world.field_array[self.gx+1][self.gy+1] |= FIELD_DICT['ehead']
+            Enemy_body.hx, Enemy_body.hy = self.x, self.y
+            return
         else:
             self.image = eval('img_snake_' + Enemy_body.color + '_body')
+            if(self.number == self.length-1):
+                Enemy_body.tx, Enemy_body.ty = self.x, self.y
         self.image.draw(self.x, self.y)
+        if(self.number == self.length - 1):
+            (eval('img_snake_' + Enemy_body.color + '_head'))\
+                [Enemy_body.enemy_direction].draw(Enemy_body.hx, Enemy_body.hy)
         game_world.field_array[self.gx+1][self.gy+1] |= FIELD_DICT['enemy']
+
         if(self.number-4 in Enemy_body.armored or \
             self.number-2 in Enemy_body.armored or \
             self.number+0 in Enemy_body.armored or \
@@ -77,12 +90,13 @@ class Enemy_body():
             img_armor.draw(self.x, self.y)
             game_world.field_array[self.gx+1][self.gy+1] |= FIELD_DICT['armor']
     
-    def enemy_ai_update(enemy_head, field_array):
+    def enemy_ai_update(enemy_head):
         Enemy_body.change_ai()
+        # print(game_world.field_array)
         if(enemy_head.x % 60 == 40 and enemy_head.y % 60 == 40):
             Enemy_body.enemy_direction = enemy_ai(Enemy_body.enemy_direction, \
                 *coordinates_to_grid(enemy_head.x, enemy_head.y), \
-                field_array, Enemy_body.ai)
+                game_world.field_array, Enemy_body.ai)
 
     def reset():
         Enemy_body.enemy_direction = 0
@@ -95,3 +109,10 @@ class Enemy_body():
     def change_ai():
         Enemy_body.ai = \
             AI_DICT[(Enemy_body.enemy_hp // 241, COLOR_DICT2[Enemy_body.color])]
+
+    def enemy_set_bomb():
+        if Enemy_body.bomb_cool_down > 0:
+            return
+        bx, by = Enemy_body.tx, Enemy_body.ty
+        game_world.addleft_object(bomb(bx, by, 0, randint(0, 3)), 'bomb')
+        Enemy_body.bomb_cool_down = 200

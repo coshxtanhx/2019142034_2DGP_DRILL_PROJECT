@@ -28,6 +28,7 @@ def all_clear():
     exit(2)
 
 def handle_events():
+    Enemy_body.enemy_set_bomb()
     events = get_events()
     for raw_event in events:
         event = convert_event(raw_event)
@@ -37,7 +38,7 @@ def handle_events():
             state_changer.change_state('title', None)
         else:
             Blue_body.handle_events(event)
-        if raw_event.key == SDLK_p: Enemy_body.enemy_hp -= 250
+        if raw_event.key == SDLK_p: Enemy_body.enemy_hp -= 125
         elif raw_event.key == SDLK_l: Enemy_body.armored.append(randint(0,5)*12)
         elif event == KMD:
             state_changer.change_state('game_menu', 'pause')
@@ -127,12 +128,6 @@ def check_eat():
     if(eaten):
         del(apples)
         apples = create_new_apple(field_array, cur_char)
-
-def enemy_set_bomb():
-    le = len(enemy_char)
-    bx, by = enemy_char[le-1].x, enemy_char[le-1].y
-    bombs.appendleft(bomb(bx, by, 0, randint(0, 0)))
-    Enemy_body.bomb_cool_down = 200
 
 def check_collide():
     gx, gy = coordinates_to_grid(char_blue[0].x, char_blue[0].y)
@@ -275,17 +270,18 @@ def draw_all():
     global field_array, apples, frame
     global enemy_char
     clear_canvas()
-    field_array = field_array_reset()
+    game_world.field_array = field_array_reset()
     for objs in game_world.all_objects():
         objs.draw()
-    # if Enemy_body.bomb_cool_down == 0: enemy_set_bomb()
     update_canvas()
+    # print(game_world.field_array)
 
 def update():
     for objs in game_world.all_objects():
-        if type(objs) == Blue_body:
+        if type(objs) in (Blue_body, Enemy_body, bomb, explosion, Ice):
             objs.update()
     game_world.rotate_object(1, 'player')
+    game_world.rotate_object(1, 'enemy')
     return
     global field_array, apples, frame
     global enemy_char

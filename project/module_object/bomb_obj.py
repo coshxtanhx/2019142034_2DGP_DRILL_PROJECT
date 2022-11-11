@@ -31,6 +31,8 @@ class Ice():
         drawframe = (self.frame + 1) if (self.frame < 5) else drawframe
         self.image.clip_draw(0, 0, 60, 60, self.x, self.y, \
             10 * drawframe, 10 * drawframe)
+    def update(self):
+        self.frame -= 1
 
 
 class explosion():
@@ -44,6 +46,8 @@ class explosion():
             explosion.image = load_image('img/explode.png')
     def draw(self):
         self.image.clip_draw(60 * (self.frame // 2), 0, 60, 60, self.x, self.y)
+    def update(self):
+        self.frame -= 1
 
 class bomb():
     image = None
@@ -63,7 +67,8 @@ class bomb():
             bomb.image2 = load_image('img/bomb_cross.png')
             bomb.image3 = load_image('img/bomb_ice.png')
             bomb.image4 = load_image('img/bomb_ice_cross.png')
-
+    def update(self):
+        self.counter -= 1
     def explode(self):
         for x in range(self.gx+1, 0, -1):
             game_world.field_array[x][self.gy+1] |= FIELD_DICT['explode']
