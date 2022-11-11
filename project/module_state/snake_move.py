@@ -36,6 +36,7 @@ def handle_events():
         elif event == KESCD:
             state_changer.change_state('title', None)
         else:
+            return
             Blue_body.handle_events(event, char_blue[-1], bombs)
         global zzz
         if raw_event.key == SDLK_p: Enemy_body.enemy_hp -= 250
@@ -244,19 +245,12 @@ def enters(data):
     field_array = field_array_reset()
     game_world.add_object(Background('play'), 'bg')
     game_world.add_objects([Blue_body(i) for i in range(0, 12*(3-1)+1)], 'player')
-    game_world.addleft_object(create_first_apple(field_array, cur_char), 'obj')
-    # bombs = deque()
-    # explodes = deque()
+    game_world.addleft_object(create_first_apple(cur_char), 'obj')
     game_world.add_objects([Enemy_body(i, color=COLOR_DICT[cur_stage]) \
         for i in range(0, 12*(6-1)+1)], 'enemy')
+    game_world.add_object(HP_bar(int(cur_stage)-1), 'ui')
     for snake in (Blue_body, Enemy_body):
         snake.reset()
-    game_world.add_object(HP_bar(int(cur_stage)-1), 'ui')
-    # broken_screen = [Broken() for _ in range(4)]
-    # screen_out = Screen_off()
-    # cloud = Cloud()
-    # ices = []
-    # mine = Mine(field_array)
 
 def exits():
     global frame, field_array
@@ -278,29 +272,20 @@ def exits():
     cur_char = None
     cur_stage = None
 
-DRAW_DICT = {
-    Blue_body: '(field_array)',
-    bomb: '(field_array)'
-}
-
 def draw_all():
     global field_array, apples, frame
     global enemy_char
     clear_canvas()
     field_array = field_array_reset()
     for objs in game_world.all_objects():
-        objs.draw(*eval(DRAW_DICT[type(objs)]))
-    # apples.draw(field_array)
+        objs.draw()
     # if Enemy_body.bomb_cool_down == 0: enemy_set_bomb()
-    # bomb_count_and_draw()
-    # snake_move_and_draw()
-    # mine.draw(field_array)
-    # explode_draw()
-    # screen_hider_draw()
-    # enemy_hp_bar_draw()
     update_canvas()
 
 def update():
+    for objs in game_world.all_objects():
+        objs.update()
+    return
     global field_array, apples, frame
     global enemy_char
     # bomb_and_explode_delete()

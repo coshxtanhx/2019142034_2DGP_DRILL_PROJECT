@@ -1,5 +1,6 @@
 from math import ceil
 from pico2d import *
+import module_object.snake_enemy_obj
 
 class HP_bar():
     image_bar = None
@@ -14,9 +15,10 @@ class HP_bar():
             HP_bar.image_frame1 = load_image('img/hp_bar1.png')
             HP_bar.image_frame2 = load_image('img/hp_bar2.png')
         self.num = num
-    def draw(self, enemy_hp):
+    def draw(self):
+        hp = module_object.snake_enemy_obj.Enemy_body.enemy_hp
         self.image_frame1.draw(105+160, 590)
         self.image_bar.clip_draw(0, 0, 40, 40, \
-            105 + ceil(enemy_hp/6), 590, enemy_hp//3, 40)
+            105 + ceil(hp/6), 590, hp//3, 40)
         self.image_text[self.num].draw(55, 590)
         self.image_frame2.draw(105+160, 590)

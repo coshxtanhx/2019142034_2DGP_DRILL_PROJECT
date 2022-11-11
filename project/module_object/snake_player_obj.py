@@ -3,6 +3,7 @@ from collections import deque
 from pico2d import *
 from event_table_module import *
 from module_object.bomb_obj import bomb
+import game_world
 
 class Blue_body():
     img_snake_blue_head = None
@@ -26,7 +27,7 @@ class Blue_body():
                 [load_image('img/snake_blue_head_' + str(i) + '.png')\
                     for i in range(4)]
             Blue_body.img_snake_blue_body = load_image('img/snake_blue_body.png')
-    def moves(self, char_blue, field_array):
+    def moves(self, char_blue):
         is_head = False
         if(self.number == len(char_blue) - 1):
             self.x, self.y = char_blue[0].x + dx[Blue_body.cur_direction], \
@@ -40,14 +41,14 @@ class Blue_body():
                         next_state[Blue_body.cur_direction][Blue_body.direction.pop()]
             self.number += 1
         
-    def draw(self, field_array):
+    def draw(self):
         if(self.number == 0):
             self.image = Blue_body.img_snake_blue_head[self.cur_direction]
-            field_array[self.gx+1][self.gy+1] |= FIELD_DICT['head']
+            game_world.field_array[self.gx+1][self.gy+1] |= FIELD_DICT['head']
         else:
             self.image = Blue_body.img_snake_blue_body
         self.image.draw(self.x, self.y)
-        field_array[self.gx+1][self.gy+1] |= FIELD_DICT['player']
+        game_world.field_array[self.gx+1][self.gy+1] |= FIELD_DICT['player']
 
     def reset():
         Blue_body.cur_direction = 0

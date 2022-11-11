@@ -1,5 +1,6 @@
 # from pico2d import *
 from collections import deque
+from coordinates_module import *
 
 DEPTH_DICT = dict()
 obj_list = [
@@ -12,6 +13,8 @@ cnt = 0
 for obj_name in obj_list:
     DEPTH_DICT[obj_name] = cnt
     cnt += 1
+
+field_array = field_array_reset()
 
 world = dict()
 cur_world = None

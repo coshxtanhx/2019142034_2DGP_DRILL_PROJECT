@@ -1,16 +1,21 @@
 from coordinates_module import *
 from pico2d import *
 from collections import deque
+import game_world
 
-def bomb_draw_case(option, is_enemy, cnt, frame, x, y):
+ice_removing_obj = FIELD_DICT['enemy'] + FIELD_DICT['explode'] \
+    + FIELD_DICT['bomb'] + FIELD_DICT['apple'] + FIELD_DICT['ice']
+
+def bomb_draw_case(option, is_enemy, count, x, y):
+    cntnum = ceil(count / 70)
     if(option == 0):
-        bomb.image[cnt-1+is_enemy].clip_draw(60 * (frame % 3), 0, 60, 60, x, y)
+        bomb.image[cntnum-1+is_enemy].clip_draw(60 * (count % 3), 0, 60, 60, x, y)
     elif(option == 1):
-        bomb.image2.clip_draw(60 * (frame % 3), 60 * (cnt-1), 60, 60, x, y)
+        bomb.image2.clip_draw(60 * (count % 3), 60 * (cntnum-1), 60, 60, x, y)
     elif(option == 2):
-        bomb.image3.clip_draw(60 * (frame % 3), 60 * (cnt-1), 60, 60, x, y)
+        bomb.image3.clip_draw(60 * (count % 3), 60 * (cntnum-1), 60, 60, x, y)
     elif(option == 3):
-        bomb.image4.clip_draw(60 * (frame % 3), 60 * (cnt-1), 60, 60, x, y)
+        bomb.image4.clip_draw(60 * (count % 3), 60 * (cntnum-1), 60, 60, x, y)
 
 class Ice():
     image = None
@@ -20,8 +25,8 @@ class Ice():
         self.frame = 700
         if(Ice.image == None):
             Ice.image = load_image('img/ice.png')
-    def draw(self, field_array):
-        field_array[self.gx][self.gy] |= FIELD_DICT['ice']
+    def draw(self):
+        game_world.field_array[self.gx][self.gy] |= FIELD_DICT['ice']
         drawframe = (701 - self.frame) if (self.frame > 694) else 6
         drawframe = (self.frame + 1) if (self.frame < 5) else drawframe
         self.image.clip_draw(0, 0, 60, 60, self.x, self.y, \
@@ -58,73 +63,77 @@ class bomb():
             bomb.image2 = load_image('img/bomb_cross.png')
             bomb.image3 = load_image('img/bomb_ice.png')
             bomb.image4 = load_image('img/bomb_ice_cross.png')
-    def explode(self, field_array, explodes):
+
+    def explode(self):
         for x in range(self.gx+1, 0, -1):
-            field_array[x][self.gy+1] |= FIELD_DICT['explode']
-            explodes.appendleft(explosion(x, self.gy+1, self.damage))
+            game_world.field_array[x][self.gy+1] |= FIELD_DICT['explode']
+            game_world.addleft_object(explosion(x, self.gy+1, self.damage), 'explode')
         for x in range(self.gx+1, 16, +1):
-            field_array[x][self.gy+1] |= FIELD_DICT['explode']
-            explodes.appendleft(explosion(x, self.gy+1, self.damage))
+            game_world.field_array[x][self.gy+1] |= FIELD_DICT['explode']
+            game_world.addleft_object(explosion(x, self.gy+1, self.damage), 'explode')
         for y in range(self.gy+1, 10, +1):
-            field_array[self.gx+1][y] |= FIELD_DICT['explode']
-            explodes.appendleft(explosion(self.gx+1, y, self.damage))
+            game_world.field_array[self.gx+1][y] |= FIELD_DICT['explode']
+            game_world.addleft_object(explosion(self.gx+1, y, self.damage), 'explode')
         for y in range(self.gy+1, 0, -1):
-            field_array[self.gx+1][y] |= FIELD_DICT['explode']
-            explodes.appendleft(explosion(self.gx+1, y, self.damage))
+            game_world.field_array[self.gx+1][y] |= FIELD_DICT['explode']
+            game_world.addleft_object(explosion(self.gx+1, y, self.damage), 'explode')
         self.x = -65535
-    def explode_cross(self, field_array, explodes):
+
+    def explode_cross(self):
         for i in range(0, 9, 1):
             if not(-1 < self.gx+i < 15 and -1 < self.gy+i < 9): break
-            field_array[self.gx+i+1][self.gy+i+1] |= FIELD_DICT['explode']
-            explodes.appendleft(explosion(self.gx+i+1, self.gy+i+1, self.damage))
+            game_world.field_array[self.gx+i+1][self.gy+i+1] |= FIELD_DICT['explode']
+            game_world.addleft_object(explosion(self.gx+i+1, \
+                self.gy+i+1, self.damage), 'explode')
         for i in range(1, 9, 1):
             if not(-1 < self.gx-i < 15 and -1 < self.gy+i < 9): break
-            field_array[self.gx-i+1][self.gy+i+1] |= FIELD_DICT['explode']
-            explodes.appendleft(explosion(self.gx-i+1, self.gy+i+1, self.damage))
+            game_world.field_array[self.gx-i+1][self.gy+i+1] |= FIELD_DICT['explode']
+            game_world.addleft_object(explosion(self.gx-i+1, self.gy+i+1, \
+                self.damage), 'explode')
         for i in range(1, 9, 1):
             if not(-1 < self.gx+i < 15 and -1 < self.gy-i < 9): break
-            field_array[self.gx+i+1][self.gy-i+1] |= FIELD_DICT['explode']
-            explodes.appendleft(explosion(self.gx+i+1, self.gy-i+1, self.damage))
+            game_world.field_array[self.gx+i+1][self.gy-i+1] |= FIELD_DICT['explode']
+            game_world.addleft_object(explosion(self.gx+i+1, self.gy-i+1, \
+                self.damage), 'explode')
         for i in range(1, 9, 1):
             if not(-1 < self.gx-i < 15 and -1 < self.gy-i < 9): break
-            field_array[self.gx-i+1][self.gy-i+1] |= FIELD_DICT['explode']
-            explodes.appendleft(explosion(self.gx-i+1, self.gy-i+1, self.damage))
+            game_world.field_array[self.gx-i+1][self.gy-i+1] |= FIELD_DICT['explode']
+            game_world.addleft_object(explosion(self.gx-i+1, self.gy-i+1, \
+                self.damage), 'explode')
         self.x = -65535
-    def explode_ice(self, field_array, ices):
-        ice_removing_obj = FIELD_DICT['enemy'] + FIELD_DICT['explode'] \
-            + FIELD_DICT['bomb'] + FIELD_DICT['apple'] + FIELD_DICT['ice']
+
+    def explode_ice(self):
         for x in range(-3, 4, 1):
             if not(-1 < self.gx+x < 15): continue
-            if field_array[self.gx+x+1][self.gy+1] & ice_removing_obj: continue
-            ices.append(Ice(self.gx+x+1, self.gy+1))
+            if game_world.field_array[self.gx+x+1][self.gy+1] & ice_removing_obj: continue
+            game_world.add_object(Ice(self.gx+x+1, self.gy+1), 'ice')
         for y in range(-3, 4, 1):
             if not(-1 < self.gy+y < 9): continue
-            if field_array[self.gx+1][self.gy+y+1] & ice_removing_obj: continue
-            ices.append(Ice(self.gx+1, self.gy+1+y))
-    def explode_ice_cross(self, field_array, ices):
-        ice_removing_obj = FIELD_DICT['enemy'] + FIELD_DICT['explode'] \
-            + FIELD_DICT['bomb'] + FIELD_DICT['apple'] + FIELD_DICT['ice']
+            if game_world.field_array[self.gx+1][self.gy+y+1] & ice_removing_obj: continue
+            game_world.add_object(Ice(self.gx+1, self.gy+1+y), 'ice')
+
+    def explode_ice_cross(self):
         for i in range(-2, 3, 1):
             if not(-1 < self.gx+i < 15 and -1 < self.gy+i < 9): continue
-            if field_array[self.gx+i+1][self.gy+i+1] & ice_removing_obj: continue
-            ices.append(Ice(self.gx+1+i, self.gy+1+i))
+            if game_world.field_array[self.gx+i+1][self.gy+i+1] & ice_removing_obj: continue
+            game_world.add_object(Ice(self.gx+1+i, self.gy+1+i), 'ice')
         for i in range(-2, 3, 1):
             if not(-1 < self.gx+i < 15 and -1 < self.gy-i < 9): continue
-            if field_array[self.gx+i+1][self.gy-i+1] & ice_removing_obj: continue
-            ices.append(Ice(self.gx+1+i, self.gy+1-i))
-    def draw(self, field_array, explodes, ices, frame):
-        cnt = ceil(self.counter / 70)
+            if game_world.field_array[self.gx+i+1][self.gy-i+1] & ice_removing_obj: continue
+            game_world.add_object(Ice(self.gx+1+i, self.gy+1-i), 'ice')
+
+    def draw(self):
         if(self.counter > 0):
-            bomb_draw_case(self.option, self.is_enemy, cnt, frame, self.x, self.y)
-            field_array[self.gx+1][self.gy+1] |= FIELD_DICT['bomb']
+            bomb_draw_case(self.option, self.is_enemy, self.counter, self.x, self.y)
+            game_world.field_array[self.gx+1][self.gy+1] |= FIELD_DICT['bomb']
         elif(self.counter == 0 or self.counter <= -65535):
             if(self.option == 0):
-                self.explode(field_array, explodes)
+                self.explode()
             elif(self.option == 1):
-                self.explode_cross(field_array, explodes)
+                self.explode_cross()
             elif(self.option == 2):
-                self.explode_ice(field_array, ices)
+                self.explode_ice()
             elif(self.option == 3):
-                self.explode_ice_cross(field_array, ices)
+                self.explode_ice_cross()
         else:
             return

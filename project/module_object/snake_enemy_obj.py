@@ -2,6 +2,7 @@ from coordinates_module import *
 from collections import deque
 from pico2d import *
 from enemy_movement_ai import enemy_ai
+import game_world
 
 img_snake_orange_head = \
     [load_image('img/snake_orange_head_' + str(i) + '.png') for i in range(4)]
@@ -50,7 +51,7 @@ class Enemy_body():
         self.image = 0
         Enemy_body.color = color
         self.armored = False
-    def moves(self, enemy_char, field_array):
+    def moves(self, enemy_char):
         if(self.number == len(enemy_char) - 1):
             self.x, self.y = enemy_char[0].x + dx[Enemy_body.enemy_direction], \
                 enemy_char[0].y + dy[Enemy_body.enemy_direction]
@@ -59,7 +60,7 @@ class Enemy_body():
         else:
             self.number += 1            
 
-    def draw(self, field_array):
+    def draw(self):
         if(self.number == 0):
             self.image = \
                 (eval('img_snake_' + Enemy_body.color + \
@@ -67,14 +68,14 @@ class Enemy_body():
         else:
             self.image = eval('img_snake_' + Enemy_body.color + '_body')
         self.image.draw(self.x, self.y)
-        field_array[self.gx+1][self.gy+1] |= FIELD_DICT['enemy']
+        game_world.field_array[self.gx+1][self.gy+1] |= FIELD_DICT['enemy']
         if(self.number-4 in Enemy_body.armored or \
             self.number-2 in Enemy_body.armored or \
             self.number+0 in Enemy_body.armored or \
             self.number+2 in Enemy_body.armored or \
             self.number+4 in Enemy_body.armored):
             img_armor.draw(self.x, self.y)
-            field_array[self.gx+1][self.gy+1] |= FIELD_DICT['armor']
+            game_world.field_array[self.gx+1][self.gy+1] |= FIELD_DICT['armor']
     
     def enemy_ai_update(enemy_head, field_array):
         Enemy_body.change_ai()
@@ -87,7 +88,7 @@ class Enemy_body():
         Enemy_body.enemy_direction = 0
         Enemy_body.enemy_order = 0
         Enemy_body.bomb_cool_down = 500
-        Enemy_body.enemy_hp = 960 // 96
+        Enemy_body.enemy_hp = 960 // 1
         Enemy_body.armored = []
         Enemy_body.ai = 0
 
