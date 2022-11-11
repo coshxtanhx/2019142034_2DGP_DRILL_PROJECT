@@ -19,19 +19,11 @@ def create_new_apple(field_array, mode):
         poisoned = bool(mode == '2')
         return Normal_apple(field_array)
 
-def new_apple_loc(field_array):
-    able_to_create = []
-    for x in range(0, 15):
-        for y in range(0, 9):
-            if(field_array[x+1][y+1] == 0):
-                able_to_create.append((x,y))
-    return choice(able_to_create)
-
 class Normal_apple():
     image = None
     def __init__(self, field_array, gx = -1, gy = -1):
         if gx == -1:
-            gx, gy = new_apple_loc(field_array)
+            gx, gy = creatable_loc(field_array)
         self.x, self.y = grid_to_coordinates(gx, gy)
         self.gx, self.gy = gx, gy
         self.poisoned = False
@@ -50,7 +42,7 @@ class Poison_apple():
     image = None
     def __init__(self, field_array, gx = -1, gy = -1):
         if gx == -1:
-            gx, gy = new_apple_loc(field_array)
+            gx, gy = creatable_loc(field_array)
         self.x, self.y = grid_to_coordinates(gx, gy)
         self.gx, self.gy = gx, gy
         self.poisoned = True

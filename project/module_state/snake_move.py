@@ -7,6 +7,7 @@ from collections import deque
 from snake_move_images import *
 from module_object.apple_obj import *
 from module_object.bomb_obj import *
+from module_object.mine_obj import *
 from module_object.snake_player_obj import *
 from module_object.snake_enemy_obj import *
 from module_object.hpbar_obj import *
@@ -20,8 +21,11 @@ def game_over():
 def go_next_stage():
     next_stage = str(int(cur_stage) + 1)
     if next_stage == '5':
-        exit(2)
+        all_clear()
     state_changer.change_state('snake_move', 'exitall', cur_char + next_stage)
+
+def all_clear():
+    exit(2)
 
 def handle_events():
     events = get_events()
@@ -235,12 +239,12 @@ def check_interaction():
 def enters(data):
     global frame, field_array
     global char_blue, apples, bombs, explodes, enemy_char
-    global enemy_hpbar, broken_screen, screen_out, cloud, ices
+    global enemy_hpbar, broken_screen, screen_out, cloud, ices, mine
     global cur_char, cur_stage
     if(data == None): data = '11'
     cur_char, cur_stage = data[0], data[1]
     frame = 0
-    field_array = []
+    field_array = field_array_reset()
     char_blue = deque([Blue_body(i) for i in range(0, 12*(3-1)+1)])
     apples = create_first_apple(field_array, cur_char)
     bombs = deque()
@@ -254,6 +258,7 @@ def enters(data):
     screen_out = Screen_off()
     cloud = Cloud()
     ices = []
+    mine = Mine(field_array)
 
 def exits():
     global frame, field_array
@@ -283,6 +288,7 @@ def draw_all():
     img_field.draw(UI_WIDTH // 2, UI_HEIGHT // 2)
     apples.draw(field_array)
     if Enemy_body.bomb_cool_down == 0: enemy_set_bomb()
+    mine.draw(field_array)
     bomb_count_and_draw()
     snake_move_and_draw()
     explode_draw()
@@ -295,6 +301,7 @@ def update():
     global enemy_char
     bomb_and_explode_delete()
     check_interaction()
+    mine.is_snake_here(field_array)
     for snake in (Blue_body, Enemy_body):
         if snake.bomb_cool_down > 0: snake.bomb_cool_down -= 1
     Enemy_body.enemy_ai_update(enemy_char[0], field_array)
@@ -312,5 +319,6 @@ broken_screen = None
 screen_out = None
 cloud = None
 ices = None
+mine = None
 cur_char = None
 cur_stage = None
