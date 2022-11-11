@@ -51,6 +51,12 @@ def addleft_object(o, depth):
         return
     world[cur_world][DEPTH_DICT[depth]].appendleft(o)
 
+def rotate_object(i, depth):
+    if(type(world[cur_world][DEPTH_DICT[depth]]) != deque):
+        print('Error: disable to use rotate')
+        return
+    world[cur_world][DEPTH_DICT[depth]].rotate(i)
+
 
 def clear_world():
     for layer in world[cur_world]:
