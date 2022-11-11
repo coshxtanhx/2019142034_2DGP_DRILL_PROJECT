@@ -22,3 +22,5 @@ class HP_bar():
             105 + ceil(hp/6), 590, hp//3, 40)
         self.image_text[self.num].draw(55, 590)
         self.image_frame2.draw(105+160, 590)
+    def update(self):
+        pass

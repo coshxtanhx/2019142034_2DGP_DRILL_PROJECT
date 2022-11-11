@@ -239,7 +239,7 @@ def enters(data):
 
     game_world.add_object(Background('play'), 'bg')
     game_world.add_objects([Blue_body(i) for i in range(12*(3-1)+1)], 'player')
-    game_world.addleft_object(create_first_apple(cur_char), 'obj')
+    game_world.addleft_object(create_first_apple(), 'obj')
     game_world.add_objects([Enemy_body(i, color=COLOR_DICT[cur_stage]) \
         for i in range(0, 12*(6-1)+1)], 'enemy')
     game_world.add_object(HP_bar(int(cur_stage)-1), 'ui')
@@ -278,10 +278,15 @@ def draw_all():
 
 def update():
     for objs in game_world.all_objects():
-        if type(objs) in (Blue_body, Enemy_body, bomb, explosion, Ice):
-            objs.update()
+        objs.update()
     game_world.rotate_object(1, 'player')
     game_world.rotate_object(1, 'enemy')
+
+    for objs in game_world.all_objects_copy():
+        if type(objs) not in (Normal_apple,):
+            continue
+        objs.check_col()
+
     return
     global field_array, apples, frame
     global enemy_char

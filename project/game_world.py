@@ -39,6 +39,11 @@ def all_objects():
         for o in layer:
             yield o
 
+def all_objects_copy():
+    for layer in world[cur_world]:
+        for o in layer.copy():
+            yield o
+
 def add_object(o, depth):
     world[cur_world][DEPTH_DICT[depth]].append(o)
 
@@ -56,7 +61,6 @@ def rotate_object(i, depth):
         print('Error: disable to use rotate')
         return
     world[cur_world][DEPTH_DICT[depth]].rotate(i)
-
 
 def clear_world():
     for layer in world[cur_world]:
