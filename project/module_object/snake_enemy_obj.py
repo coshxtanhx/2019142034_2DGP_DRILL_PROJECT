@@ -44,6 +44,7 @@ class Enemy_body():
     length = 12*(6-1)+1
     hx, hy = grid_to_coordinates(0, 8)
     tx, ty = hx, hy
+    damaged = 0
     def __init__(self, number, color = 'orange', x=40, y=-1):
         if(y == -1):
             self.x, self.y = grid_to_coordinates(0, 8)
@@ -55,16 +56,22 @@ class Enemy_body():
         self.image = 0
         Enemy_body.color = color
         self.armored = False
+    def get_damaged(damage):
+        if Enemy_body.damaged < damage:
+            Enemy_body.damaged = damage
     def update(self):
         if(self.number == self.length - 1):
             self.x, self.y = Enemy_body.hx + dx[Enemy_body.enemy_direction], \
                 Enemy_body.hy + dy[Enemy_body.enemy_direction]
             self.number = 0
-            if Enemy_body.bomb_cool_down > 0: Enemy_body.bomb_cool_down -= 1 
+            if Enemy_body.bomb_cool_down > 0: Enemy_body.bomb_cool_down -= 1
+            if Enemy_body.damaged:
+                Enemy_body.enemy_hp -= Enemy_body.damaged
+                Enemy_body.damaged = 0
         else:
             if(self.number == 0):
                 self.enemy_ai_update()
-            self.number += 1     
+            self.number += 1
 
     def draw(self):
         self.gx, self.gy = coordinates_to_grid(self.x, self.y)
@@ -114,5 +121,5 @@ class Enemy_body():
         if Enemy_body.bomb_cool_down > 0:
             return
         bx, by = Enemy_body.tx, Enemy_body.ty
-        game_world.addleft_object(bomb(bx, by, 0, randint(0, 3)), 'bomb')
+        game_world.addleft_object(bomb(bx, by, 0, randint(2, 3)), 'bomb')
         Enemy_body.bomb_cool_down = 200

@@ -33,6 +33,11 @@ class Ice():
             10 * drawframe, 10 * drawframe)
     def update(self):
         self.frame -= 1
+    def check_col(self):
+        cur_loc = game_world.field_array[self.gx][self.gy]
+        if cur_loc & (FIELD_DICT['player'] + FIELD_DICT['enemy'] \
+            + FIELD_DICT['explode']):
+            game_world.remove_object(self)
 
 
 class explosion():
@@ -48,6 +53,19 @@ class explosion():
         self.image.clip_draw(60 * (self.frame // 2), 0, 60, 60, self.x, self.y)
     def update(self):
         self.frame -= 1
+        if self.frame <= 0:
+            game_world.remove_object(self)
+    def check_col(self):
+        if self.frame != 3:
+            return
+        cur_loc = game_world.field_array[self.gx][self.gy]
+        if cur_loc & (FIELD_DICT['enemy']):
+            import module_object.snake_enemy_obj
+            module_object.snake_enemy_obj.Enemy_body.get_damaged(self.damage)
+        if cur_loc & (FIELD_DICT['player']):
+            import module_object.snake_player_obj
+            module_object.snake_player_obj.Blue_body.get_damaged()
+            
 
 class bomb():
     image = None
@@ -69,6 +87,20 @@ class bomb():
             bomb.image4 = load_image('img/bomb_ice_cross.png')
     def update(self):
         self.counter -= 1
+        if(self.counter == 0 or self.counter <= -65535):
+            self.ready_to_explode()
+    def ready_to_explode(self):
+        game_world.field_array[self.gx+1][self.gy+1] &= \
+            MAX_BITS - FIELD_DICT['bomb']
+        if(self.option == 0):
+            self.explode()
+        elif(self.option == 1):
+            self.explode_cross()
+        elif(self.option == 2):
+            self.explode_ice()
+        elif(self.option == 3):
+            self.explode_ice_cross()
+        game_world.remove_object(self)
     def explode(self):
         for x in range(self.gx+1, 0, -1):
             game_world.field_array[x][self.gy+1] |= FIELD_DICT['explode']
@@ -131,14 +163,8 @@ class bomb():
         if(self.counter > 0):
             bomb_draw_case(self.option, self.is_enemy, self.counter, self.x, self.y)
             game_world.field_array[self.gx+1][self.gy+1] |= FIELD_DICT['bomb']
-        elif(self.counter == 0 or self.counter <= -65535):
-            if(self.option == 0):
-                self.explode()
-            elif(self.option == 1):
-                self.explode_cross()
-            elif(self.option == 2):
-                self.explode_ice()
-            elif(self.option == 3):
-                self.explode_ice_cross()
-        else:
-            return
+        
+    def check_col(self):
+        cur_loc = game_world.field_array[self.gx+1][self.gy+1]
+        if cur_loc & (FIELD_DICT['head'] + FIELD_DICT['ehead']):
+            self.counter = -65536

@@ -9,7 +9,8 @@ class Blue_body():
     img_snake_blue_head = None
     img_snake_blue_body = None
     cur_direction = 0
-    # direction = 0
+    damaged = False
+    longer = False
     direction = deque(maxlen=2)
     bomb_cool_down = 10
     length = 12*(3-1)+1
@@ -41,7 +42,24 @@ class Blue_body():
                     Blue_body.cur_direction = \
                         next_state[Blue_body.cur_direction][Blue_body.direction.pop()]
             self.number += 1
-        
+    def get_longer():
+        if Blue_body.longer == False:
+            return
+        Blue_body.longer = False
+        for i in range(12):
+            game_world.add_object(Blue_body(Blue_body.length+i, \
+                Blue_body.tx, Blue_body.ty), 'player')
+        Blue_body.length += 12
+    def get_shorter():
+        if Blue_body.damaged == False:
+            return
+        Blue_body.damaged = False
+        if Blue_body.length < 15:
+            exit(2)
+        else:
+            Blue_body.length -= 12
+            for _ in range(12):
+                game_world.pop_object('player')
     def draw(self):
         self.gx, self.gy = coordinates_to_grid(self.x, self.y)
         if(self.number == 0):
@@ -57,7 +75,8 @@ class Blue_body():
         if(self.number == self.length - 1):
             (Blue_body.img_snake_blue_head[Blue_body.cur_direction]\
                 ).draw(Blue_body.hx, Blue_body.hy)
-
+    def get_damaged():
+        Blue_body.damaged = True
     def reset():
         Blue_body.cur_direction = 0
         Blue_body.direction = deque(maxlen=2)
@@ -73,6 +92,13 @@ class Blue_body():
                     Blue_body.bomb_cool_down = 100
             else:
                 Blue_body.direction.appendleft(event)
+    
+    def check_col(self):
+        cur_loc = game_world.field_array[self.gx+1][self.gy+1]
+        if cur_loc & (FIELD_DICT['poison'] + FIELD_DICT['ice']):
+            Blue_body.damaged = True
+        if cur_loc & (FIELD_DICT['apple']):
+            Blue_body.longer = True
 
 GO_D, GO_W, GO_A, GO_S = range(4)
 

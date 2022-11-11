@@ -73,3 +73,6 @@ def remove_object(o):
             del(o)
             return
     raise ValueError('value error')
+
+def pop_object(depth):
+    world[cur_world][DEPTH_DICT[depth]].pop()

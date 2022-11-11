@@ -14,6 +14,7 @@ from module_object.screen_hider_obj import *
 from module_object.background_obj import *
 import state_changer
 import game_world
+from pprint import pprint
 
 def game_over():
     state_changer.change_state('title_menu', None)
@@ -274,18 +275,21 @@ def draw_all():
     for objs in game_world.all_objects():
         objs.draw()
     update_canvas()
-    # print(game_world.field_array)
+    # pprint(game_world.field_array)
 
 def update():
-    for objs in game_world.all_objects():
+    for objs in game_world.all_objects_copy():
         objs.update()
     game_world.rotate_object(1, 'player')
     game_world.rotate_object(1, 'enemy')
 
     for objs in game_world.all_objects_copy():
-        if type(objs) not in (Normal_apple,):
+        if type(objs) not in (Normal_apple, bomb, explosion, Ice, Blue_body):
             continue
         objs.check_col()
+
+    Blue_body.get_longer()
+    Blue_body.get_shorter()
 
     return
     global field_array, apples, frame
