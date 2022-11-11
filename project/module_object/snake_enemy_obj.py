@@ -44,6 +44,7 @@ class Enemy_body():
             self.x, self.y = grid_to_coordinates(0, 8)
         else:
             self.x, self.y = x, y
+        self.gx, self.gy = coordinates_to_grid(self.x, self.y)
         self.frame = 0
         self.number = number
         self.image = 0
@@ -56,17 +57,9 @@ class Enemy_body():
             self.number = 0
             enemy_char.rotate(1)
         else:
-            self.number += 1
-        gx, gy = coordinates_to_grid(self.x, self.y)
-        field_array[gx+1][gy+1] |= FIELD_DICT['enemy']
-        if(self.number-4 in Enemy_body.armored or \
-            self.number-2 in Enemy_body.armored or \
-            self.number+0 in Enemy_body.armored or \
-            self.number+2 in Enemy_body.armored or \
-            self.number+4 in Enemy_body.armored):
-            field_array[gx+1][gy+1] |= FIELD_DICT['armor']
+            self.number += 1            
 
-    def draw(self):
+    def draw(self, field_array):
         if(self.number == 0):
             self.image = \
                 (eval('img_snake_' + Enemy_body.color + \
@@ -74,12 +67,14 @@ class Enemy_body():
         else:
             self.image = eval('img_snake_' + Enemy_body.color + '_body')
         self.image.draw(self.x, self.y)
+        field_array[self.gx+1][self.gy+1] |= FIELD_DICT['enemy']
         if(self.number-4 in Enemy_body.armored or \
             self.number-2 in Enemy_body.armored or \
             self.number+0 in Enemy_body.armored or \
             self.number+2 in Enemy_body.armored or \
             self.number+4 in Enemy_body.armored):
             img_armor.draw(self.x, self.y)
+            field_array[self.gx+1][self.gy+1] |= FIELD_DICT['armor']
     
     def enemy_ai_update(enemy_head, field_array):
         Enemy_body.change_ai()

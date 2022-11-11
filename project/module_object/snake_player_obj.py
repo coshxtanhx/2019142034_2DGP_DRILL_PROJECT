@@ -17,6 +17,7 @@ class Blue_body():
             self.x, self.y = convert_coordinates(x, 120)
         else:
             self.x, self.y = x, y
+        self.gx, self.gy = coordinates_to_grid(self.x, self.y)
         self.frame = 0
         self.number = number
         self.image = 0
@@ -26,6 +27,7 @@ class Blue_body():
                     for i in range(4)]
             Blue_body.img_snake_blue_body = load_image('img/snake_blue_body.png')
     def moves(self, char_blue, field_array):
+        is_head = False
         if(self.number == len(char_blue) - 1):
             self.x, self.y = char_blue[0].x + dx[Blue_body.cur_direction], \
                 char_blue[0].y + dy[Blue_body.cur_direction]
@@ -37,15 +39,16 @@ class Blue_body():
                     Blue_body.cur_direction = \
                         next_state[Blue_body.cur_direction][Blue_body.direction.pop()]
             self.number += 1
-        gx, gy = coordinates_to_grid(self.x, self.y)
-        field_array[gx+1][gy+1] |= FIELD_DICT['player']
         
-    def draw(self):
+    def draw(self, field_array):
         if(self.number == 0):
             self.image = Blue_body.img_snake_blue_head[self.cur_direction]
+            field_array[self.gx+1][self.gy+1] |= FIELD_DICT['head']
         else:
             self.image = Blue_body.img_snake_blue_body
         self.image.draw(self.x, self.y)
+        field_array[self.gx+1][self.gy+1] |= FIELD_DICT['player']
+
     def reset():
         Blue_body.cur_direction = 0
         Blue_body.direction = deque(maxlen=2)

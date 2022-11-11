@@ -1,20 +1,35 @@
 # from pico2d import *
+from collections import deque
 
-DEPTH_DICT = {
-    'bg': 0, 'obj': 1, 'player': 2, 'enemy': 3,
-    'explode': 4, 'hider': 5 ,'ui': 6
-}
+DEPTH_DICT = dict()
+obj_list = [
+    'bg', 'obj', 'bomb', 'player', 'enemy',
+    'explode', 'ice', 'hider', 'ui'
+]
+obj_list_len = len(obj_list)
+
+cnt = 0
+for obj_name in obj_list:
+    DEPTH_DICT[obj_name] = cnt
+    cnt += 1
 
 world = dict()
 cur_world = None
 
 state_list = [
-    'title', 'title_menu', 'snake_move', 'select_char',
+    'title', 'title_menu', 'select_char',
     'option_setting', 'how_to_play', 'game_menu'
 ]
 
 for state_name in state_list:
-    world[state_name] = [[] for _ in range(len(DEPTH_DICT))]
+    world[state_name] = [[] for _ in range(obj_list_len)]
+
+world['snake_move'] = []
+for obj_name in obj_list:
+    if obj_name == 'bg' or obj_name == 'ice' or obj_name == 'ui':
+        world['snake_move'] += [[]]
+    else:
+        world['snake_move'] += [deque()]
 
 def all_objects():
     for layer in world[cur_world]:
@@ -26,6 +41,13 @@ def add_object(o, depth):
 
 def add_objects(ol, depth):
     world[cur_world][DEPTH_DICT[depth]] += ol
+
+def addleft_object(o, depth):
+    if(type(world[cur_world][DEPTH_DICT[depth]]) != deque):
+        print('Error: disable to use appendleft')
+        return
+    world[cur_world][DEPTH_DICT[depth]].appendleft(o)
+
 
 def clear_world():
     for layer in world[cur_world]:

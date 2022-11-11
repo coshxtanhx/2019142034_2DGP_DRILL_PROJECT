@@ -4,7 +4,6 @@ from math import *
 from coordinates_module import *
 from event_table_module import *
 from collections import deque
-from snake_move_images import *
 from module_object.apple_obj import *
 from module_object.bomb_obj import *
 from module_object.mine_obj import *
@@ -14,6 +13,7 @@ from module_object.hpbar_obj import *
 from module_object.screen_hider_obj import *
 from module_object.background_obj import *
 import state_changer
+import game_world
 
 def game_over():
     state_changer.change_state('title_menu', None)
@@ -38,10 +38,7 @@ def handle_events():
         else:
             Blue_body.handle_events(event, char_blue[-1], bombs)
         global zzz
-        if raw_event.key == SDLK_u: Enemy_body.ai = 0
-        elif raw_event.key == SDLK_i: Enemy_body.ai = 5
-        elif raw_event.key == SDLK_o: Enemy_body.ai = 4
-        elif raw_event.key == SDLK_p: Enemy_body.ai = 3
+        if raw_event.key == SDLK_p: Enemy_body.enemy_hp -= 250
         elif raw_event.key == SDLK_l: Enemy_body.armored.append(randint(0,5)*12)
         elif event == KMD:
             state_changer.change_state('game_menu', 'pause')
@@ -245,20 +242,21 @@ def enters(data):
     cur_char, cur_stage = data[0], data[1]
     frame = 0
     field_array = field_array_reset()
-    char_blue = deque([Blue_body(i) for i in range(0, 12*(3-1)+1)])
-    apples = create_first_apple(field_array, cur_char)
-    bombs = deque()
-    explodes = deque()
-    enemy_char = deque([Enemy_body(i, color=COLOR_DICT[cur_stage]) \
-        for i in range(0, 12*(6-1)+1)])
+    game_world.add_object(Background('play'), 'bg')
+    game_world.add_objects([Blue_body(i) for i in range(0, 12*(3-1)+1)], 'player')
+    game_world.addleft_object(create_first_apple(field_array, cur_char), 'obj')
+    # bombs = deque()
+    # explodes = deque()
+    game_world.add_objects([Enemy_body(i, color=COLOR_DICT[cur_stage]) \
+        for i in range(0, 12*(6-1)+1)], 'enemy')
     for snake in (Blue_body, Enemy_body):
         snake.reset()
-    enemy_hpbar = HP_bar(int(cur_stage)-1)
-    broken_screen = [Broken() for _ in range(4)]
-    screen_out = Screen_off()
-    cloud = Cloud()
-    ices = []
-    mine = Mine(field_array)
+    game_world.add_object(HP_bar(int(cur_stage)-1), 'ui')
+    # broken_screen = [Broken() for _ in range(4)]
+    # screen_out = Screen_off()
+    # cloud = Cloud()
+    # ices = []
+    # mine = Mine(field_array)
 
 def exits():
     global frame, field_array
@@ -280,31 +278,37 @@ def exits():
     cur_char = None
     cur_stage = None
 
+DRAW_DICT = {
+    Blue_body: '(field_array)',
+    bomb: '(field_array)'
+}
+
 def draw_all():
     global field_array, apples, frame
     global enemy_char
     clear_canvas()
     field_array = field_array_reset()
-    img_field.draw(UI_WIDTH // 2, UI_HEIGHT // 2)
-    apples.draw(field_array)
-    if Enemy_body.bomb_cool_down == 0: enemy_set_bomb()
-    mine.draw(field_array)
-    bomb_count_and_draw()
-    snake_move_and_draw()
-    explode_draw()
-    screen_hider_draw()
-    enemy_hp_bar_draw()
+    for objs in game_world.all_objects():
+        objs.draw(*eval(DRAW_DICT[type(objs)]))
+    # apples.draw(field_array)
+    # if Enemy_body.bomb_cool_down == 0: enemy_set_bomb()
+    # bomb_count_and_draw()
+    # snake_move_and_draw()
+    # mine.draw(field_array)
+    # explode_draw()
+    # screen_hider_draw()
+    # enemy_hp_bar_draw()
     update_canvas()
 
 def update():
     global field_array, apples, frame
     global enemy_char
-    bomb_and_explode_delete()
-    check_interaction()
-    mine.is_snake_here(field_array)
+    # bomb_and_explode_delete()
+    # check_interaction()
+    # mine.snake_is_here(field_array)
     for snake in (Blue_body, Enemy_body):
         if snake.bomb_cool_down > 0: snake.bomb_cool_down -= 1
-    Enemy_body.enemy_ai_update(enemy_char[0], field_array)
+    # Enemy_body.enemy_ai_update(enemy_char[0], field_array)
     frame = (frame + 1) % 8
 
 frame = None
