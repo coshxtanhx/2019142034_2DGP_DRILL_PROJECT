@@ -26,10 +26,10 @@ def grid_to_coordinates(x, y):
 def coordinates_to_grid(x, y):
     return (x - 40 + 30) // 60, (-y + UI_HEIGHT - 120 + 30) // 60
 
-def creatable_loc(field_array):
+def creatable_loc(field_array, edge = 0):
     able_to_create = []
-    for x in range(0, 15):
-        for y in range(0, 9):
+    for x in range(edge, 15-edge):
+        for y in range(edge, 9-edge):
             if(field_array[x+1][y+1] == 0):
                 able_to_create.append((x,y))
     return choice(able_to_create)

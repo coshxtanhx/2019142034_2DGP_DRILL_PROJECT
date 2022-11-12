@@ -80,7 +80,7 @@ class bomb():
     def __init__(self, x, y, damage, option = 0):
         self.gx, self.gy = coordinates_to_grid(x, y)
         self.x, self.y = grid_to_coordinates(self.gx, self.gy)
-        self.counter = 350
+        self.counter = 350 if (option != 4) else 1
         self.damage = damage
         self.option = option
         self.is_enemy = 5 if (self.damage == 0) else 0
@@ -105,6 +105,8 @@ class bomb():
             self.explode_ice()
         elif(self.option == 3):
             self.explode_ice_cross()
+        elif(self.option == 4):
+            self.explode_mine()
         game_world.remove_object(self)
     def explode(self):
         for x in range(self.gx+1, 0, -1):
@@ -120,6 +122,11 @@ class bomb():
             game_world.field_array[self.gx+1][y] |= FIELD_DICT['explode']
             game_world.addleft_object(explosion(self.gx+1, y, self.damage), 'explode')
         self.x = -65535
+    def explode_mine(self):
+        for x in range(-1, 2):
+            for y in range(-1, 2):
+                game_world.addleft_object(explosion(self.gx+1+x, self.gy+1+y, self.damage), 'explode')
+
 
     def explode_cross(self):
         for i in range(0, 9, 1):

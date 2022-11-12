@@ -3,11 +3,13 @@ from collections import deque
 from pico2d import *
 from event_table_module import *
 from module_object.bomb_obj import bomb
+from module_object.mine_obj import Mine
 import game_world
 
 class Blue_body():
     img_snake_blue_head = None
     img_snake_blue_body = None
+    character = None
     cur_direction = 0
     damaged = False
     longer = False
@@ -50,6 +52,7 @@ class Blue_body():
             game_world.add_object(Blue_body(Blue_body.length+i, \
                 Blue_body.tx, Blue_body.ty), 'player')
         Blue_body.length += 12
+        game_world.add_object(Mine(), 'obj')
     def get_shorter():
         if Blue_body.damaged == False:
             return

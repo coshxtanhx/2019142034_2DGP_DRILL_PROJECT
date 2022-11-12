@@ -25,6 +25,8 @@ class Background():
         self.image.draw(UI_WIDTH//2, UI_HEIGHT//2)
     def update(self):
         pass
+    def check_col(self):
+        pass
 
 class Title_text():
     image = None

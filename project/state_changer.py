@@ -31,6 +31,8 @@ def state_exit(current_module_str):
 
 def state_exit_all():
     for i in range(len(state_stack)-1, -1, -1):
+        import game_world
+        game_world.cur_world = state_stack[i]
         eval('module_state.' + state_stack[i]).exits()
         print(state_stack[i] + ' exited')
         state_stack.pop()

@@ -121,7 +121,7 @@ class Enemy_body():
         if Enemy_body.bomb_cool_down > 0:
             return
         bx, by = Enemy_body.tx, Enemy_body.ty
-        game_world.addleft_object(bomb(bx, by, 0, randint(2, 3)), 'bomb')
+        game_world.addleft_object(bomb(bx, by, 0, randint(0, 0)), 'bomb')
         Enemy_body.bomb_cool_down = 200
 
     def check_col(self):

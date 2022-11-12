@@ -238,6 +238,8 @@ def enters(data):
     frame = 0
     field_array = field_array_reset()
 
+    Blue_body.character = cur_char
+
     game_world.add_object(Background('play'), 'bg')
     game_world.add_objects([Blue_body(i) for i in range(12*(3-1)+1)], 'player')
     game_world.addleft_object(create_first_apple(), 'obj')
@@ -285,9 +287,6 @@ def update():
     game_world.rotate_object(1, 'enemy')
 
     for objs in game_world.all_objects_copy():
-        if type(objs) not in (Normal_apple, bomb, explosion, \
-            Ice, Blue_body, Enemy_body):
-            continue
         objs.check_col()
 
     Blue_body.get_longer()
