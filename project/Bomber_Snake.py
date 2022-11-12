@@ -3,5 +3,5 @@ from pico2d import open_canvas
 open_canvas(UI_WIDTH, UI_HEIGHT)
 
 from state_changer import state_changer_activate
-state_changer_activate('select_char')
+state_changer_activate('title')
 #
