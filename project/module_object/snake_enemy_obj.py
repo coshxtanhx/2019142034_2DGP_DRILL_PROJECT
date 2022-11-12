@@ -1,6 +1,7 @@
 from coordinates_module import *
 from collections import deque
 from pico2d import *
+from random import choice
 from module_object.bomb_obj import bomb
 from enemy_movement_ai import enemy_ai
 import game_world
@@ -33,6 +34,10 @@ AI_DICT = {
     (3, 4): 1, (2, 4): 2, (1, 4): 0, (0, 4): 3,
 }
 
+bomb_type_list = (
+    (0,), (0,1), (0, 0,1,3), (0,0, 1,3,2,2), (3, 3, 3, 2, 2, 2, 1, 0)
+)
+
 class Enemy_body():
     enemy_direction = 0
     enemy_order = 0
@@ -41,6 +46,7 @@ class Enemy_body():
     armored = []
     color = None
     ai = 0
+    bomb_type = 0
     length = 12*(6-1)+1
     hx, hy = grid_to_coordinates(0, 8)
     tx, ty = hx, hy
@@ -112,16 +118,27 @@ class Enemy_body():
         Enemy_body.enemy_hp = 960 // 1
         Enemy_body.armored = []
         Enemy_body.ai = 0
+        Enemy_body.bomb_type = 0
 
     def change_ai():
         Enemy_body.ai = \
             AI_DICT[(Enemy_body.enemy_hp // 241, COLOR_DICT2[Enemy_body.color])]
+        if Enemy_body.color == 'purple':
+            if Enemy_body.enemy_hp // 241 == 3:
+                Enemy_body.bomb_type = 1
+            elif Enemy_body.enemy_hp // 241 == 2:
+                Enemy_body.bomb_type = 2
+            elif Enemy_body.enemy_hp // 241 == 1:
+                Enemy_body.bomb_type = 3
+            elif Enemy_body.enemy_hp // 241 == 0:
+                Enemy_body.bomb_type = 4
 
     def enemy_set_bomb():
         if Enemy_body.bomb_cool_down > 0:
             return
         bx, by = Enemy_body.tx, Enemy_body.ty
-        game_world.addleft_object(bomb(bx, by, 0, randint(0, 0)), 'bomb')
+        game_world.addleft_object(bomb(bx, by, 0, \
+            choice(bomb_type_list[Enemy_body.bomb_type])), 'bomb')
         Enemy_body.bomb_cool_down = 200
 
     def check_col(self):
