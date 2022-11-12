@@ -2,7 +2,7 @@ from coordinates_module import *
 from collections import deque
 from pico2d import *
 from event_table_module import *
-from module_object.bomb_obj import bomb
+from module_object.bomb_obj import bomb, Skin
 from module_object.mine_obj import Mine
 import game_world
 
@@ -13,6 +13,7 @@ class Blue_body():
     cur_direction = 0
     damaged = False
     longer = False
+    skinshed = False
     direction = deque(maxlen=2)
     bomb_cool_down = 10
     length = 12*(3-1)+1
@@ -38,12 +39,15 @@ class Blue_body():
                 self.hy + dy[Blue_body.cur_direction]
             self.number = 0
             if Blue_body.bomb_cool_down > 0: Blue_body.bomb_cool_down -= 1
+            Blue_body.skinshed = False
         else:
             if(self.number == 0):
                 if(Blue_body.direction and self.x % 60 == 40 and self.y % 60 == 40):
                     Blue_body.cur_direction = \
                         next_state[Blue_body.cur_direction][Blue_body.direction.pop()]
             self.number += 1
+        if self.number > 30 and Blue_body.skinshed:
+            game_world.add_object(Skin(self.x, self.y), 'ice')
     def get_longer():
         if Blue_body.longer == False:
             return
@@ -52,7 +56,10 @@ class Blue_body():
             game_world.add_object(Blue_body(Blue_body.length+i, \
                 Blue_body.tx, Blue_body.ty), 'player')
         Blue_body.length += 12
-        game_world.add_object(Mine(), 'obj')
+        if Blue_body.character == '3':
+            game_world.add_object(Mine(), 'obj')
+        if Blue_body.character == '4':
+            Blue_body.skinshed = True
     def get_shorter():
         if Blue_body.damaged == False:
             return
@@ -108,6 +115,8 @@ class Blue_body():
             exit(2)
         if cur_loc & (FIELD_DICT['apple']):
             Blue_body.longer = True
+        if cur_loc & (FIELD_DICT['poison']):
+            Blue_body.get_damaged()
 
 GO_D, GO_W, GO_A, GO_S = range(4)
 

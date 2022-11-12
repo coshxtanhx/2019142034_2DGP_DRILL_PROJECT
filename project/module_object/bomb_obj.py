@@ -17,6 +17,33 @@ def bomb_draw_case(option, is_enemy, count, x, y):
     elif(option == 3):
         bomb.image4.clip_draw(60 * (count % 3), 60 * (cntnum-1), 60, 60, x, y)
 
+class Skin():
+    image = None
+    def __init__(self, x, y):
+        self.x, self.y = x, y
+        self.gx, self.gy = coordinates_to_grid(x, y)
+        self.frame = 700
+        if(Skin.image == None):
+            Skin.image = load_image('img/snake_skinwall.png')
+    def draw(self):
+        game_world.field_array[self.gx][self.gy] |= FIELD_DICT['ice']
+        drawframe = (701 - self.frame) if (self.frame > 694) else 6
+        drawframe = (self.frame + 1) if (self.frame < 5) else drawframe
+        self.image.clip_draw(0, 0, 60, 60, self.x, self.y, \
+            10 * drawframe, 10 * drawframe)
+    def update(self):
+        self.frame -= 1
+        if self.frame <= 0:
+            game_world.remove_object(self)
+    def check_col(self):
+        cur_loc = game_world.field_array[self.gx+1][self.gy+1]
+        if cur_loc & (FIELD_DICT['head']):
+            import module_object.snake_player_obj
+            module_object.snake_player_obj.Blue_body.get_damaged()
+        if cur_loc & (FIELD_DICT['head'] + FIELD_DICT['enemy'] \
+            + FIELD_DICT['explode']):
+            game_world.remove_object(self)
+
 class Ice():
     image = None
     def __init__(self, gx, gy):
