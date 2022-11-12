@@ -266,6 +266,7 @@ def exits():
     ices = None
     cur_char = None
     cur_stage = None
+    game_world.clear_world()
 
 def draw_all():
     global field_array, apples, frame
@@ -284,7 +285,8 @@ def update():
     game_world.rotate_object(1, 'enemy')
 
     for objs in game_world.all_objects_copy():
-        if type(objs) not in (Normal_apple, bomb, explosion, Ice, Blue_body):
+        if type(objs) not in (Normal_apple, bomb, explosion, \
+            Ice, Blue_body, Enemy_body):
             continue
         objs.check_col()
 

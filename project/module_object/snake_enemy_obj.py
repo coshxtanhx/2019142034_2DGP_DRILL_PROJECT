@@ -108,7 +108,7 @@ class Enemy_body():
     def reset():
         Enemy_body.enemy_direction = 0
         Enemy_body.enemy_order = 0
-        Enemy_body.bomb_cool_down = 500
+        Enemy_body.bomb_cool_down = 500 // 5
         Enemy_body.enemy_hp = 960 // 1
         Enemy_body.armored = []
         Enemy_body.ai = 0
@@ -123,3 +123,9 @@ class Enemy_body():
         bx, by = Enemy_body.tx, Enemy_body.ty
         game_world.addleft_object(bomb(bx, by, 0, randint(2, 3)), 'bomb')
         Enemy_body.bomb_cool_down = 200
+
+    def check_col(self):
+        cur_loc = game_world.field_array[self.gx+1][self.gy+1]
+        if cur_loc & (FIELD_DICT['player']):
+            import module_object.snake_player_obj
+            module_object.snake_player_obj.Blue_body.get_damaged()

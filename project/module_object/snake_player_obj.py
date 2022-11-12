@@ -67,6 +67,8 @@ class Blue_body():
             Blue_body.hx, Blue_body.hy = self.x, self.y
             return
         else:
+            if(self.number > 30):
+                game_world.field_array[self.gx+1][self.gy+1] |= FIELD_DICT['body']
             self.image = Blue_body.img_snake_blue_body
             if(self.number == self.length-1):
                 Blue_body.tx, Blue_body.ty = self.x, self.y
@@ -95,8 +97,12 @@ class Blue_body():
     
     def check_col(self):
         cur_loc = game_world.field_array[self.gx+1][self.gy+1]
-        if cur_loc & (FIELD_DICT['poison'] + FIELD_DICT['ice']):
-            Blue_body.damaged = True
+        if Blue_body.length >= 40 and self.number == 0 and \
+            (cur_loc & (FIELD_DICT['body']+FIELD_DICT['head']) \
+                == (FIELD_DICT['body']+FIELD_DICT['head'])):
+            exit(2)
+        if cur_loc & (FIELD_DICT['wall']):
+            exit(2)
         if cur_loc & (FIELD_DICT['apple']):
             Blue_body.longer = True
 

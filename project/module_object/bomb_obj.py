@@ -33,8 +33,13 @@ class Ice():
             10 * drawframe, 10 * drawframe)
     def update(self):
         self.frame -= 1
+        if self.frame <= 0:
+            game_world.remove_object(self)
     def check_col(self):
         cur_loc = game_world.field_array[self.gx][self.gy]
+        if cur_loc & (FIELD_DICT['player']):
+            import module_object.snake_player_obj
+            module_object.snake_player_obj.Blue_body.get_damaged()
         if cur_loc & (FIELD_DICT['player'] + FIELD_DICT['enemy'] \
             + FIELD_DICT['explode']):
             game_world.remove_object(self)
