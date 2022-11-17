@@ -1,4 +1,4 @@
-from coordinates_module import FIELD_DICT
+from module_other.coordinates_module import FIELD_DICT
 
 dx = (1, 0, -1, 0)
 dy = (0, -1, 0, 1)

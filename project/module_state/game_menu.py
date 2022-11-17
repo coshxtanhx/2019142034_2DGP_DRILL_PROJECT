@@ -1,19 +1,19 @@
 from pico2d import *
-from coordinates_module import UI_HEIGHT, UI_WIDTH
+from module_other.coordinates_module import UI_HEIGHT, UI_WIDTH
 from module_object.buttons_obj import *
 from module_object.background_obj import *
-from event_table_module import *
-import state_changer
-import game_world
+from module_other.event_table_module import *
+import module_other.state_changer
+import module_other.game_world
 
 def handle_events():
     events = get_events()
     for raw_event in events:
         event = convert_event(raw_event)
         if event == QUIT:
-            state_changer.change_state('', None)
+            module_other.state_changer.change_state('', None)
         elif event == KESCD:
-            state_changer.change_state('snake_move', 'resume')
+            module_other.state_changer.change_state('snake_move', 'resume')
         elif event == MLD:
             button_clicked = -1
             for i in range(4):
@@ -21,39 +21,39 @@ def handle_events():
                     button_clicked = i
                     break
             if(button_clicked == 0):
-                state_changer.change_state('title', 'exitall')
+                module_other.state_changer.change_state('title', 'exitall')
             elif(button_clicked == 1):
                 from module_state.snake_move import cur_char, cur_stage
-                state_changer.change_state('snake_move', 'exitall', \
+                module_other.state_changer.change_state('snake_move', 'exitall', \
                     cur_char + cur_stage)
             elif(button_clicked == 2):
-                state_changer.change_state('option_setting', 'pause')
+                module_other.state_changer.change_state('option_setting', 'pause')
             elif(button_clicked == 3):
-                state_changer.change_state('snake_move', 'resume')
+                module_other.state_changer.change_state('snake_move', 'resume')
 
 def enters(option):
     global img_ui_bg, img_ui_text, buttons
     img_ui_bg = Background('menu')
     img_ui_text = Blinking_message('menu')
     buttons = [Game_menu_button(190 + 180 * i) for i in range(4)]
-    game_world.add_object(img_ui_bg, 'bg')
-    game_world.add_object(img_ui_text, 'obj')
+    module_other.game_world.add_object(img_ui_bg, 'bg')
+    module_other.game_world.add_object(img_ui_text, 'obj')
 
 def exits():
     global img_ui_bg, img_ui_text, buttons
     img_ui_bg = None
     img_ui_text = None
     buttons = None
-    game_world.clear_world()
+    module_other.game_world.clear_world()
 
 def draw_all():
     clear_canvas()
-    for objs in game_world.all_objects():
+    for objs in module_other.game_world.all_objects():
         objs.draw()
     update_canvas()
 
 def update():
-    for objs in game_world.all_objects():
+    for objs in module_other.game_world.all_objects():
         objs.update()
 
 img_ui_bg = None

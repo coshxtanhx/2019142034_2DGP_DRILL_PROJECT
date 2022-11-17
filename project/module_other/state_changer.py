@@ -18,8 +18,8 @@ def get_previous_state():
     return state_stack[-2]
 
 def state_enter(next_module_str, data):
-    import game_world
-    game_world.cur_world = next_module_str
+    import module_other.game_world
+    module_other.game_world.cur_world = next_module_str
     state_stack.append(next_module_str)
     eval('module_state.' + next_module_str).enters(data)
     print(next_module_str + ' entered')
@@ -31,15 +31,15 @@ def state_exit(current_module_str):
 
 def state_exit_all():
     for i in range(len(state_stack)-1, -1, -1):
-        import game_world
-        game_world.cur_world = state_stack[i]
+        import module_other.game_world
+        module_other.game_world.cur_world = state_stack[i]
         eval('module_state.' + state_stack[i]).exits()
         print(state_stack[i] + ' exited')
         state_stack.pop()
 
 def state_act(next_module_str):
-    import game_world
-    game_world.cur_world = next_module_str
+    import module_other.game_world
+    module_other.game_world.cur_world = next_module_str
     global running, next_module, next_module_option, data
     running = True
     start_time = time()

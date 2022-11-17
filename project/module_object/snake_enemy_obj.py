@@ -1,10 +1,10 @@
-from coordinates_module import *
+from module_other.coordinates_module import *
 from collections import deque
 from pico2d import *
 from random import choice
 from module_object.bomb_obj import bomb
-from enemy_movement_ai import enemy_ai
-import game_world
+from module_enemy_ai.enemy_movement_ai import enemy_ai
+import module_other.game_world
 
 img_snake_orange_head = \
     [load_image('img/snake_orange_head_' + str(i) + '.png') for i in range(4)]
@@ -82,7 +82,7 @@ class Enemy_body():
     def draw(self):
         self.gx, self.gy = coordinates_to_grid(self.x, self.y)
         if(self.number == 0):
-            game_world.field_array[self.gx+1][self.gy+1] |= FIELD_DICT['ehead']
+            module_other.game_world.field_array[self.gx+1][self.gy+1] |= FIELD_DICT['ehead']
             Enemy_body.hx, Enemy_body.hy = self.x, self.y
             return
         else:
@@ -93,7 +93,7 @@ class Enemy_body():
         if(self.number == self.length - 1):
             (eval('img_snake_' + Enemy_body.color + '_head'))\
                 [Enemy_body.enemy_direction].draw(Enemy_body.hx, Enemy_body.hy)
-        game_world.field_array[self.gx+1][self.gy+1] |= FIELD_DICT['enemy']
+        module_other.game_world.field_array[self.gx+1][self.gy+1] |= FIELD_DICT['enemy']
 
         if(self.number-4 in Enemy_body.armored or \
             self.number-2 in Enemy_body.armored or \
@@ -101,7 +101,7 @@ class Enemy_body():
             self.number+2 in Enemy_body.armored or \
             self.number+4 in Enemy_body.armored):
             img_armor.draw(self.x, self.y)
-            game_world.field_array[self.gx+1][self.gy+1] |= FIELD_DICT['armor']
+            module_other.game_world.field_array[self.gx+1][self.gy+1] |= FIELD_DICT['armor']
     
     def enemy_ai_update(enemy_head):
         Enemy_body.change_ai()
@@ -109,7 +109,7 @@ class Enemy_body():
         if(enemy_head.x % 60 == 40 and enemy_head.y % 60 == 40):
             Enemy_body.enemy_direction = enemy_ai(Enemy_body.enemy_direction, \
                 *coordinates_to_grid(enemy_head.x, enemy_head.y), \
-                game_world.field_array, Enemy_body.ai)
+                module_other.game_world.field_array, Enemy_body.ai)
 
     def reset():
         Enemy_body.enemy_direction = 0
@@ -137,12 +137,12 @@ class Enemy_body():
         if Enemy_body.bomb_cool_down > 0:
             return
         bx, by = Enemy_body.tx, Enemy_body.ty
-        game_world.addleft_object(bomb(bx, by, 0, \
+        module_other.game_world.addleft_object(bomb(bx, by, 0, \
             choice(bomb_type_list[Enemy_body.bomb_type])), 'bomb')
         Enemy_body.bomb_cool_down = 200
 
     def check_col(self):
-        cur_loc = game_world.field_array[self.gx+1][self.gy+1]
+        cur_loc = module_other.game_world.field_array[self.gx+1][self.gy+1]
         if cur_loc & (FIELD_DICT['player']):
             import module_object.snake_player_obj
             module_object.snake_player_obj.Blue_body.get_damaged()

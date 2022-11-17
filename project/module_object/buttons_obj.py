@@ -1,4 +1,4 @@
-from coordinates_module import UI_WIDTH, UI_HEIGHT, get_distance
+from module_other.coordinates_module import UI_WIDTH, UI_HEIGHT, get_distance
 from pico2d import *
 
 class Title_button():

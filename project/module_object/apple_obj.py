@@ -1,7 +1,7 @@
-from coordinates_module import *
+from module_other.coordinates_module import *
 from pico2d import *
 import module_enemy_ai.apple_hunter
-import game_world
+import module_other.game_world
 
 poisoned = False
 mode = None
@@ -24,11 +24,11 @@ def create_new_apple():
 
 class Apple():
     def check_col(self):
-        cur_loc = game_world.field_array[self.gx+1][self.gy+1]
+        cur_loc = module_other.game_world.field_array[self.gx+1][self.gy+1]
         if cur_loc & (FIELD_DICT['head'] + FIELD_DICT['ehead'] \
             + FIELD_DICT['explode']):
-            game_world.remove_object(self)
-            game_world.addleft_object(create_new_apple(), 'obj')
+            module_other.game_world.remove_object(self)
+            module_other.game_world.addleft_object(create_new_apple(), 'obj')
     def update(self):
         pass
 
@@ -36,7 +36,7 @@ class Normal_apple(Apple):
     image = None
     def __init__(self, gx = -1, gy = -1):
         if gx == -1:
-            gx, gy = creatable_loc(game_world.field_array)
+            gx, gy = creatable_loc(module_other.game_world.field_array)
         self.x, self.y = grid_to_coordinates(gx, gy)
         self.gx, self.gy = gx, gy
         self.poisoned = False
@@ -46,7 +46,8 @@ class Normal_apple(Apple):
     def draw(self):
         if(self.exist):
             self.image.draw(self.x, self.y)
-            game_world.field_array[self.gx+1][self.gy+1] |= FIELD_DICT['apple']
+            module_other.game_world.field_array[self.gx+1][self.gy+1] \
+                |= FIELD_DICT['apple']
             module_enemy_ai.apple_hunter.apple_gx = self.gx
             module_enemy_ai.apple_hunter.apple_gy = self.gy
         else: return
@@ -55,7 +56,7 @@ class Poison_apple(Apple):
     image = None
     def __init__(self, gx = -1, gy = -1):
         if gx == -1:
-            gx, gy = creatable_loc(game_world.field_array)
+            gx, gy = creatable_loc(module_other.game_world.field_array)
         self.x, self.y = grid_to_coordinates(gx, gy)
         self.gx, self.gy = gx, gy
         self.poisoned = True
@@ -65,7 +66,8 @@ class Poison_apple(Apple):
     def draw(self):
         if(self.exist):
             self.image.draw(self.x, self.y)
-            game_world.field_array[self.gx+1][self.gy+1] |= FIELD_DICT['poison']
+            module_other.game_world.field_array[self.gx+1][self.gy+1] \
+                |= FIELD_DICT['poison']
             module_enemy_ai.apple_hunter.apple_gx = -65535
         else: return
         

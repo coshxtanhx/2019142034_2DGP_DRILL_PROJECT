@@ -1,5 +1,5 @@
 from random import choice
-from coordinates_module import get_distance
+from module_other.coordinates_module import get_distance
 
 def aim_arrived(gx, gy, aim_gx, aim_gy, option):
     if get_distance(gx, gy, aim_gx, aim_gy) <= option:

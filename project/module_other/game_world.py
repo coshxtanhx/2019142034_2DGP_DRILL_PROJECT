@@ -1,6 +1,6 @@
 # from pico2d import *
 from collections import deque
-from coordinates_module import *
+from module_other.coordinates_module import *
 
 DEPTH_DICT = dict()
 obj_list = [
@@ -52,13 +52,13 @@ def add_objects(ol, depth):
 
 def addleft_object(o, depth):
     if(type(world[cur_world][DEPTH_DICT[depth]]) != deque):
-        print('Error: disable to use appendleft')
+        print('Error: unable to use appendleft')
         return
     world[cur_world][DEPTH_DICT[depth]].appendleft(o)
 
 def rotate_object(i, depth):
     if(type(world[cur_world][DEPTH_DICT[depth]]) != deque):
-        print('Error: disable to use rotate')
+        print('Error: unable to use rotate')
         return
     world[cur_world][DEPTH_DICT[depth]].rotate(i)
 

@@ -1,10 +1,10 @@
 from pico2d import *
 from module_object.buttons_obj import *
-from coordinates_module import UI_HEIGHT, UI_WIDTH
-from event_table_module import *
+from module_other.coordinates_module import UI_HEIGHT, UI_WIDTH
+from module_other.event_table_module import *
 from module_object.background_obj import *
-import state_changer
-import game_world
+import module_other.state_changer
+import module_other.game_world as gw
 
 def is_able_load():
     global file, loaded_dat
@@ -25,9 +25,9 @@ def handle_events():
     for raw_event in events:
         event = convert_event(raw_event)
         if event == QUIT:
-            state_changer.change_state('', None)
+            module_other.state_changer.change_state('', None)
         elif event == KESCD:
-            state_changer.change_state('title', None)
+            module_other.state_changer.change_state('title', None)
         elif event == MLD:
             button_clicked = -1
             for i in range(4):
@@ -35,13 +35,13 @@ def handle_events():
                     button_clicked = i
                     break
             if(button_clicked == 0):
-                state_changer.change_state('select_char', None)
+                module_other.state_changer.change_state('select_char', None)
             elif(button_clicked == 1):
-                state_changer.change_state('snake_move', None, loaded_dat)
+                module_other.state_changer.change_state('snake_move', None, loaded_dat)
             elif(button_clicked == 2):
-                state_changer.change_state('option_setting', 'pause')
+                module_other.state_changer.change_state('option_setting', 'pause')
             elif(button_clicked == 3):
-                state_changer.change_state('', None)
+                module_other.state_changer.change_state('', None)
 
 def enters(option):
     global frame, title_bg, buttons
@@ -55,8 +55,8 @@ def enters(option):
     buttons = [Title_button(img_menu_button[i], 550 - i * 150)\
         for i in range(4)]
     buttons[1].enabled = loaded_suc
-    game_world.add_object(title_bg, 'bg')
-    game_world.add_objects(buttons, 'ui')
+    gw.add_object(title_bg, 'bg')
+    gw.add_objects(buttons, 'ui')
 
 def exits():
     global frame, buttons, img_menu_button, title_bg
@@ -68,11 +68,11 @@ def exits():
         file.close()
     file = None
     loaded_dat = None
-    game_world.clear_world()
+    gw.clear_world()
 
 def draw_all():
     clear_canvas()
-    for objs in game_world.all_objects():
+    for objs in gw.all_objects():
         objs.draw()
     update_canvas()
 

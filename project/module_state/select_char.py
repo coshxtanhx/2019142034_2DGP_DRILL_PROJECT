@@ -1,9 +1,9 @@
 from pico2d import *
 from module_object.buttons_obj import *
-from event_table_module import *
+from module_other.event_table_module import *
 from module_object.background_obj import Background, Selection
-import state_changer
-import game_world
+import module_other.state_changer
+import module_other.game_world
 
 def handle_events():
     global cur_selecting
@@ -11,9 +11,9 @@ def handle_events():
     for raw_event in events:
         event = convert_event(raw_event)
         if event == QUIT:
-            state_changer.change_state('', None)
+            module_other.state_changer.change_state('', None)
         elif event == KESCD:
-            state_changer.change_state('title_menu', None)
+            module_other.state_changer.change_state('title_menu', None)
         elif event == MLD:
             button_clicked = -1
             for i in range(4):
@@ -21,10 +21,10 @@ def handle_events():
                     button_clicked = i
                     break
             if button_clicked == 0:
-                state_changer.change_state('snake_move', None, \
+                module_other.state_changer.change_state('snake_move', None, \
                     str(Selection.num+1) + '1')
             if button_clicked == 1:
-                state_changer.change_state('how_to_play', 'pause')
+                module_other.state_changer.change_state('how_to_play', 'pause')
             elif button_clicked == 2:
                 Selection.change_img(-1)
             elif button_clicked == 3:
@@ -37,8 +37,8 @@ def enters(option):
     cur_selecting = 0
     buttons = [Start_and_Guide_Button(x) for x in (250, 670)] \
         + [Char_sel_button(x) for x in (260, 660)]
-    game_world.add_object(bg, 'bg')
-    game_world.add_object(selection_images, 'obj')
+    module_other.game_world.add_object(bg, 'bg')
+    module_other.game_world.add_object(selection_images, 'obj')
 
 def exits():
     global bg, selection_images, cur_selecting, buttons
@@ -46,11 +46,11 @@ def exits():
     selection_images = None
     cur_selecting = None
     buttons = None
-    game_world.clear_world()
+    module_other.game_world.clear_world()
 
 def draw_all():
     clear_canvas()
-    for objs in game_world.all_objects():
+    for objs in module_other.game_world.all_objects():
         objs.draw()
     update_canvas()
 

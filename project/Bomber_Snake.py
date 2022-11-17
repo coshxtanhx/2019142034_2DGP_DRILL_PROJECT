@@ -1,7 +1,7 @@
-from coordinates_module import UI_HEIGHT, UI_WIDTH
+from module_other.coordinates_module import UI_HEIGHT, UI_WIDTH
 from pico2d import open_canvas
 open_canvas(UI_WIDTH, UI_HEIGHT)
 
-from state_changer import state_changer_activate
+from module_other.state_changer import state_changer_activate
 state_changer_activate('title')
 #

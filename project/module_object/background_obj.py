@@ -1,5 +1,5 @@
 from pico2d import *
-from coordinates_module import UI_HEIGHT, UI_WIDTH
+from module_other.coordinates_module import UI_HEIGHT, UI_WIDTH
 from math import *
 
 class Background():

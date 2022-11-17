@@ -1,5 +1,5 @@
 from random import choice
-from coordinates_module import FIELD_DICT
+from module_other.coordinates_module import FIELD_DICT
 from module_enemy_ai.just_circle import *
 from module_enemy_ai.just_sweep import *
 from module_enemy_ai.apple_hunter import *
