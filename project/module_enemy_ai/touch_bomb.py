@@ -1,14 +1,14 @@
 from module_enemy_ai.just_go import come_here
 from module_enemy_ai.cannot_go import is_possible
 from collections import deque
-import module_other.game_world
+import module_other.game_world as gw
 
 last_bomb_gx, last_bomb_gy = 0, 0
 dx = (1, 0, -1, 0)
 dy = (0, -1, 0, 1)
 
 def bomb_finding_move(enemy_dir, gx, gy, field):
-    bombs = module_other.game_world.world['snake_move'][2]
+    bombs = gw.world['snake_move'][2]
     if(not(bombs)): return -1
     last_enemy_bomb = -1
     for idx in range(len(bombs)-1, -1, -1):

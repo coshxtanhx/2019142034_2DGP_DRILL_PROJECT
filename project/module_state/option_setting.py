@@ -4,8 +4,8 @@ from module_other.event_table_module import *
 from module_object.background_obj import *
 from module_object.buttons_obj \
     import Option_volume_button, Option_volume_line, Option_button
-import module_other.state_changer
-import module_other.game_world
+import module_other.state_changer as sc
+import module_other.game_world as gw
 
 MAX_VOL = 128
 
@@ -40,10 +40,10 @@ def handle_events():
     for raw_event in events:
         event = convert_event(raw_event)
         if event == QUIT:
-            module_other.state_changer.change_state('', None)
+            sc.change_state('', None)
         elif event == KESCD:
             change_volume(1)
-            module_other.state_changer.change_state('lastest', 'resume')
+            sc.change_state('lastest', 'resume')
         elif event == MM:
             for i in range(2):
                 volume_buttons[i].drag_move(raw_event.x)
@@ -58,7 +58,7 @@ def handle_events():
                     break
                 elif(option_buttons[i].isclicked(raw_event.x, raw_event.y)):
                     change_volume(i)
-                    module_other.state_changer.change_state('lastest', 'resume')
+                    sc.change_state('lastest', 'resume')
                     break
         elif event == MLU:
             for i in range(2): volume_buttons[i].clicked = False
@@ -73,15 +73,15 @@ def enters(option):
     volume_lines = [Option_volume_line(UI_HEIGHT//2 + i * 90) for i in range(2)]
     option_buttons = [Option_button(UI_WIDTH//2 + i) for i in (-135, 135)]
 
-    previous_state = module_other.state_changer.get_previous_state()
+    previous_state = sc.get_previous_state()
     if(previous_state == 'game_menu'):
         img_bg = Background('menu')
     elif(previous_state == 'title_menu'):
         img_bg = Background('main')
 
-    module_other.game_world.add_object(img_bg, 'bg')
-    module_other.game_world.add_object(img_ui, 'obj')
-    module_other.game_world.add_objects(volume_buttons, 'ui')
+    gw.add_object(img_bg, 'bg')
+    gw.add_object(img_ui, 'obj')
+    gw.add_objects(volume_buttons, 'ui')
 
 def exits():
     global img_ui, img_button, img_bg, volume_buttons, volume_lines, option_buttons
@@ -91,12 +91,12 @@ def exits():
     volume_buttons = None
     volume_lines = None
     option_buttons = None
-    module_other.game_world.clear_world()
+    gw.clear_world()
 
 def draw_all():
     clear_canvas()
     img_bg.draw()
-    for objs in module_other.game_world.all_objects():
+    for objs in gw.all_objects():
         objs.draw()
     update_canvas()
 

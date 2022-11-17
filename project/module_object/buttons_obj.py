@@ -115,3 +115,23 @@ class Close_book_button():
             return True
         else:
             return False
+
+class Game_end_button():
+    image = [None, None, None]
+    def __init__(self, x, y, n):
+        self.x = x
+        self.y = y
+        self.n = n
+        if(Game_end_button.image[self.n] == None):
+            Game_end_button.image[self.n] = \
+                load_image('img/clear_button_ui_' + str(self.n) + '.png')
+    def draw(self):
+        self.image[self.n].draw(self.x, self.y)
+    def isclicked(self, x, y):
+        if((self.x - 140 <= x <= self.x + 140) and \
+            (UI_HEIGHT - (self.y + 65) < y < UI_HEIGHT - (self.y - 65))):
+            return True
+        else:
+            return False
+    def update(self):
+        pass

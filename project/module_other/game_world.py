@@ -21,7 +21,8 @@ cur_world = None
 
 state_list = [
     'title', 'title_menu', 'select_char',
-    'option_setting', 'how_to_play', 'game_menu'
+    'option_setting', 'how_to_play', 'game_menu',
+    'game_clear', 'game_over'
 ]
 
 for state_name in state_list:
@@ -45,9 +46,13 @@ def all_objects_copy():
             yield o
 
 def add_object(o, depth):
+    if type(depth) == int:
+        depth = obj_list[depth]
     world[cur_world][DEPTH_DICT[depth]].append(o)
 
 def add_objects(ol, depth):
+    if type(depth) == int:
+        depth = obj_list[depth]
     world[cur_world][DEPTH_DICT[depth]] += ol
 
 def addleft_object(o, depth):

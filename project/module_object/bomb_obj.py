@@ -1,7 +1,7 @@
 from module_other.coordinates_module import *
 from pico2d import *
 from collections import deque
-import module_other.game_world
+import module_other.game_world as gw
 
 ice_removing_obj = FIELD_DICT['enemy'] + FIELD_DICT['explode'] \
     + FIELD_DICT['bomb'] + FIELD_DICT['apple'] + FIELD_DICT['ice']
@@ -26,7 +26,7 @@ class Skin():
         if(Skin.image == None):
             Skin.image = load_image('img/snake_skinwall.png')
     def draw(self):
-        module_other.game_world.field_array[self.gx][self.gy] |= FIELD_DICT['ice']
+        gw.field_array[self.gx][self.gy] |= FIELD_DICT['ice']
         drawframe = (701 - self.frame) if (self.frame > 694) else 6
         drawframe = (self.frame + 1) if (self.frame < 5) else drawframe
         self.image.clip_draw(0, 0, 60, 60, self.x, self.y, \
@@ -34,15 +34,15 @@ class Skin():
     def update(self):
         self.frame -= 1
         if self.frame <= 0:
-            module_other.game_world.remove_object(self)
+            gw.remove_object(self)
     def check_col(self):
-        cur_loc = module_other.game_world.field_array[self.gx+1][self.gy+1]
+        cur_loc = gw.field_array[self.gx+1][self.gy+1]
         if cur_loc & (FIELD_DICT['head']):
             import module_object.snake_player_obj
             module_object.snake_player_obj.Blue_body.get_damaged()
         if cur_loc & (FIELD_DICT['head'] + FIELD_DICT['enemy'] \
             + FIELD_DICT['explode']):
-            module_other.game_world.remove_object(self)
+            gw.remove_object(self)
 
 class Ice():
     image = None
@@ -53,7 +53,7 @@ class Ice():
         if(Ice.image == None):
             Ice.image = load_image('img/ice.png')
     def draw(self):
-        module_other.game_world.field_array[self.gx][self.gy] |= FIELD_DICT['ice']
+        gw.field_array[self.gx][self.gy] |= FIELD_DICT['ice']
         drawframe = (701 - self.frame) if (self.frame > 694) else 6
         drawframe = (self.frame + 1) if (self.frame < 5) else drawframe
         self.image.clip_draw(0, 0, 60, 60, self.x, self.y, \
@@ -61,15 +61,15 @@ class Ice():
     def update(self):
         self.frame -= 1
         if self.frame <= 0:
-            module_other.game_world.remove_object(self)
+            gw.remove_object(self)
     def check_col(self):
-        cur_loc = module_other.game_world.field_array[self.gx][self.gy]
+        cur_loc = gw.field_array[self.gx][self.gy]
         if cur_loc & (FIELD_DICT['player']):
             import module_object.snake_player_obj
             module_object.snake_player_obj.Blue_body.get_damaged()
         if cur_loc & (FIELD_DICT['player'] + FIELD_DICT['enemy'] \
             + FIELD_DICT['explode']):
-            module_other.game_world.remove_object(self)
+            gw.remove_object(self)
 
 
 class explosion():
@@ -86,11 +86,11 @@ class explosion():
     def update(self):
         self.frame -= 1
         if self.frame <= 0:
-            module_other.game_world.remove_object(self)
+            gw.remove_object(self)
     def check_col(self):
         if self.frame != 3:
             return
-        cur_loc = module_other.game_world.field_array[self.gx][self.gy]
+        cur_loc = gw.field_array[self.gx][self.gy]
         if cur_loc & (FIELD_DICT['enemy']):
             import module_object.snake_enemy_obj
             module_object.snake_enemy_obj.Enemy_body.get_damaged(self.damage)
@@ -122,7 +122,7 @@ class bomb():
         if(self.counter == 0 or self.counter <= -65535):
             self.ready_to_explode()
     def ready_to_explode(self):
-        module_other.game_world.field_array[self.gx+1][self.gy+1] &= \
+        gw.field_array[self.gx+1][self.gy+1] &= \
             MAX_BITS - FIELD_DICT['bomb']
         if(self.option == 0):
             self.explode()
@@ -134,85 +134,85 @@ class bomb():
             self.explode_ice_cross()
         elif(self.option == 4):
             self.explode_mine()
-        module_other.game_world.remove_object(self)
+        gw.remove_object(self)
     def explode(self):
         for x in range(self.gx+1, 0, -1):
-            module_other.game_world.field_array[x][self.gy+1] |= FIELD_DICT['explode']
-            module_other.game_world.addleft_object(\
+            gw.field_array[x][self.gy+1] |= FIELD_DICT['explode']
+            gw.addleft_object(\
                 explosion(x, self.gy+1, self.damage), 'explode')
         for x in range(self.gx+1, 16, +1):
-            module_other.game_world.field_array[x][self.gy+1] |= FIELD_DICT['explode']
-            module_other.game_world.addleft_object(\
+            gw.field_array[x][self.gy+1] |= FIELD_DICT['explode']
+            gw.addleft_object(\
                 explosion(x, self.gy+1, self.damage), 'explode')
         for y in range(self.gy+1, 10, +1):
-            module_other.game_world.field_array[self.gx+1][y] |= FIELD_DICT['explode']
-            module_other.game_world.addleft_object(\
+            gw.field_array[self.gx+1][y] |= FIELD_DICT['explode']
+            gw.addleft_object(\
                 explosion(self.gx+1, y, self.damage), 'explode')
         for y in range(self.gy+1, 0, -1):
-            module_other.game_world.field_array[self.gx+1][y] |= FIELD_DICT['explode']
-            module_other.game_world.addleft_object(\
+            gw.field_array[self.gx+1][y] |= FIELD_DICT['explode']
+            gw.addleft_object(\
                 explosion(self.gx+1, y, self.damage), 'explode')
         self.x = -65535
     def explode_mine(self):
         for x in range(-1, 2):
             for y in range(-1, 2):
-                module_other.game_world.addleft_object(\
+                gw.addleft_object(\
                     explosion(self.gx+1+x, self.gy+1+y, self.damage), 'explode')
 
 
     def explode_cross(self):
         for i in range(0, 9, 1):
             if not(-1 < self.gx+i < 15 and -1 < self.gy+i < 9): break
-            module_other.game_world.field_array[self.gx+i+1][self.gy+i+1] |= FIELD_DICT['explode']
-            module_other.game_world.addleft_object(explosion(self.gx+i+1, \
+            gw.field_array[self.gx+i+1][self.gy+i+1] |= FIELD_DICT['explode']
+            gw.addleft_object(explosion(self.gx+i+1, \
                 self.gy+i+1, self.damage), 'explode')
         for i in range(1, 9, 1):
             if not(-1 < self.gx-i < 15 and -1 < self.gy+i < 9): break
-            module_other.game_world.field_array[self.gx-i+1][self.gy+i+1] |= FIELD_DICT['explode']
-            module_other.game_world.addleft_object(explosion(self.gx-i+1, self.gy+i+1, \
+            gw.field_array[self.gx-i+1][self.gy+i+1] |= FIELD_DICT['explode']
+            gw.addleft_object(explosion(self.gx-i+1, self.gy+i+1, \
                 self.damage), 'explode')
         for i in range(1, 9, 1):
             if not(-1 < self.gx+i < 15 and -1 < self.gy-i < 9): break
-            module_other.game_world.field_array[self.gx+i+1][self.gy-i+1] |= FIELD_DICT['explode']
-            module_other.game_world.addleft_object(explosion(self.gx+i+1, self.gy-i+1, \
+            gw.field_array[self.gx+i+1][self.gy-i+1] |= FIELD_DICT['explode']
+            gw.addleft_object(explosion(self.gx+i+1, self.gy-i+1, \
                 self.damage), 'explode')
         for i in range(1, 9, 1):
             if not(-1 < self.gx-i < 15 and -1 < self.gy-i < 9): break
-            module_other.game_world.field_array[self.gx-i+1][self.gy-i+1] |= FIELD_DICT['explode']
-            module_other.game_world.addleft_object(explosion(self.gx-i+1, self.gy-i+1, \
+            gw.field_array[self.gx-i+1][self.gy-i+1] |= FIELD_DICT['explode']
+            gw.addleft_object(explosion(self.gx-i+1, self.gy-i+1, \
                 self.damage), 'explode')
         self.x = -65535
 
     def explode_ice(self):
         for x in range(-3, 4, 1):
             if not(-1 < self.gx+x < 15): continue
-            if module_other.game_world.field_array[self.gx+x+1][self.gy+1] \
+            if gw.field_array[self.gx+x+1][self.gy+1] \
                 & ice_removing_obj: continue
-            module_other.game_world.add_object(Ice(self.gx+x+1, self.gy+1), 'ice')
+            gw.add_object(Ice(self.gx+x+1, self.gy+1), 'ice')
         for y in range(-3, 4, 1):
             if not(-1 < self.gy+y < 9): continue
-            if module_other.game_world.field_array[self.gx+1][self.gy+y+1] \
+            if gw.field_array[self.gx+1][self.gy+y+1] \
                 & ice_removing_obj: continue
-            module_other.game_world.add_object(Ice(self.gx+1, self.gy+1+y), 'ice')
+            gw.add_object(Ice(self.gx+1, self.gy+1+y), 'ice')
 
     def explode_ice_cross(self):
         for i in range(-2, 3, 1):
             if not(-1 < self.gx+i < 15 and -1 < self.gy+i < 9): continue
-            if module_other.game_world.field_array[self.gx+i+1][self.gy+i+1] \
+            if gw.field_array[self.gx+i+1][self.gy+i+1] \
                 & ice_removing_obj: continue
-            module_other.game_world.add_object(Ice(self.gx+1+i, self.gy+1+i), 'ice')
+            gw.add_object(Ice(self.gx+1+i, self.gy+1+i), 'ice')
         for i in range(-2, 3, 1):
             if not(-1 < self.gx+i < 15 and -1 < self.gy-i < 9): continue
-            if module_other.game_world.field_array[self.gx+i+1][self.gy-i+1] \
+            if gw.field_array[self.gx+i+1][self.gy-i+1] \
                 & ice_removing_obj: continue
-            module_other.game_world.add_object(Ice(self.gx+1+i, self.gy+1-i), 'ice')
+            gw.add_object(Ice(self.gx+1+i, self.gy+1-i), 'ice')
 
     def draw(self):
         if(self.counter > 0):
             bomb_draw_case(self.option, self.is_enemy, self.counter, self.x, self.y)
-            module_other.game_world.field_array[self.gx+1][self.gy+1] |= FIELD_DICT['bomb']
+            gw.field_array[self.gx+1][self.gy+1] |= FIELD_DICT['bomb']
         
     def check_col(self):
-        cur_loc = module_other.game_world.field_array[self.gx+1][self.gy+1]
+        cur_loc = gw.field_array[self.gx+1][self.gy+1]
         if cur_loc & (FIELD_DICT['head'] + FIELD_DICT['ehead']):
             self.counter = -65536

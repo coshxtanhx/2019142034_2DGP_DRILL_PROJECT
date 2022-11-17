@@ -4,7 +4,7 @@ from pico2d import *
 from module_other.event_table_module import *
 from module_object.bomb_obj import bomb, Skin
 from module_object.mine_obj import Mine
-import module_other.game_world
+import module_other.game_world as gw
 import module_other.state_changer as sc
 
 class Blue_body():
@@ -48,17 +48,17 @@ class Blue_body():
                         next_state[Blue_body.cur_direction][Blue_body.direction.pop()]
             self.number += 1
         if self.number > 30 and Blue_body.skinshed:
-            module_other.game_world.add_object(Skin(self.x, self.y), 'ice')
+            gw.add_object(Skin(self.x, self.y), 'ice')
     def get_longer():
         if Blue_body.longer == False:
             return
         Blue_body.longer = False
         for i in range(12):
-            module_other.game_world.add_object(Blue_body(Blue_body.length+i, \
+            gw.add_object(Blue_body(Blue_body.length+i, \
                 Blue_body.tx, Blue_body.ty), 'player')
         Blue_body.length += 12
         if Blue_body.character == '3':
-            module_other.game_world.add_object(Mine(), 'obj')
+            gw.add_object(Mine(), 'obj')
         if Blue_body.character == '4':
             Blue_body.skinshed = True
     def get_shorter():
@@ -70,21 +70,21 @@ class Blue_body():
         else:
             Blue_body.length -= 12
             for _ in range(12):
-                module_other.game_world.pop_object('player')
+                gw.pop_object('player')
     def draw(self):
         self.gx, self.gy = coordinates_to_grid(self.x, self.y)
         if(self.number == 0):
-            module_other.game_world.field_array[self.gx+1][self.gy+1] |= FIELD_DICT['head']
+            gw.field_array[self.gx+1][self.gy+1] |= FIELD_DICT['head']
             Blue_body.hx, Blue_body.hy = self.x, self.y
             return
         else:
             if(self.number > 30):
-                module_other.game_world.field_array[self.gx+1][self.gy+1] |= FIELD_DICT['body']
+                gw.field_array[self.gx+1][self.gy+1] |= FIELD_DICT['body']
             self.image = Blue_body.img_snake_blue_body
             if(self.number == self.length-1):
                 Blue_body.tx, Blue_body.ty = self.x, self.y
         self.image.draw(self.x, self.y)
-        module_other.game_world.field_array[self.gx+1][self.gy+1] |= FIELD_DICT['player']
+        gw.field_array[self.gx+1][self.gy+1] |= FIELD_DICT['player']
         if(self.number == self.length - 1):
             (Blue_body.img_snake_blue_head[Blue_body.cur_direction]\
                 ).draw(Blue_body.hx, Blue_body.hy)
@@ -101,13 +101,13 @@ class Blue_body():
             if event == KED:
                 if Blue_body.bomb_cool_down == 0:
                     bx, by = Blue_body.tx, Blue_body.ty
-                    module_other.game_world.addleft_object(bomb(bx, by, Blue_body.length), 'bomb')
+                    gw.addleft_object(bomb(bx, by, Blue_body.length), 'bomb')
                     Blue_body.bomb_cool_down = 100
             else:
                 Blue_body.direction.appendleft(event)
     
     def check_col(self):
-        cur_loc = module_other.game_world.field_array[self.gx+1][self.gy+1]
+        cur_loc = gw.field_array[self.gx+1][self.gy+1]
         if Blue_body.length >= 40 and \
             (cur_loc & (FIELD_DICT['body']+FIELD_DICT['head']) \
                 == (FIELD_DICT['body']+FIELD_DICT['head'])):
@@ -120,19 +120,8 @@ class Blue_body():
             Blue_body.get_damaged()
 
 def game_over():
-    sc.change_state('title_menu', None)
-
-'''
-def go_next_stage():
-    next_stage = str(int(cur_stage) + 1)
-    if next_stage == '5':
-        all_clear()
-    module_other.state_changer.change_state('snake_move', 'exitall', \
-        cur_char + next_stage)
-
-def all_clear():
-    exit(2)
-'''
+    import module_state.snake_move as sm
+    sm.isended = -1
 
 GO_D, GO_W, GO_A, GO_S = range(4)
 

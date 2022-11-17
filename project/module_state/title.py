@@ -4,18 +4,18 @@ from module_other.event_table_module import *
 from module_object.background_obj import *
 from math import *
 import module_other.game_world as gw
-import module_other.state_changer
+import module_other.state_changer as sc
 
 def handle_events():
     events = get_events()
     for raw_event in events:
         event = convert_event(raw_event)
         if event == QUIT:
-            module_other.state_changer.change_state('', None)
+            sc.change_state('', None)
         elif event == KSD:
-            module_other.state_changer.change_state('title_menu', None)
+            sc.change_state('title_menu', None)
         elif event == KESCD:
-            module_other.state_changer.change_state('', None)
+            sc.change_state('', None)
 
 def enters(option):
     global frame

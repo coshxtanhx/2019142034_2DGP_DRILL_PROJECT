@@ -2,8 +2,8 @@ from pico2d import *
 from module_object.buttons_obj import *
 from module_other.event_table_module import *
 from module_object.background_obj import Background, Book_page
-import module_other.state_changer
-import module_other.game_world
+import module_other.state_changer as sc
+import module_other.game_world as gw
 
 def handle_events():
     global cur_selecting
@@ -11,9 +11,9 @@ def handle_events():
     for raw_event in events:
         event = convert_event(raw_event)
         if event == QUIT:
-            module_other.state_changer.change_state('', None)
+            sc.change_state('', None)
         elif event == KESCD:
-            module_other.state_changer.change_state('select_char', 'resume')
+            sc.change_state('select_char', 'resume')
         elif event == MLD:
             button_clicked = -1
             for i in range(3):
@@ -25,7 +25,7 @@ def handle_events():
             if button_clicked == 1:
                 Book_page.change_page(+1)
             elif button_clicked == 2:
-                module_other.state_changer.change_state('select_char', 'resume')
+                sc.change_state('select_char', 'resume')
 
 def enters(option):
     global bg, book, cur_selecting, buttons
@@ -33,8 +33,8 @@ def enters(option):
     cur_selecting = 0
     book = Book_page()
     buttons = [Next_page_button(i) for i in range(2)] + [Close_book_button()]
-    module_other.game_world.add_object(bg, 'bg')
-    module_other.game_world.add_object(book, 'obj')
+    gw.add_object(bg, 'bg')
+    gw.add_object(book, 'obj')
 
 def exits():
     global bg, book, cur_selecting, buttons
@@ -42,11 +42,11 @@ def exits():
     book = None
     cur_selecting = None
     buttons = None
-    module_other.game_world.clear_world()
+    gw.clear_world()
 
 def draw_all():
     clear_canvas()
-    for objs in module_other.game_world.all_objects():
+    for objs in gw.all_objects():
         objs.draw()
     update_canvas()
 

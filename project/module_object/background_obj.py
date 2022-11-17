@@ -106,3 +106,13 @@ class Book_page():
         for i in range(2):
             self.image[Book_page.page+i].draw(\
                 UI_WIDTH//2 + gap*2*i - gap, UI_HEIGHT//2)
+
+class Clear_ui():
+    image = None
+    def __init__(self):
+        if Clear_ui.image == None:
+            Clear_ui.image = load_image('img/clear_ui.png')
+    def draw(self):
+        self.image.draw(UI_WIDTH//2, UI_HEIGHT//2 + 60)
+    def update(self):
+        pass
