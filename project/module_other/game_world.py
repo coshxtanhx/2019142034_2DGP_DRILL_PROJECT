@@ -45,6 +45,13 @@ def all_objects_copy():
         for o in layer.copy():
             yield o
 
+def all_collision_objects():
+    for layer_index in range(obj_list_len):
+        if layer_index in (0,7,8):
+            continue
+        for o in world[cur_world][layer_index].copy():
+            yield o
+
 def add_object(o, depth):
     if type(depth) == int:
         depth = obj_list[depth]

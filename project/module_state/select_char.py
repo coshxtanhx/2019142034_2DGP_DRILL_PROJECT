@@ -37,8 +37,8 @@ def enters(option):
     cur_selecting = 0
     buttons = [Start_and_Guide_Button(x) for x in (250, 670)] \
         + [Char_sel_button(x) for x in (260, 660)]
-    module_other.game_world.add_object(bg, 'bg')
-    module_other.game_world.add_object(selection_images, 'obj')
+    module_other.game_world.add_object(bg, 0)
+    module_other.game_world.add_object(selection_images, 1)
 
 def exits():
     global bg, selection_images, cur_selecting, buttons

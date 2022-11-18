@@ -31,6 +31,7 @@ def is_game_ended():
 
 def handle_events():
     Enemy_body.enemy_set_bomb()
+    Enemy_body.enemy_screen_off()
     events = get_events()
     for raw_event in events:
         event = convert_event(raw_event)
@@ -40,7 +41,7 @@ def handle_events():
             sc.change_state('game_menu', 'pause')
         else:
             sp.Blue_body.handle_events(event)
-        if raw_event.key == SDLK_p: Enemy_body.enemy_hp -= 125
+        if raw_event.key == SDLK_p: Enemy_body.damaged = 125
         elif raw_event.key == SDLK_l: Enemy_body.armored.append(randint(0,5)*12)
         elif event == KMD:
             sc.change_state('game_menu', 'pause')
@@ -105,7 +106,7 @@ def update():
     gw.rotate_object(1, 'player')
     gw.rotate_object(1, 'enemy')
 
-    for objs in gw.all_objects_copy():
+    for objs in gw.all_collision_objects():
         objs.check_col()
 
     sp.Blue_body.get_longer()

@@ -79,9 +79,9 @@ def enters(option):
     elif(previous_state == 'title_menu'):
         img_bg = Background('main')
 
-    gw.add_object(img_bg, 'bg')
-    gw.add_object(img_ui, 'obj')
-    gw.add_objects(volume_buttons, 'ui')
+    gw.add_object(img_bg, 0)
+    gw.add_object(img_ui, 1)
+    gw.add_objects(volume_buttons, 2)
 
 def exits():
     global img_ui, img_button, img_bg, volume_buttons, volume_lines, option_buttons

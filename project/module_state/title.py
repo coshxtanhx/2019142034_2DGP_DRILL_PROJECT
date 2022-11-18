@@ -24,9 +24,9 @@ def enters(option):
     img_title_bg = Background('main')
     img_title_text = [Title_text(num) for num in range(2)]
     img_title_msg = Blinking_message('main')
-    gw.add_object(img_title_bg, 'bg')
-    gw.add_objects(img_title_text, 'obj')
-    gw.add_object(img_title_msg, 'obj')
+    gw.add_object(img_title_bg, 0)
+    gw.add_objects(img_title_text, 1)
+    gw.add_object(img_title_msg, 1)
 
 
 def exits():

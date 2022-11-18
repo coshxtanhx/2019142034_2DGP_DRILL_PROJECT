@@ -5,7 +5,7 @@ from random import choice
 from module_object.bomb_obj import bomb
 from module_enemy_ai.enemy_movement_ai import enemy_ai
 import module_other.game_world as gw
-import module_other.state_changer as sc
+from module_object.screen_hider_obj import *
 
 img_snake_orange_head = \
     [load_image('img/snake_orange_head_' + str(i) + '.png') for i in range(4)]
@@ -30,7 +30,7 @@ COLOR_DICT2 = {'orange': 1, 'brown': 2, 'purple': 3, 'green': 4}
 
 AI_DICT = {
     (3, 1): 1, (2, 1): 2, (1, 1): 0, (0, 1): 3,
-    (3, 2): 1, (2, 2): 2, (1, 2): 0, (0, 2): 3,
+    (3, 2): 1, (2, 2): 2, (1, 2): 0, (0, 2): 0,
     (3, 3): 1, (2, 3): 0, (1, 3): 1, (0, 3): 3,
     (3, 4): 0, (2, 4): 3, (1, 4): 4, (0, 4): 5,
 }
@@ -43,6 +43,7 @@ class Enemy_body():
     enemy_direction = 0
     enemy_order = 0
     bomb_cool_down = 500
+    screen_off_cool_down = 400
     enemy_hp = 960
     armored = []
     color = None
@@ -52,6 +53,7 @@ class Enemy_body():
     hx, hy = grid_to_coordinates(0, 8)
     tx, ty = hx, hy
     damaged = 0
+    screen_break_cnt = 0
     def __init__(self, number, color = 'orange', x=40, y=-1):
         if(y == -1):
             self.x, self.y = grid_to_coordinates(0, 8)
@@ -72,6 +74,7 @@ class Enemy_body():
                 Enemy_body.hy + dy[Enemy_body.enemy_direction]
             self.number = 0
             if Enemy_body.bomb_cool_down > 0: Enemy_body.bomb_cool_down -= 1
+            if Enemy_body.screen_off_cool_down > 0: Enemy_body.screen_off_cool_down -= 1
             if Enemy_body.damaged:
                 Enemy_body.enemy_hp -= Enemy_body.damaged
                 Enemy_body.damaged = 0
@@ -119,12 +122,14 @@ class Enemy_body():
     def reset():
         Enemy_body.enemy_direction = 0
         Enemy_body.enemy_order = 0
-        Enemy_body.bomb_cool_down = 500 // 5
-        Enemy_body.enemy_hp = 960 // 900
+        Enemy_body.bomb_cool_down = 500
+        Enemy_body.screen_off_cool_down = 0
+        Enemy_body.enemy_hp = 960 // 1
         Enemy_body.armored = []
         Enemy_body.ai = 0
         Enemy_body.bomb_type = 0
         Enemy_body.damaged = 0
+        Enemy_body.screen_break_cnt = 0
 
     def change_ai():
         Enemy_body.ai = \
@@ -138,6 +143,8 @@ class Enemy_body():
                 Enemy_body.bomb_type = 3
             elif Enemy_body.enemy_hp // 241 == 0:
                 Enemy_body.bomb_type = 4
+        elif Enemy_body.color == 'brown':
+            screen_break(3 - Enemy_body.enemy_hp // 241)
 
     def enemy_set_bomb():
         if Enemy_body.bomb_cool_down > 0:
@@ -147,8 +154,24 @@ class Enemy_body():
             choice(bomb_type_list[Enemy_body.bomb_type])), 'bomb')
         Enemy_body.bomb_cool_down = 200
 
+    def enemy_screen_off():
+        if Enemy_body.color != 'brown':
+            return
+        if Enemy_body.enemy_hp // 241 > 0:
+            return
+        if Enemy_body.screen_off_cool_down > 0:
+            return
+        gw.add_object(Screen_off(), 'hider')
+        Enemy_body.screen_off_cool_down = 700
+
     def check_col(self):
         cur_loc = gw.field_array[self.gx+1][self.gy+1]
         if cur_loc & (FIELD_DICT['player']):
             import module_object.snake_player_obj as sp
             sp.Blue_body.get_damaged()
+
+def screen_break(hp):
+    if Enemy_body.screen_break_cnt != hp:
+        return
+    Enemy_body.screen_break_cnt += 1
+    gw.add_object(Broken(), 'hider')

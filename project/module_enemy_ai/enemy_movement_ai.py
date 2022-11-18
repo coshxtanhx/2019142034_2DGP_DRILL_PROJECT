@@ -21,7 +21,7 @@ def enemy_ai(enemy_dir, gx, gy, field, option = 0):
     if(ordered != -1):
         return ordered
 
-    #random movement
+    # default: random movement
     order_candi = [0, 1, 2, 3]
     order_2nd_candi = []
     order_3rd_candi = []

@@ -55,8 +55,8 @@ def enters(option):
     buttons = [Title_button(img_menu_button[i], 550 - i * 150)\
         for i in range(4)]
     buttons[1].enabled = loaded_suc
-    gw.add_object(title_bg, 'bg')
-    gw.add_objects(buttons, 'ui')
+    gw.add_object(title_bg, 1)
+    gw.add_objects(buttons, 2)
 
 def exits():
     global frame, buttons, img_menu_button, title_bg

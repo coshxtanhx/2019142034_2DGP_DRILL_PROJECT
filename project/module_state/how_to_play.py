@@ -33,8 +33,8 @@ def enters(option):
     cur_selecting = 0
     book = Book_page()
     buttons = [Next_page_button(i) for i in range(2)] + [Close_book_button()]
-    gw.add_object(bg, 'bg')
-    gw.add_object(book, 'obj')
+    gw.add_object(bg, 0)
+    gw.add_object(book, 1)
 
 def exits():
     global bg, book, cur_selecting, buttons
