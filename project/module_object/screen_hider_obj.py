@@ -44,14 +44,16 @@ class Screen_off():
 class Cloud():
     image = None
     def __init__(self):
-        self.x = 920 - 700
+        self.x = 920 + 165
         self.y = randint(70, 420+70)
         if Cloud.image == None:
             Cloud.image = load_image('img/cloud.png')
     def draw(self):
         self.image.draw(self.x, self.y)
-        self.x -= 1
     def update(self):
-        pass
+        self.x -= 1
+        if self.x < -165:
+            gw.addleft_object(Cloud(), 'hider')
+            gw.remove_object(self)
     def check_col(self):
         pass

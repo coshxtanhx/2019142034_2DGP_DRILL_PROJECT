@@ -32,6 +32,7 @@ def is_game_ended():
 def handle_events():
     Enemy_body.enemy_set_bomb()
     Enemy_body.enemy_screen_off()
+    Enemy_body.create_cloud()
     events = get_events()
     for raw_event in events:
         event = convert_event(raw_event)
@@ -59,14 +60,15 @@ def enters(data):
 
     sp.Blue_body.character = cur_char
 
+    for snake in (sp.Blue_body, Enemy_body):
+        snake.reset()
+
     gw.add_object(Background('play'), 'bg')
     gw.add_objects([sp.Blue_body(i) for i in range(12*(3-1)+1)], 'player')
     gw.addleft_object(create_first_apple(), 'obj')
     gw.add_objects([Enemy_body(i, color=COLOR_DICT[cur_stage]) \
         for i in range(0, 12*(6-1)+1)], 'enemy')
     gw.add_object(HP_bar(int(cur_stage)-1), 'ui')
-    for snake in (sp.Blue_body, Enemy_body):
-        snake.reset()
 
 def exits():
     global frame, field_array, isended
