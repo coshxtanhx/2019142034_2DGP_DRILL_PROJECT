@@ -16,7 +16,7 @@ AI_DICT = {
     (3, 1): 1, (2, 1): 2, (1, 1): 0, (0, 1): 3,
     (3, 2): 1, (2, 2): 2, (1, 2): 0, (0, 2): 0,
     (3, 3): 1, (2, 3): 0, (1, 3): 1, (0, 3): 3,
-    (3, 4): 0, (2, 4): 3, (1, 4): 4, (0, 4): 5,
+    (3, 4): 6, (2, 4): 3, (1, 4): 4, (0, 4): 5,
 }
 
 bomb_type_list = (
@@ -35,7 +35,7 @@ class Enemy_body():
     bomb_cool_down = 500
     screen_off_cool_down = 400
     enemy_hp = 960
-    armored = []
+    armored = [1]
     color = None
     img_head = None
     img_body = None
@@ -60,7 +60,6 @@ class Enemy_body():
         if Enemy_body.img_body == None:
             Enemy_body.img_head, Enemy_body.img_body = \
                 get_image(Enemy_body.color)
-        self.armored = False
     def get_damaged(damage):
         if Enemy_body.damaged < damage:
             Enemy_body.damaged = damage
@@ -98,14 +97,6 @@ class Enemy_body():
             Enemy_body.img_head\
                 [Enemy_body.enemy_direction].draw(Enemy_body.hx, Enemy_body.hy)
         gw.field_array[self.gx+1][self.gy+1] |= FIELD_DICT['enemy']
-
-        if(self.number-4 in Enemy_body.armored or \
-            self.number-2 in Enemy_body.armored or \
-            self.number+0 in Enemy_body.armored or \
-            self.number+2 in Enemy_body.armored or \
-            self.number+4 in Enemy_body.armored):
-            img_armor.draw(self.x, self.y)
-            gw.field_array[self.gx+1][self.gy+1] |= FIELD_DICT['armor']
     
     def enemy_ai_update(enemy_head):
         Enemy_body.change_ai()
@@ -124,7 +115,7 @@ class Enemy_body():
         Enemy_body.bomb_cool_down = 500
         Enemy_body.screen_off_cool_down = 0
         Enemy_body.enemy_hp = 960 // 1
-        Enemy_body.armored = []
+        Enemy_body.armored = [1]
         Enemy_body.ai = 0
         Enemy_body.bomb_type = 0
         Enemy_body.damaged = 0

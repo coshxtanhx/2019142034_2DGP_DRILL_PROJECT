@@ -92,11 +92,11 @@ class explosion():
             return
         cur_loc = gw.field_array[self.gx][self.gy]
         if cur_loc & (FIELD_DICT['enemy']):
-            import module_object.snake_enemy_obj
-            module_object.snake_enemy_obj.Enemy_body.get_damaged(self.damage)
+            import module_object.snake_enemy_obj as se
+            se.Enemy_body.get_damaged(self.damage)
         if cur_loc & (FIELD_DICT['player']):
-            import module_object.snake_player_obj
-            module_object.snake_player_obj.Blue_body.get_damaged()
+            import module_object.snake_player_obj as sp
+            sp.Blue_body.get_damaged()
             
 
 class bomb():

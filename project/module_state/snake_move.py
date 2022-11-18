@@ -3,7 +3,6 @@ from random import *
 from math import *
 from module_other.coordinates_module import *
 from module_other.event_table_module import *
-from collections import deque
 from module_object.apple_obj import *
 from module_object.bomb_obj import *
 from module_object.mine_obj import *
@@ -43,9 +42,6 @@ def handle_events():
         else:
             sp.Blue_body.handle_events(event)
         if raw_event.key == SDLK_p: Enemy_body.damaged = 125
-        elif raw_event.key == SDLK_l: Enemy_body.armored.append(randint(0,5)*12)
-        elif event == KMD:
-            sc.change_state('game_menu', 'pause')
 
 def enters(data):
     global frame, field_array, isended
