@@ -18,19 +18,16 @@ from pprint import pprint
 
 def is_game_ended():
     if isended < 0:
-        sc.change_state('game_over', 'pause')
+        sc.change_state('game_over', None, cur_char + cur_stage)
     elif isended > 0:
         next_stage = str(int(cur_stage) + 1)
         length = str(sp.Blue_body.length // 12 - 1) 
         if next_stage == '5':
-            all_clear()
+            sc.change_state('title', None)
             return
         sc.change_state('game_clear', 'exitall', cur_char + next_stage + length)
     else:
         return
-
-def all_clear():
-    sc.change_state('title', None)
 
 def handle_events():
     Enemy_body.enemy_set_bomb()
@@ -40,7 +37,7 @@ def handle_events():
         if event == QUIT:
             sc.change_state('', None)
         elif event == KESCD:
-            sc.change_state('title', None)
+            sc.change_state('game_menu', 'pause')
         else:
             sp.Blue_body.handle_events(event)
         if raw_event.key == SDLK_p: Enemy_body.enemy_hp -= 125

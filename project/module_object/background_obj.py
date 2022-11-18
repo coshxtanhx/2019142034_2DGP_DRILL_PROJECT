@@ -59,7 +59,7 @@ class Blinking_message():
         elif self.type == 'menu':
             self.y = 520
         elif self.type == 'over':
-            self.y = 520
+            self.y = 450
         if(Blinking_message.image_main == None and self.type == 'main'):
             Blinking_message.image_main = load_image('img/title_text.png')
         elif(Blinking_message.image_menu == None and self.type == 'menu'):

@@ -26,10 +26,11 @@ def handle_events():
             if isclicked == 0:
                 sc.change_state('title', 'exitall')
             elif isclicked == 1:
-                sc.change_state('snake_move', 'exitall', cur_game_data)
+                sc.change_state('snake_move', None, cur_game_data)
 
 def enters(option):
-    global buttons
+    global buttons, cur_game_data
+    cur_game_data = option
     gw.add_object(Background('over'), 0)
     gw.add_object(Blinking_message('over'), 1)
     buttons = [Game_end_button(270 + 190*i, 150, i) for i in (0,2)]
@@ -50,6 +51,5 @@ def update():
     for objs in gw.all_objects():
         objs.update()
 
-cur_game_data = None
 buttons = None
-stars = None
+cur_game_data = None
