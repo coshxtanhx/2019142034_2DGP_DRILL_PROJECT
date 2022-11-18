@@ -49,8 +49,6 @@ def handle_events():
 
 def enters(data):
     global frame, field_array, isended
-    global char_blue, apples, bombs, explodes, enemy_char
-    global enemy_hpbar, broken_screen, screen_out, cloud, ices, mine
     global cur_char, cur_stage
     if(data == None): data = '11'
     cur_char, cur_stage = data[0], data[1]
@@ -72,21 +70,9 @@ def enters(data):
 
 def exits():
     global frame, field_array, isended
-    global char_blue, apples, bombs, explodes, enemy_char
-    global enemy_hpbar, broken_screen, screen_out, cloud, ices
     global cur_char, cur_stage
     frame = None
     field_array = None
-    char_blue = None
-    apples = None
-    bombs = None
-    explodes = None
-    enemy_char = None
-    enemy_hpbar = None
-    broken_screen = None
-    screen_out = None
-    cloud = None
-    ices = None
     cur_char = None
     cur_stage = None
     isended = None
@@ -118,17 +104,6 @@ def update():
 
 frame = None
 field_array = None
-char_blue = None
-apples = None
-bombs = None
-explodes = None
-enemy_char = None
-enemy_hpbar = None
-broken_screen = None
-screen_out = None
-cloud = None
-ices = None
-mine = None
 cur_char = None
 cur_stage = None
 isended = None
