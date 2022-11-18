@@ -8,6 +8,7 @@ class Background():
     image_play = None
     image_selc = None
     image_howt = None
+    image_over = None
     def __init__(self, type):
         self.type = type
         if(Background.image_main == None and self.type == 'main'):
@@ -20,6 +21,8 @@ class Background():
             Background.image_selc = load_image('img/character_select_bg.png')
         elif(Background.image_howt == None and self.type == 'howt'):
             Background.image_howt = load_image('img/book.png')
+        elif(Background.image_over == None and self.type == 'over'):
+            Background.image_over = load_image('img/black_screen.png')
         self.image = eval('Background.image_' + self.type)
     def draw(self):
         self.image.draw(UI_WIDTH//2, UI_HEIGHT//2)
@@ -46,6 +49,7 @@ class Title_text():
 class Blinking_message():
     image_main = None
     image_menu = None
+    image_over = None
     def __init__(self, type):
         self.frame = 0
         self.type = type
@@ -54,10 +58,14 @@ class Blinking_message():
             self.y = 220
         elif self.type == 'menu':
             self.y = 520
+        elif self.type == 'over':
+            self.y = 520
         if(Blinking_message.image_main == None and self.type == 'main'):
             Blinking_message.image_main = load_image('img/title_text.png')
         elif(Blinking_message.image_menu == None and self.type == 'menu'):
             Blinking_message.image_menu = load_image('img/field_menu_msg.png')
+        elif(Blinking_message.image_over == None and self.type == 'over'):
+            Blinking_message.image_over = load_image('img/gameover_msg.png')
         self.image = eval('Blinking_message.image_' + self.type)
     def draw(self):
         if (self.frame % 90) < 45:

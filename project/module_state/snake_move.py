@@ -18,7 +18,7 @@ from pprint import pprint
 
 def is_game_ended():
     if isended < 0:
-        sc.change_state('title', 'exitall')
+        sc.change_state('game_over', 'pause')
     elif isended > 0:
         next_stage = str(int(cur_stage) + 1)
         length = str(sp.Blue_body.length // 12 - 1) 
