@@ -5,6 +5,7 @@ from module_enemy_ai.just_sweep import *
 from module_enemy_ai.apple_hunter import *
 from module_enemy_ai.touch_bomb import *
 from module_enemy_ai.smarter_move import *
+from module_enemy_ai.stalker import *
 
 def enemy_ai(enemy_dir, gx, gy, field, option = 0):
     ordered = -1
@@ -20,6 +21,8 @@ def enemy_ai(enemy_dir, gx, gy, field, option = 0):
         ordered = apple_finding_move(enemy_dir, gx, gy, field, 2.2)
     elif(option == 6):
         ordered = smarter_moves(enemy_dir, gx, gy, field)
+    elif(option == 7):
+        ordered = stalking_move(enemy_dir, gx, gy, field)
 
     if(ordered != -1):
         return ordered
