@@ -13,7 +13,7 @@ def smarter_moves(enemy_dir, gx, gy, field):
 
     condition0 = FIELD_DICT['player'] + FIELD_DICT['apple']
     condition2 = FIELD_DICT['bomb']
-    condition3 = FIELD_DICT['enemy'] + FIELD_DICT['skin'] + FIELD_DICT['box']
+    condition3 = FIELD_DICT['enemy'] + FIELD_DICT['box']
 
     if(gx == 14 and 0 in order_candi):
         order_candi.remove(0)

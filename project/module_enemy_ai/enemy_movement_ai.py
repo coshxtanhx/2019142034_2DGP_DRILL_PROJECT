@@ -37,7 +37,7 @@ def enemy_ai(enemy_dir, gx, gy, field, option = 0):
     order_candi.remove((enemy_dir + 2) % 4)
 
     condition2 = FIELD_DICT['bomb']
-    condition3 = FIELD_DICT['enemy'] + FIELD_DICT['skin'] + FIELD_DICT['box']
+    condition3 = FIELD_DICT['enemy'] + FIELD_DICT['box']
 
     if(gx == 14 and 0 in order_candi):
         order_candi.remove(0)

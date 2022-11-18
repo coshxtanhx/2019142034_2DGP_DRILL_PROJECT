@@ -7,8 +7,6 @@ from module_enemy_ai.enemy_movement_ai import enemy_ai
 import module_other.game_world as gw
 from module_object.screen_hider_obj import *
 
-img_armor = load_image('img/armor.png')
-
 COLOR_DICT = {'1': 'orange', '2': 'brown', '3': 'purple', '4': 'green'}
 COLOR_DICT2 = {'orange': 1, 'brown': 2, 'purple': 3, 'green': 4}
 
@@ -35,7 +33,6 @@ class Enemy_body():
     bomb_cool_down = 500
     screen_off_cool_down = 400
     enemy_hp = 960
-    armored = [1]
     color = None
     img_head = None
     img_body = None
@@ -115,7 +112,6 @@ class Enemy_body():
         Enemy_body.bomb_cool_down = 500
         Enemy_body.screen_off_cool_down = 0
         Enemy_body.enemy_hp = 960 // 1
-        Enemy_body.armored = [1]
         Enemy_body.ai = 0
         Enemy_body.bomb_type = 0
         Enemy_body.damaged = 0
