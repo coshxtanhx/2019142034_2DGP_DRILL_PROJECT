@@ -9,6 +9,7 @@ class Background():
     image_selc = None
     image_howt = None
     image_over = None
+    image_ends = None
     def __init__(self, type):
         self.type = type
         if(Background.image_main == None and self.type == 'main'):
@@ -23,6 +24,8 @@ class Background():
             Background.image_howt = load_image('img/book.png')
         elif(Background.image_over == None and self.type == 'over'):
             Background.image_over = load_image('img/black_screen.png')
+        elif(Background.image_ends == None and self.type == 'ends'):
+            Background.image_ends = load_image('img/ending_bg.png')
         self.image = eval('Background.image_' + self.type)
     def draw(self):
         self.image.draw(UI_WIDTH//2, UI_HEIGHT//2)

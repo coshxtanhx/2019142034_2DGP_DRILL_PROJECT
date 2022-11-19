@@ -1,4 +1,3 @@
-from math import *
 from pico2d import *
 
 START_X = (-160, 300, 1160)

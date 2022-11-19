@@ -10,8 +10,8 @@ def is_able_load():
     try:
         file = open('datas/savedata.txt', 'r')
         filestring = file.read(2)
-        for i in range(2):
-            if filestring[i] not in ('1','2','3','4'): 1/0
+        if filestring[0] not in ('1','2','3','4'): 1/0
+        if filestring[1] not in ('1','2','3','4','5'): 1/0
     except:
         loaded_dat = 'failed'
         return load_image('img/title_menu_load_unable.png'), False

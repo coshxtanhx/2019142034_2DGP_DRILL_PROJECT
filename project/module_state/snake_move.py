@@ -26,6 +26,9 @@ def is_game_ended():
         return
 
 def handle_events():
+    if cur_stage == '5':
+        sc.change_state('ending', None)
+        return
     Enemy_body.enemy_set_bomb()
     Enemy_body.enemy_screen_off()
     Enemy_body.create_cloud()
@@ -45,6 +48,10 @@ def enters(data):
     global cur_char, cur_stage
     if(data == None): data = '11'
     cur_char, cur_stage = data[0], data[1]
+
+    if data[1] == '5':
+        return
+
     frame = 0
     field_array = field_array_reset()
     isended = 0
@@ -72,8 +79,11 @@ def exits():
     gw.clear_world()
 
 def draw_all():
-    global field_array, apples, frame
-    global enemy_char
+    if cur_stage == '5':
+        sc.change_state('ending', None)
+        return
+
+    global field_array, frame
     clear_canvas()
     gw.field_array = field_array_reset()
     for objs in gw.all_objects():
@@ -82,6 +92,9 @@ def draw_all():
     # pprint(game_world.field_array)
 
 def update():
+    if cur_stage == '5':
+        sc.change_state('ending', None)
+        return
     for objs in gw.all_objects_copy():
         objs.update()
     gw.rotate_object(1, 'player')
