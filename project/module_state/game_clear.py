@@ -50,7 +50,7 @@ def enters(option):
     star_num = get_stars(int(option[2]))
     gw.add_object(Background('menu'), 0)
     gw.add_object(Clear_ui(), 1)
-    buttons = [Game_end_button(270 + 380*i, 120, i) for i in range(2)]
+    buttons = [Game_end_button(272 + 377*i, 115, i) for i in range(2)]
     gw.add_objects(buttons, 1)
     gw.add_objects([Star(i) for i in range(star_num)], 2)
     saves(cur_game_data)
