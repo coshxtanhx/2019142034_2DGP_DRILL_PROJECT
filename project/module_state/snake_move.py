@@ -21,9 +21,6 @@ def is_game_ended():
     elif isended > 0:
         next_stage = str(int(cur_stage) + 1)
         length = str(sp.Blue_body.length // 12 - 1) 
-        if next_stage == '5':
-            sc.change_state('title', None)
-            return
         sc.change_state('game_clear', 'exitall', cur_char + next_stage + length)
     else:
         return

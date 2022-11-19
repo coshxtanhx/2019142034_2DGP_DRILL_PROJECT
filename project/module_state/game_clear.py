@@ -17,7 +17,6 @@ def handle_events():
         elif event == KESCD:
             sc.change_state('title', None)
         elif event == MLD:
-            print(ex, ey)
             isclicked = None
             for i in range(2):
                 if buttons[i].isclicked(ex, ey):
@@ -34,14 +33,19 @@ def get_stars(n):
     return 1
 
 def saves(data):
-    file = open('savedata.txt', 'w')
+    file = open('datas/savedata.txt', 'w')
     file.write(data)
+    file.close()
+
+    idx = str(int(data[1]) - 1)
+    file = open('datas/savestar' + idx + '.txt', 'w')
+    file.write(str(star_num))
     file.close()
 
 def enters(option):
     if not(option):
         option = '114'
-    global cur_game_data, buttons
+    global cur_game_data, buttons, star_num
     cur_game_data = option[:2]
     star_num = get_stars(int(option[2]))
     gw.add_object(Background('menu'), 0)
@@ -67,3 +71,4 @@ def update():
 cur_game_data = None
 buttons = None
 stars = None
+star_num = 0

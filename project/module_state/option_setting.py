@@ -14,7 +14,7 @@ volumes_before = [64, 64]
 
 def load_volume_data():
     try:
-        file = open('savevolume.txt', 'r')
+        file = open('datas/savevolume.txt', 'r')
         volume_str = file.read(7)
         file.close()
         volume_read = [int(data) for data in volume_str.split()]
@@ -29,7 +29,7 @@ def load_volume_data():
 def change_volume(i):
     if(i == 0):
         volumes_before[0], volumes_before[1] = volumes[0], volumes[1]
-        file = open('savevolume.txt', 'w')
+        file = open('datas/savevolume.txt', 'w')
         file.write(str(volumes[0]) + ' ' + str(volumes[1]))
         file.close()
     elif(i == 1):
