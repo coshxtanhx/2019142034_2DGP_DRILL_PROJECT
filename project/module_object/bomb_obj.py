@@ -100,6 +100,7 @@ class explosion():
             
 
 class bomb():
+    explode_snd = load_wav('snd/ttafi200.wav')
     image = None
     image2 = None
     image3 = None
@@ -122,6 +123,7 @@ class bomb():
         if(self.counter == 0 or self.counter <= -65535):
             self.ready_to_explode()
     def ready_to_explode(self):
+        bomb.explode_snd.play()
         gw.field_array[self.gx+1][self.gy+1] &= \
             MAX_BITS - FIELD_DICT['bomb']
         if(self.option == 0):

@@ -18,9 +18,7 @@ def handle_events():
             sc.change_state('', None)
 
 def enters(option):
-    global frame
     global img_title_msg, img_title_bg, img_title_text
-    frame = 0
     img_title_bg = Background('main')
     img_title_text = [Title_text(num) for num in range(2)]
     img_title_msg = Blinking_message('main')
