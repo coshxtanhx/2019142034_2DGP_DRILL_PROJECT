@@ -21,7 +21,7 @@ def handle_events():
                     button_clicked = i
                     break
             if button_clicked == 0:
-                module_other.state_changer.change_state('snake_move', None, \
+                module_other.state_changer.change_state('play_state', None, \
                     str(Selection.num+1) + '1')
             if button_clicked == 1:
                 module_other.state_changer.change_state('how_to_play', 'pause')

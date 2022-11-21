@@ -2,7 +2,7 @@ from pico2d import *
 from module_other.coordinates_module import UI_HEIGHT, UI_WIDTH
 from math import *
 
-class Background():
+class Background:
     image_main = None
     image_menu = None
     image_play = None
@@ -34,7 +34,7 @@ class Background():
     def check_col(self):
         pass
 
-class Title_text():
+class Title_text:
     image = None
     def __init__(self, num):
         self.frame = 0
@@ -49,7 +49,7 @@ class Title_text():
     def update(self):
         self.frame = (self.frame + 1) % 180
 
-class Blinking_message():
+class Blinking_message:
     image_main = None
     image_menu = None
     image_over = None
@@ -76,7 +76,7 @@ class Blinking_message():
     def update(self):
         self.frame = (self.frame + 1) % 180
 
-class Option_ui():
+class Option_ui:
     image = None
     def __init__(self):
         if Option_ui.image == None:
@@ -84,7 +84,7 @@ class Option_ui():
     def draw(self):
         self.image.draw(UI_WIDTH//2, UI_HEIGHT//2)
 
-class Selection():
+class Selection:
     image = None
     num = 0
     def __init__(self):
@@ -97,7 +97,7 @@ class Selection():
     def change_img(option):
         Selection.num = (Selection.num + option) % 4
 
-class Book_page():
+class Book_page:
     MAX_PAGE = 6
     image = [None for _ in range(MAX_PAGE)]
     page = 0
@@ -118,7 +118,7 @@ class Book_page():
             self.image[Book_page.page+i].draw(\
                 UI_WIDTH//2 + gap*2*i - gap, UI_HEIGHT//2)
 
-class Clear_ui():
+class Clear_ui:
     image = None
     def __init__(self):
         if Clear_ui.image == None:

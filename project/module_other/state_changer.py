@@ -1,7 +1,7 @@
 from pico2d import close_canvas, delay
 import module_state.title
 import module_state.title_menu
-import module_state.snake_move
+import module_state.play_state
 import module_state.option_setting
 import module_state.game_menu
 import module_state.select_char
@@ -71,7 +71,6 @@ def state_changer_activate(start_module_str):
             state_exit(current_module_str)
         if(next_module_str == 'lastest'):
             next_module_str = state_stack[-1]
-    close_canvas()
             
 state_stack = []
 running = False

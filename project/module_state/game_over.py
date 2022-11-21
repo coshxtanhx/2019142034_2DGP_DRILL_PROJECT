@@ -26,7 +26,7 @@ def handle_events():
             if isclicked == 0:
                 sc.change_state('title', 'exitall')
             elif isclicked == 1:
-                sc.change_state('snake_move', None, cur_game_data)
+                sc.change_state('play_state', None, cur_game_data)
 
 def enters(option):
     global buttons, cur_game_data

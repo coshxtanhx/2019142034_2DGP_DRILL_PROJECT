@@ -6,6 +6,7 @@ from module_object.bomb_obj import bomb
 from module_enemy_ai.enemy_movement_ai import enemy_ai
 import module_other.game_world as gw
 from module_object.screen_hider_obj import *
+import module_other.bgm_player as bp
 
 COLOR_DICT = {'1': 'orange', '2': 'brown', '3': 'purple', '4': 'green'}
 COLOR_DICT2 = {'orange': 1, 'brown': 2, 'purple': 3, 'green': 4}
@@ -44,6 +45,7 @@ class Enemy_body():
     damaged = 0
     screen_break_cnt = 0
     cloud_cnt = 0
+    bgm = None
     def __init__(self, number, color = 'orange', x=40, y=-1):
         if(y == -1):
             self.x, self.y = grid_to_coordinates(0, 8)
@@ -57,6 +59,8 @@ class Enemy_body():
         if Enemy_body.img_body == None:
             Enemy_body.img_head, Enemy_body.img_body = \
                 get_image(Enemy_body.color)
+        if Enemy_body.bgm == None:
+            Enemy_body.bgm = bp.Stage_bgm(COLOR_DICT2[self.color])
     def get_damaged(damage):
         if Enemy_body.damaged < damage:
             Enemy_body.damaged = damage
@@ -76,8 +80,8 @@ class Enemy_body():
             self.number += 1
         if Enemy_body.enemy_hp <= 0:
             Enemy_body.enemy_hp = 0
-            import module_state.snake_move as sm
-            sm.isended = 1
+            import module_state.play_state as ps
+            ps.isended = 1
 
     def draw(self):
         self.gx, self.gy = coordinates_to_grid(self.x, self.y)
@@ -117,6 +121,9 @@ class Enemy_body():
         Enemy_body.damaged = 0
         Enemy_body.screen_break_cnt = 0
         Enemy_body.cloud_cnt = 0
+        if Enemy_body.bgm != None:
+            Enemy_body.bgm.stops()
+            Enemy_body.bgm = None
 
     def change_ai():
         Enemy_body.ai = \

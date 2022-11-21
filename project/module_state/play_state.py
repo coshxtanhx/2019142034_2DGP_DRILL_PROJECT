@@ -7,7 +7,7 @@ from module_object.apple_obj import *
 from module_object.bomb_obj import *
 from module_object.mine_obj import *
 import module_object.snake_player_obj as sp
-from module_object.snake_enemy_obj import *
+import module_object.snake_enemy_obj as se
 from module_object.hpbar_obj import *
 from module_object.screen_hider_obj import *
 from module_object.background_obj import *
@@ -29,9 +29,9 @@ def handle_events():
     if cur_stage == '5':
         sc.change_state('ending', None)
         return
-    Enemy_body.enemy_set_bomb()
-    Enemy_body.enemy_screen_off()
-    Enemy_body.create_cloud()
+    se.Enemy_body.enemy_set_bomb()
+    se.Enemy_body.enemy_screen_off()
+    se.Enemy_body.create_cloud()
     events = get_events()
     for raw_event in events:
         event = convert_event(raw_event)
@@ -41,7 +41,7 @@ def handle_events():
             sc.change_state('game_menu', 'pause')
         else:
             sp.Blue_body.handle_events(event)
-        if raw_event.key == SDLK_p: Enemy_body.damaged = 125
+        if raw_event.key == SDLK_p: se.Enemy_body.damaged = 125
 
 def enters(data):
     global frame, field_array, isended
@@ -58,19 +58,21 @@ def enters(data):
 
     sp.Blue_body.character = cur_char
 
-    for snake in (sp.Blue_body, Enemy_body):
+    for snake in (sp.Blue_body, se.Enemy_body):
         snake.reset()
 
     gw.add_object(Background('play'), 'bg')
     gw.add_objects([sp.Blue_body(i) for i in range(12*(3-1)+1)], 'player')
     gw.addleft_object(create_first_apple(), 'obj')
-    gw.add_objects([Enemy_body(i, color=COLOR_DICT[cur_stage]) \
+    gw.add_objects([se.Enemy_body(i, color=se.COLOR_DICT[cur_stage]) \
         for i in range(0, 12*(6-1)+1)], 'enemy')
     gw.add_object(HP_bar(int(cur_stage)-1), 'ui')
 
 def exits():
     global frame, field_array, isended
     global cur_char, cur_stage
+    for snake in (sp.Blue_body, se.Enemy_body):
+        snake.reset()
     frame = None
     field_array = None
     cur_char = None

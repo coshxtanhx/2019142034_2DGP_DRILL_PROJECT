@@ -13,7 +13,7 @@ def handle_events():
         if event == QUIT:
             sc.change_state('', None)
         elif event == KESCD:
-            sc.change_state('snake_move', 'resume')
+            sc.change_state('play_state', 'resume')
         elif event == MLD:
             button_clicked = -1
             for i in range(4):
@@ -23,13 +23,13 @@ def handle_events():
             if(button_clicked == 0):
                 sc.change_state('title', 'exitall')
             elif(button_clicked == 1):
-                from module_state.snake_move import cur_char, cur_stage
-                sc.change_state('snake_move', 'exitall', \
+                from module_state.play_state import cur_char, cur_stage
+                sc.change_state('play_state', 'exitall', \
                     cur_char + cur_stage)
             elif(button_clicked == 2):
                 sc.change_state('option_setting', 'pause')
             elif(button_clicked == 3):
-                sc.change_state('snake_move', 'resume')
+                sc.change_state('play_state', 'resume')
 
 def enters(option):
     global img_ui_bg, img_ui_text, buttons

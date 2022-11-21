@@ -18,7 +18,7 @@ def handle_events():
 
 def load_score(n):
     try:
-        file = open('datas/savestar' + n + '.txt', 'r')
+        file = open('data/savestar' + n + '.txt', 'r')
         num = int(file.read())
     except:
         return 0

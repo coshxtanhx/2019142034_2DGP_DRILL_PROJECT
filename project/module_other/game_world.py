@@ -28,12 +28,12 @@ state_list = [
 for state_name in state_list:
     world[state_name] = [[] for _ in range(obj_list_len)]
 
-world['snake_move'] = []
+world['play_state'] = []
 for obj_name in obj_list:
     if obj_name == 'bg' or obj_name == 'ice' or obj_name == 'ui':
-        world['snake_move'] += [[]]
+        world['play_state'] += [[]]
     else:
-        world['snake_move'] += [deque()]
+        world['play_state'] += [deque()]
 
 def all_objects():
     for layer in world[cur_world]:

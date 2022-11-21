@@ -8,7 +8,7 @@ mode = None
 
 def create_first_apple():
     global mode, poisoned
-    from module_state.snake_move import cur_char
+    from module_state.play_state import cur_char
     mode = cur_char
     poisoned = True if (mode == '2') else False
     return Normal_apple(10, 0)
@@ -22,7 +22,7 @@ def create_new_apple():
         poisoned = bool(mode == '2')
         return Normal_apple()
 
-class Apple():
+class Apple:
     def check_col(self):
         cur_loc = gw.field_array[self.gx+1][self.gy+1]
         if cur_loc & (FIELD_DICT['head'] + FIELD_DICT['ehead'] \

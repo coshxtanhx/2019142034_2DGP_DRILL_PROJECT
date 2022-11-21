@@ -120,8 +120,8 @@ class Blue_body():
             Blue_body.get_damaged()
 
 def game_over():
-    import module_state.snake_move as sm
-    sm.isended = -1
+    import module_state.play_state as ps
+    ps.isended = -1
 
 GO_D, GO_W, GO_A, GO_S = range(4)
 

@@ -17,7 +17,7 @@ def bomb_draw_case(option, is_enemy, count, x, y):
     elif(option == 3):
         bomb.image4.clip_draw(60 * (count % 3), 60 * (cntnum-1), 60, 60, x, y)
 
-class Skin():
+class Skin:
     image = None
     def __init__(self, x, y):
         self.x, self.y = x, y
@@ -44,7 +44,7 @@ class Skin():
             + FIELD_DICT['explode']):
             gw.remove_object(self)
 
-class Ice():
+class Ice:
     image = None
     def __init__(self, gx, gy):
         self.gx, self.gy = gx, gy
@@ -72,7 +72,7 @@ class Ice():
             gw.remove_object(self)
 
 
-class explosion():
+class explosion:
     image = None
     def __init__(self, gx, gy, damage):
         self.gx, self.gy = gx, gy
@@ -99,8 +99,8 @@ class explosion():
             sp.Blue_body.get_damaged()
             
 
-class bomb():
-    explode_snd = load_wav('snd/ttafi200.wav')
+class bomb:
+    explode_snd = None
     image = None
     image2 = None
     image3 = None
@@ -112,6 +112,8 @@ class bomb():
         self.damage = damage
         self.option = option
         self.is_enemy = 5 if (self.damage == 0) else 0
+        if bomb.explode_snd == None:
+            bomb.explode_snd = load_wav('snd/ttafi200.wav')
         if bomb.image == None:
             bomb.image = \
                 [load_image('img/bomb_' + str(i) + '.png') for i in range(1, 11)]

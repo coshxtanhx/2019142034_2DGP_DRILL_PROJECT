@@ -25,7 +25,7 @@ def handle_events():
             if isclicked == 0:
                 sc.change_state('title', 'exitall')
             elif isclicked == 1:
-                sc.change_state('snake_move', 'exitall', cur_game_data)
+                sc.change_state('play_state', 'exitall', cur_game_data)
 
 def get_stars(n):
     if n > 5: return 1
@@ -33,12 +33,12 @@ def get_stars(n):
     return 1
 
 def saves(data):
-    file = open('datas/savedata.txt', 'w')
+    file = open('data/savedata.txt', 'w')
     file.write(data)
     file.close()
 
     idx = str(int(data[1]) - 1)
-    file = open('datas/savestar' + idx + '.txt', 'w')
+    file = open('data/savestar' + idx + '.txt', 'w')
     file.write(str(star_num))
     file.close()
 

@@ -8,7 +8,7 @@ import module_other.game_world as gw
 def is_able_load():
     global file, loaded_dat
     try:
-        file = open('datas/savedata.txt', 'r')
+        file = open('data/savedata.txt', 'r')
         filestring = file.read(2)
         if filestring[0] not in ('1','2','3','4'): 1/0
         if filestring[1] not in ('1','2','3','4','5'): 1/0
@@ -36,7 +36,7 @@ def handle_events():
             if(button_clicked == 0):
                 sc.change_state('select_char', None)
             elif(button_clicked == 1):
-                sc.change_state('snake_move', None, loaded_dat)
+                sc.change_state('play_state', None, loaded_dat)
             elif(button_clicked == 2):
                 sc.change_state('option_setting', 'pause')
             elif(button_clicked == 3):
