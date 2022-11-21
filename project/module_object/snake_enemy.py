@@ -2,10 +2,10 @@ from module_other.coordinates_module import *
 from collections import deque
 from pico2d import *
 from random import choice
-from module_object.bomb_obj import bomb
+from module_object.bomb import Bomb
 from module_enemy_ai.enemy_movement_ai import enemy_ai
 import module_other.game_world as gw
-from module_object.screen_hider_obj import *
+from module_object.screen_hider import *
 import module_other.bgm_player as bp
 
 COLOR_DICT = {'1': 'orange', '2': 'brown', '3': 'purple', '4': 'green'}
@@ -28,7 +28,7 @@ def get_image(color):
     img_body = load_image('img/snake_' + color + '_body.png')
     return img_head, img_body
 
-class Enemy_body():
+class Enemy_body:
     enemy_direction = 0
     enemy_order = 0
     bomb_cool_down = 500
@@ -137,7 +137,7 @@ class Enemy_body():
         if Enemy_body.bomb_cool_down > 0:
             return
         bx, by = Enemy_body.tx, Enemy_body.ty
-        gw.addleft_object(bomb(bx, by, 0, \
+        gw.addleft_object(Bomb(bx, by, 0, \
             choice(bomb_type_list[Enemy_body.bomb_type])), 'bomb')
         Enemy_body.bomb_cool_down = 200
 
@@ -164,7 +164,7 @@ class Enemy_body():
     def check_col(self):
         cur_loc = gw.field_array[self.gx+1][self.gy+1]
         if cur_loc & (FIELD_DICT['player']):
-            import module_object.snake_player_obj as sp
+            import module_object.snake_player as sp
             sp.Blue_body.get_damaged()
 
 def screen_break(hp):

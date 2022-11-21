@@ -1,7 +1,6 @@
 from pico2d import *
-from module_other.coordinates_module import UI_HEIGHT, UI_WIDTH
 from module_other.event_table_module import *
-from module_object.background_obj import *
+from module_object.background import *
 from math import *
 import module_other.game_world as gw
 import module_other.state_changer as sc

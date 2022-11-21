@@ -2,7 +2,7 @@ from random import randint
 from pico2d import *
 import module_other.game_world as gw
 
-class Broken():
+class Broken:
     image = None
     def __init__(self):
         self.x = randint(70, 70+780)
@@ -18,7 +18,7 @@ class Broken():
     def check_col(self):
         pass
 
-class Screen_off():
+class Screen_off:
     image1 = None
     image2 = None
     def __init__(self):
@@ -29,7 +29,7 @@ class Screen_off():
     def draw(self):
         if self.frame > 160 and ((self.frame-160) // 6) % 2 == 0:
             return
-        import module_object.snake_player_obj as sp
+        import module_object.snake_player as sp
         x, y = sp.Blue_body.hx, sp.Blue_body.hy
         self.image1.draw(x, y)
         self.image2.draw(x + 615, y)
@@ -41,7 +41,7 @@ class Screen_off():
     def check_col(self):
         pass
 
-class Cloud():
+class Cloud:
     image = None
     def __init__(self):
         self.x = 920 + 165

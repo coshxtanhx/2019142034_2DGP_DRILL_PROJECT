@@ -1,8 +1,8 @@
 from module_other.coordinates_module import *
 from pico2d import *
 from module_other.event_table_module import *
-from module_object.background_obj import *
-from module_object.buttons_obj \
+from module_object.background import *
+from module_object.buttons \
     import Option_volume_button, Option_volume_line, Option_button
 import module_other.state_changer as sc
 import module_other.game_world as gw

@@ -9,13 +9,13 @@ ice_removing_obj = FIELD_DICT['enemy'] + FIELD_DICT['explode'] \
 def bomb_draw_case(option, is_enemy, count, x, y):
     cntnum = ceil(count / 70)
     if(option == 0):
-        bomb.image[cntnum-1+is_enemy].clip_draw(60 * (count % 3), 0, 60, 60, x, y)
+        Bomb.image[cntnum-1+is_enemy].clip_draw(60 * (count % 3), 0, 60, 60, x, y)
     elif(option == 1):
-        bomb.image2.clip_draw(60 * (count % 3), 60 * (cntnum-1), 60, 60, x, y)
+        Bomb.image2.clip_draw(60 * (count % 3), 60 * (cntnum-1), 60, 60, x, y)
     elif(option == 2):
-        bomb.image3.clip_draw(60 * (count % 3), 60 * (cntnum-1), 60, 60, x, y)
+        Bomb.image3.clip_draw(60 * (count % 3), 60 * (cntnum-1), 60, 60, x, y)
     elif(option == 3):
-        bomb.image4.clip_draw(60 * (count % 3), 60 * (cntnum-1), 60, 60, x, y)
+        Bomb.image4.clip_draw(60 * (count % 3), 60 * (cntnum-1), 60, 60, x, y)
 
 class Skin:
     image = None
@@ -38,8 +38,8 @@ class Skin:
     def check_col(self):
         cur_loc = gw.field_array[self.gx+1][self.gy+1]
         if cur_loc & (FIELD_DICT['head']):
-            import module_object.snake_player_obj
-            module_object.snake_player_obj.Blue_body.get_damaged()
+            import module_object.snake_player
+            module_object.snake_player.Blue_body.get_damaged()
         if cur_loc & (FIELD_DICT['head'] + FIELD_DICT['enemy'] \
             + FIELD_DICT['explode']):
             gw.remove_object(self)
@@ -65,22 +65,22 @@ class Ice:
     def check_col(self):
         cur_loc = gw.field_array[self.gx][self.gy]
         if cur_loc & (FIELD_DICT['player']):
-            import module_object.snake_player_obj
-            module_object.snake_player_obj.Blue_body.get_damaged()
+            import module_object.snake_player
+            module_object.snake_player.Blue_body.get_damaged()
         if cur_loc & (FIELD_DICT['player'] + FIELD_DICT['enemy'] \
             + FIELD_DICT['explode']):
             gw.remove_object(self)
 
 
-class explosion:
+class Explosion:
     image = None
     def __init__(self, gx, gy, damage):
         self.gx, self.gy = gx, gy
         self.x, self.y = grid_to_coordinates(self.gx-1, self.gy-1)
         self.frame = 6
         self.damage = damage
-        if(explosion.image == None):
-            explosion.image = load_image('img/explode.png')
+        if(Explosion.image == None):
+            Explosion.image = load_image('img/explode.png')
     def draw(self):
         self.image.clip_draw(60 * (self.frame // 2), 0, 60, 60, self.x, self.y)
     def update(self):
@@ -92,14 +92,14 @@ class explosion:
             return
         cur_loc = gw.field_array[self.gx][self.gy]
         if cur_loc & (FIELD_DICT['enemy']):
-            import module_object.snake_enemy_obj as se
+            import module_object.snake_enemy as se
             se.Enemy_body.get_damaged(self.damage)
         if cur_loc & (FIELD_DICT['player']):
-            import module_object.snake_player_obj as sp
+            import module_object.snake_player as sp
             sp.Blue_body.get_damaged()
             
 
-class bomb:
+class Bomb:
     explode_snd = None
     image = None
     image2 = None
@@ -112,20 +112,20 @@ class bomb:
         self.damage = damage
         self.option = option
         self.is_enemy = 5 if (self.damage == 0) else 0
-        if bomb.explode_snd == None:
-            bomb.explode_snd = load_wav('snd/ttafi200.wav')
-        if bomb.image == None:
-            bomb.image = \
+        if Bomb.explode_snd == None:
+            Bomb.explode_snd = load_wav('snd/ttafi200.wav')
+        if Bomb.image == None:
+            Bomb.image = \
                 [load_image('img/bomb_' + str(i) + '.png') for i in range(1, 11)]
-            bomb.image2 = load_image('img/bomb_cross.png')
-            bomb.image3 = load_image('img/bomb_ice.png')
-            bomb.image4 = load_image('img/bomb_ice_cross.png')
+            Bomb.image2 = load_image('img/bomb_cross.png')
+            Bomb.image3 = load_image('img/bomb_ice.png')
+            Bomb.image4 = load_image('img/bomb_ice_cross.png')
     def update(self):
         self.counter -= 1
         if(self.counter == 0 or self.counter <= -65535):
             self.ready_to_explode()
     def ready_to_explode(self):
-        bomb.explode_snd.play()
+        Bomb.explode_snd.play()
         gw.field_array[self.gx+1][self.gy+1] &= \
             MAX_BITS - FIELD_DICT['bomb']
         if(self.option == 0):
@@ -143,47 +143,47 @@ class bomb:
         for x in range(self.gx+1, 0, -1):
             gw.field_array[x][self.gy+1] |= FIELD_DICT['explode']
             gw.addleft_object(\
-                explosion(x, self.gy+1, self.damage), 'explode')
+                Explosion(x, self.gy+1, self.damage), 'explode')
         for x in range(self.gx+1, 16, +1):
             gw.field_array[x][self.gy+1] |= FIELD_DICT['explode']
             gw.addleft_object(\
-                explosion(x, self.gy+1, self.damage), 'explode')
+                Explosion(x, self.gy+1, self.damage), 'explode')
         for y in range(self.gy+1, 10, +1):
             gw.field_array[self.gx+1][y] |= FIELD_DICT['explode']
             gw.addleft_object(\
-                explosion(self.gx+1, y, self.damage), 'explode')
+                Explosion(self.gx+1, y, self.damage), 'explode')
         for y in range(self.gy+1, 0, -1):
             gw.field_array[self.gx+1][y] |= FIELD_DICT['explode']
             gw.addleft_object(\
-                explosion(self.gx+1, y, self.damage), 'explode')
+                Explosion(self.gx+1, y, self.damage), 'explode')
         self.x = -65535
     def explode_mine(self):
         for x in range(-1, 2):
             for y in range(-1, 2):
                 gw.addleft_object(\
-                    explosion(self.gx+1+x, self.gy+1+y, self.damage), 'explode')
+                    Explosion(self.gx+1+x, self.gy+1+y, self.damage), 'explode')
 
 
     def explode_cross(self):
         for i in range(0, 9, 1):
             if not(-1 < self.gx+i < 15 and -1 < self.gy+i < 9): break
             gw.field_array[self.gx+i+1][self.gy+i+1] |= FIELD_DICT['explode']
-            gw.addleft_object(explosion(self.gx+i+1, \
+            gw.addleft_object(Explosion(self.gx+i+1, \
                 self.gy+i+1, self.damage), 'explode')
         for i in range(1, 9, 1):
             if not(-1 < self.gx-i < 15 and -1 < self.gy+i < 9): break
             gw.field_array[self.gx-i+1][self.gy+i+1] |= FIELD_DICT['explode']
-            gw.addleft_object(explosion(self.gx-i+1, self.gy+i+1, \
+            gw.addleft_object(Explosion(self.gx-i+1, self.gy+i+1, \
                 self.damage), 'explode')
         for i in range(1, 9, 1):
             if not(-1 < self.gx+i < 15 and -1 < self.gy-i < 9): break
             gw.field_array[self.gx+i+1][self.gy-i+1] |= FIELD_DICT['explode']
-            gw.addleft_object(explosion(self.gx+i+1, self.gy-i+1, \
+            gw.addleft_object(Explosion(self.gx+i+1, self.gy-i+1, \
                 self.damage), 'explode')
         for i in range(1, 9, 1):
             if not(-1 < self.gx-i < 15 and -1 < self.gy-i < 9): break
             gw.field_array[self.gx-i+1][self.gy-i+1] |= FIELD_DICT['explode']
-            gw.addleft_object(explosion(self.gx-i+1, self.gy-i+1, \
+            gw.addleft_object(Explosion(self.gx-i+1, self.gy-i+1, \
                 self.damage), 'explode')
         self.x = -65535
 

@@ -7,7 +7,7 @@ def star_num_to_rank(num):
     if num <= 10: return '1'
     else: return '0'
 
-class Rank():
+class Rank:
     def __init__(self, num):
         self.num = num
         self.frame = 0

@@ -1,10 +1,10 @@
 from module_other.coordinates_module import *
 from pico2d import *
-from module_object.bomb_obj import *
+from module_object.bomb import *
 from collections import deque
 import module_other.game_world as gw
 
-class Mine():
+class Mine:
     image = None
     def __init__(self):
         self.counter = 40
@@ -24,13 +24,13 @@ class Mine():
                 for y in range(-1, 2):
                     cur_loc = gw.field_array[self.gx+1+x][self.gy+1+y]
                     if cur_loc & (FIELD_DICT['head']):
-                        gw.add_object(bomb(self.x, self.y, 0, 4), 'bomb')
+                        gw.add_object(Bomb(self.x, self.y, 0, 4), 'bomb')
                         gw.remove_object(self)
         else:
             cur_loc = gw.field_array[self.gx+1][self.gy+1]
             self.check_is_snake_here()
             if cur_loc & (FIELD_DICT['head']):
-                gw.add_object(bomb(self.x, self.y, 0, 4), 'bomb')
+                gw.add_object(Bomb(self.x, self.y, 0, 4), 'bomb')
                 gw.remove_object(self)
     def update(self):
         if self.destructing:

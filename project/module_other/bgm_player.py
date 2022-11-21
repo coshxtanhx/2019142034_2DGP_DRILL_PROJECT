@@ -11,5 +11,4 @@ class Stage_bgm():
     def plays(self):
         self.bgm.repeat_play()
     def stops(self):
-        print(45355)
         self.bgm.stop()

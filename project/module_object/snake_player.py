@@ -2,12 +2,12 @@ from module_other.coordinates_module import *
 from collections import deque
 from pico2d import *
 from module_other.event_table_module import *
-from module_object.bomb_obj import bomb, Skin
-from module_object.mine_obj import Mine
+from module_object.bomb import Bomb, Skin
+from module_object.mine import Mine
 import module_other.game_world as gw
 import module_other.state_changer as sc
 
-class Blue_body():
+class Blue_body:
     img_snake_blue_head = None
     img_snake_blue_body = None
     character = None
@@ -101,7 +101,7 @@ class Blue_body():
             if event == KED:
                 if Blue_body.bomb_cool_down == 0:
                     bx, by = Blue_body.tx, Blue_body.ty
-                    gw.addleft_object(bomb(bx, by, Blue_body.length), 'bomb')
+                    gw.addleft_object(Bomb(bx, by, Blue_body.length), 'bomb')
                     Blue_body.bomb_cool_down = 100
             else:
                 Blue_body.direction.appendleft(event)
