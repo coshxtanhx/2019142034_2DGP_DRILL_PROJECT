@@ -1,7 +1,6 @@
 from module_other.coordinates_module import *
 from pico2d import *
 from module_object.bomb import *
-from collections import deque
 import module_other.game_world as gw
 
 class Mine:
@@ -28,7 +27,7 @@ class Mine:
                         gw.remove_object(self)
         else:
             cur_loc = gw.field_array[self.gx+1][self.gy+1]
-            self.check_is_snake_here()
+            self.check_if_snake_here()
             if cur_loc & (FIELD_DICT['head']):
                 gw.add_object(Bomb(self.x, self.y, 0, 4), 'bomb')
                 gw.remove_object(self)
@@ -37,7 +36,7 @@ class Mine:
             self.counter -= 1
         if self.counter <= 0: self.sweeping -= 6
         if self.sweeping <= 6: gw.remove_object(self)
-    def check_is_snake_here(self):
+    def check_if_snake_here(self):
         if self.destructing:
             return
         for x in range(-1, 2):

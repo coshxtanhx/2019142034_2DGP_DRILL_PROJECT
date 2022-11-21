@@ -6,22 +6,23 @@ from module_enemy_ai.apple_hunter import *
 from module_enemy_ai.touch_bomb import *
 from module_enemy_ai.smarter_move import *
 from module_enemy_ai.stalker import *
+from module_other.term_table import *
 
 def enemy_ai(enemy_dir, gx, gy, field, option = 0):
     ordered = -1
-    if(option == 1):
+    if(option == CIRCLE):
         ordered = circle_move(enemy_dir, gx, gy, field)
-    elif(option == 2):
+    elif(option == SWEEP):
         ordered = sweep_move(enemy_dir, gx, gy, field)
-    elif(option == 3):
+    elif(option == APPLE_HUNTER):
         ordered = apple_finding_move(enemy_dir, gx, gy, field)
-    elif(option == 4):
+    elif(option == BOMB_TOUCH):
         ordered = bomb_finding_move(enemy_dir, gx, gy, field)
-    elif(option == 5):
+    elif(option == APPLE_DEFENDER):
         ordered = apple_finding_move(enemy_dir, gx, gy, field, 2.2)
-    elif(option == 6):
+    elif(option == SMARTER):
         ordered = smarter_moves(enemy_dir, gx, gy, field)
-    elif(option == 7):
+    elif(option == STALKER):
         ordered = stalking_move(enemy_dir, gx, gy, field)
 
     if(ordered != -1):
@@ -37,7 +38,7 @@ def enemy_ai(enemy_dir, gx, gy, field, option = 0):
     order_candi.remove((enemy_dir + 2) % 4)
 
     condition2 = FIELD_DICT['bomb']
-    condition3 = FIELD_DICT['enemy'] + FIELD_DICT['box']
+    condition3 = FIELD_DICT['enemy']
 
     if(gx == 14 and 0 in order_candi):
         order_candi.remove(0)

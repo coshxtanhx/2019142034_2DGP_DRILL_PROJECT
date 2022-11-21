@@ -5,7 +5,7 @@ from module_other.event_table_module import *
 from module_object.bomb import Bomb, Skin
 from module_object.mine import Mine
 import module_other.game_world as gw
-import module_other.state_changer as sc
+from module_other.term_table import *
 
 class Blue_body:
     img_snake_blue_head = None
@@ -57,9 +57,9 @@ class Blue_body:
             gw.add_object(Blue_body(Blue_body.length+i, \
                 Blue_body.tx, Blue_body.ty), 'player')
         Blue_body.length += 12
-        if Blue_body.character == '3':
+        if Blue_body.character == MINE_SWEEPER_SNAKE:
             gw.add_object(Mine(), 'obj')
-        if Blue_body.character == '4':
+        if Blue_body.character == SKIN_SHEDDER_SNAKE:
             Blue_body.skinshed = True
     def get_shorter():
         if Blue_body.damaged == False:
@@ -121,10 +121,9 @@ class Blue_body:
 
 def game_over():
     import module_state.play_state as ps
-    ps.isended = -1
+    ps.isended = DEFEAT
 
 GO_D, GO_W, GO_A, GO_S = range(4)
-
 next_state = {
     GO_D: {KDD: GO_D, KWD: GO_W, KAD: GO_D, KSD: GO_S, KED: GO_D},
     GO_W: {KDD: GO_D, KWD: GO_W, KAD: GO_A, KSD: GO_W, KED: GO_W},

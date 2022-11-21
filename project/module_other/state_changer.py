@@ -1,4 +1,4 @@
-from pico2d import close_canvas, delay
+from pico2d import delay
 import module_state.title
 import module_state.title_menu
 import module_state.play_state

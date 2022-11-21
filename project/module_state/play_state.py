@@ -16,9 +16,9 @@ import module_other.game_world as gw
 from pprint import pprint
 
 def is_game_ended():
-    if isended < 0:
+    if isended == DEFEAT:
         sc.change_state('game_over', None, cur_char + cur_stage)
-    elif isended > 0:
+    elif isended == VICTORY:
         next_stage = str(int(cur_stage) + 1)
         length = str(sp.Blue_body.length // 12 - 1) 
         sc.change_state('game_clear', 'exitall', cur_char + next_stage + length)
@@ -46,15 +46,15 @@ def handle_events():
 def enters(data):
     global frame, field_array, isended
     global cur_char, cur_stage
-    if(data == None): data = '11'
+    if(data == None): data = GENERAL_SNAKE + STAGE1
     cur_char, cur_stage = data[0], data[1]
 
-    if data[1] == '5':
+    if data[1] == ENDING:
         return
 
     frame = 0
     field_array = field_array_reset()
-    isended = 0
+    isended = STILL_PLAYING
 
     sp.Blue_body.character = cur_char
 

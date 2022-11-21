@@ -2,6 +2,7 @@ from module_other.coordinates_module import *
 from pico2d import *
 import module_enemy_ai.apple_hunter
 import module_other.game_world as gw
+from module_other.term_table import *
 
 poisoned = False
 mode = None
@@ -10,7 +11,7 @@ def create_first_apple():
     global mode, poisoned
     from module_state.play_state import cur_char
     mode = cur_char
-    poisoned = True if (mode == '2') else False
+    poisoned = True if (mode == POISON_APPLE_SNAKE) else False
     return Normal_apple(10, 0)
 
 def create_new_apple():
@@ -19,7 +20,7 @@ def create_new_apple():
         poisoned = False
         return Poison_apple()
     else:
-        poisoned = bool(mode == '2')
+        poisoned = bool(mode == POISON_APPLE_SNAKE)
         return Normal_apple()
 
 class Apple:

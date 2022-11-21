@@ -7,20 +7,32 @@ from module_enemy_ai.enemy_movement_ai import enemy_ai
 import module_other.game_world as gw
 from module_object.screen_hider import *
 import module_other.bgm_player as bp
+from module_other.term_table import *
 
 COLOR_DICT = {'1': 'orange', '2': 'brown', '3': 'purple', '4': 'green'}
 COLOR_DICT2 = {'orange': 1, 'brown': 2, 'purple': 3, 'green': 4}
 
 AI_DICT = {
-    (3, 1): 1, (2, 1): 2, (1, 1): 0, (0, 1): 3,
-    (3, 2): 1, (2, 2): 2, (1, 2): 0, (0, 2): 0,
-    (3, 3): 1, (2, 3): 0, (1, 3): 1, (0, 3): 3,
-    (3, 4): 6, (2, 4): 4, (1, 4): 5, (0, 4): 7,
+    (PHASE[1], ORANGE): CIRCLE, (PHASE[2], ORANGE): SWEEP,
+    (PHASE[3], ORANGE): RANDOM, (PHASE[4], ORANGE): APPLE_HUNTER,
+
+    (PHASE[1], BROWN): CIRCLE, (PHASE[2], BROWN): SWEEP,
+    (PHASE[3], BROWN): RANDOM, (PHASE[4], BROWN): RANDOM,
+
+    (PHASE[1], PURPLE): CIRCLE, (PHASE[2], PURPLE): RANDOM,
+    (PHASE[3], PURPLE): CIRCLE, (PHASE[4], PURPLE): APPLE_HUNTER,
+
+    (PHASE[1], GREEN): SMARTER, (PHASE[2], GREEN): BOMB_TOUCH,
+    (PHASE[3], GREEN): APPLE_DEFENDER, (PHASE[4], GREEN): STALKER,
 }
 
-bomb_type_list = (
-    (0,), (0,1), (0, 0,1,3), (0,0, 1,3,2,2), (3, 3, 3, 2, 2, 2, 1, 0)
-)
+BOMB_TYPE_DICT = {
+    0: (0,),
+    1: (0, 1),
+    2: (0, 0, 1, 3),
+    3: (0, 0, 1, 3, 2, 2),
+    4: (3, 3, 3, 2, 2, 2, 1, 0)
+}
 
 def get_image(color):
     img_head = [load_image('img/snake_' + color + '_head_' + str(i) + '.png') \
@@ -81,7 +93,7 @@ class Enemy_body:
         if Enemy_body.enemy_hp <= 0:
             Enemy_body.enemy_hp = 0
             import module_state.play_state as ps
-            ps.isended = 1
+            ps.isended = VICTORY
 
     def draw(self):
         self.gx, self.gy = coordinates_to_grid(self.x, self.y)
@@ -138,7 +150,7 @@ class Enemy_body:
             return
         bx, by = Enemy_body.tx, Enemy_body.ty
         gw.addleft_object(Bomb(bx, by, 0, \
-            choice(bomb_type_list[Enemy_body.bomb_type])), 'bomb')
+            choice(BOMB_TYPE_DICT[Enemy_body.bomb_type])), 'bomb')
         Enemy_body.bomb_cool_down = 200
 
     def create_cloud():
