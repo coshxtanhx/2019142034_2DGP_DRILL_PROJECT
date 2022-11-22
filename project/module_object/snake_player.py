@@ -2,8 +2,9 @@ from module_other.coordinates_module import *
 from collections import deque
 from pico2d import *
 from module_other.event_table_module import *
-from module_object.bomb import Bomb, Skin
+from module_object.bomb import Bomb
 from module_object.mine import Mine
+from module_object.skin_wall import Skin_wall
 import module_other.game_world as gw
 from module_other.term_table import *
 
@@ -48,7 +49,7 @@ class Blue_body:
                         next_state[Blue_body.cur_direction][Blue_body.direction.pop()]
             self.number += 1
         if self.number > 30 and Blue_body.skinshed:
-            gw.add_object(Skin(self.x, self.y), 'ice')
+            gw.add_object(Skin_wall(self.x, self.y), 'ice')
     def get_longer():
         if Blue_body.longer == False:
             return

@@ -1,5 +1,7 @@
 from module_other.coordinates_module import *
 from pico2d import *
+from module_object.ice import Ice
+from module_object.explosion import Explosion
 import module_other.game_world as gw
 
 ICE_REMOVER = FIELD_DICT['enemy'] + FIELD_DICT['explode'] \
@@ -15,87 +17,6 @@ def bomb_draw_case(option, is_enemy, count, x, y):
         Bomb.image3.clip_draw(60 * (count % 3), 60 * (cntnum-1), 60, 60, x, y)
     elif(option == 3):
         Bomb.image4.clip_draw(60 * (count % 3), 60 * (cntnum-1), 60, 60, x, y)
-
-class Skin:
-    image = None
-    def __init__(self, x, y):
-        self.x, self.y = x, y
-        self.gx, self.gy = coordinates_to_grid(x, y)
-        self.frame = 700
-        if(Skin.image == None):
-            Skin.image = load_image('img/snake_skinwall.png')
-    def draw(self):
-        gw.field_array[self.gx][self.gy] |= FIELD_DICT['ice']
-        drawframe = (701 - self.frame) if (self.frame > 694) else 6
-        drawframe = (self.frame + 1) if (self.frame < 5) else drawframe
-        self.image.clip_draw(0, 0, 60, 60, self.x, self.y, \
-            10 * drawframe, 10 * drawframe)
-    def update(self):
-        self.frame -= 1
-        if self.frame <= 0:
-            gw.remove_object(self)
-    def check_col(self):
-        cur_loc = gw.field_array[self.gx+1][self.gy+1]
-        if cur_loc & (FIELD_DICT['head']):
-            import module_object.snake_player
-            module_object.snake_player.Blue_body.get_damaged()
-        if cur_loc & (FIELD_DICT['head'] + FIELD_DICT['enemy'] \
-            + FIELD_DICT['explode']):
-            gw.remove_object(self)
-
-class Ice:
-    image = None
-    def __init__(self, gx, gy):
-        self.gx, self.gy = gx, gy
-        self.x, self.y = grid_to_coordinates(self.gx-1, self.gy-1)
-        self.frame = 700
-        if(Ice.image == None):
-            Ice.image = load_image('img/ice.png')
-    def draw(self):
-        gw.field_array[self.gx][self.gy] |= FIELD_DICT['ice']
-        drawframe = (701 - self.frame) if (self.frame > 694) else 6
-        drawframe = (self.frame + 1) if (self.frame < 5) else drawframe
-        self.image.clip_draw(0, 0, 60, 60, self.x, self.y, \
-            10 * drawframe, 10 * drawframe)
-    def update(self):
-        self.frame -= 1
-        if self.frame <= 0:
-            gw.remove_object(self)
-    def check_col(self):
-        cur_loc = gw.field_array[self.gx][self.gy]
-        if cur_loc & (FIELD_DICT['player']):
-            import module_object.snake_player
-            module_object.snake_player.Blue_body.get_damaged()
-        if cur_loc & (FIELD_DICT['player'] + FIELD_DICT['enemy'] \
-            + FIELD_DICT['explode']):
-            gw.remove_object(self)
-
-
-class Explosion:
-    image = None
-    def __init__(self, gx, gy, damage):
-        self.gx, self.gy = gx, gy
-        self.x, self.y = grid_to_coordinates(self.gx-1, self.gy-1)
-        self.frame = 6
-        self.damage = damage
-        if(Explosion.image == None):
-            Explosion.image = load_image('img/explode.png')
-    def draw(self):
-        self.image.clip_draw(60 * (self.frame // 2), 0, 60, 60, self.x, self.y)
-    def update(self):
-        self.frame -= 1
-        if self.frame <= 0:
-            gw.remove_object(self)
-    def check_col(self):
-        if self.frame != 3:
-            return
-        cur_loc = gw.field_array[self.gx][self.gy]
-        if cur_loc & (FIELD_DICT['enemy']):
-            import module_object.snake_enemy as se
-            se.Enemy_body.get_damaged(self.damage)
-        if cur_loc & (FIELD_DICT['player']):
-            import module_object.snake_player as sp
-            sp.Blue_body.get_damaged()
             
 
 class Bomb:
