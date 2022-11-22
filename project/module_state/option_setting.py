@@ -3,7 +3,7 @@ from pico2d import *
 from module_other.event_table_module import *
 from module_object.ui.background import *
 from module_object.ui.option import Option_ui
-from module_object.buttons \
+from module_object.ui.button.buttons \
     import Option_volume_button, Option_volume_line, Option_button
 import module_other.state_changer as sc
 import module_other.game_world as gw

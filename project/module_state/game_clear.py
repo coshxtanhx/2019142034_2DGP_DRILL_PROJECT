@@ -1,9 +1,9 @@
 from pico2d import *
-from module_object.buttons import *
+from module_object.ui.button.buttons import *
 from module_other.event_table_module import *
 from module_object.ui.background import Background
 from module_object.ui.clear import Clear_ui
-from module_object.star import *
+from module_object.ui.star import *
 import module_other.state_changer as sc
 import module_other.game_world as gw
 
@@ -28,7 +28,7 @@ def handle_events():
                 sc.change_state('play_state', 'exitall', cur_game_data)
 
 def get_stars(n):
-    if n > 5: return 1
+    if n > 5: return 3
     if n > 1: return 2
     return 1
 

@@ -1,6 +1,7 @@
 from pico2d import *
-from module_object.buttons import *
+from module_object.ui.button.buttons import *
 from module_other.event_table_module import *
+from module_other.term_table import *
 from module_object.ui.background import Background
 from module_object.ui.selection import Selection
 import module_other.state_changer
@@ -23,7 +24,7 @@ def handle_events():
                     break
             if button_clicked == 0:
                 module_other.state_changer.change_state('play_state', None, \
-                    str(Selection.num+1) + '1')
+                    str(Selection.num+1) + STAGE1)
             if button_clicked == 1:
                 module_other.state_changer.change_state('how_to_play', 'pause')
             elif button_clicked == 2:

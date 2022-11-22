@@ -1,5 +1,5 @@
 from pico2d import *
-from module_object.buttons import *
+from module_object.ui.button.buttons import *
 from module_other.event_table_module import *
 from module_object.ui.background import Background
 from module_object.ui.book import Book_page

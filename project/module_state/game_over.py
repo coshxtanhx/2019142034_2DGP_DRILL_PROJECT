@@ -1,9 +1,8 @@
 from pico2d import *
-from module_object.buttons import *
+from module_object.ui.button.buttons import *
 from module_other.event_table_module import *
 from module_object.ui.background import Background
 from module_object.ui.blinking_msg import Blinking_message
-from module_object.star import *
 import module_other.state_changer as sc
 import module_other.game_world as gw
 

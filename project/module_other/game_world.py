@@ -23,7 +23,7 @@ state_list = [
     'title', 'title_menu', 'select_char',
     'option_setting', 'how_to_play', 'game_menu',
     'game_clear', 'game_over', 'ending'
-] #snake_move is not included
+] #play state is not included
 
 for state_name in state_list:
     world[state_name] = [[] for _ in range(obj_list_len)]

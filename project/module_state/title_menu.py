@@ -1,5 +1,5 @@
 from pico2d import *
-from module_object.buttons import *
+from module_object.ui.button.buttons import *
 from module_other.event_table_module import *
 from module_object.ui.background import *
 import module_other.state_changer as sc
