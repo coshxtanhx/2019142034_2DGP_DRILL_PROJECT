@@ -1,6 +1,8 @@
 from pico2d import *
 from module_other.event_table_module import *
-from module_object.background import *
+from module_object.ui.background import Background
+from module_object.ui.blinking_msg import Blinking_message
+from module_object.ui.title import Title
 from math import *
 import module_other.game_world as gw
 import module_other.state_changer as sc
@@ -19,7 +21,7 @@ def handle_events():
 def enters(option):
     global img_title_msg, img_title_bg, img_title_text
     img_title_bg = Background('main')
-    img_title_text = [Title_text(num) for num in range(2)]
+    img_title_text = [Title(num) for num in range(2)]
     img_title_msg = Blinking_message('main')
     gw.add_object(img_title_bg, 0)
     gw.add_objects(img_title_text, 1)

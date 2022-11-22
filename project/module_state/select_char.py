@@ -1,7 +1,8 @@
 from pico2d import *
 from module_object.buttons import *
 from module_other.event_table_module import *
-from module_object.background import Background, Selection
+from module_object.ui.background import Background
+from module_object.ui.selection import Selection
 import module_other.state_changer
 import module_other.game_world
 

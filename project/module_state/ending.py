@@ -1,6 +1,6 @@
 from pico2d import *
 from module_other.event_table_module import *
-from module_object.background import *
+from module_object.ui.background import *
 from module_object.star import *
 from module_object.rank import *
 import module_other.state_changer as sc

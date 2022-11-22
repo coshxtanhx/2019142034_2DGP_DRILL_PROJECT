@@ -1,7 +1,8 @@
 from module_other.coordinates_module import *
 from pico2d import *
 from module_other.event_table_module import *
-from module_object.background import *
+from module_object.ui.background import *
+from module_object.ui.option import Option_ui
 from module_object.buttons \
     import Option_volume_button, Option_volume_line, Option_button
 import module_other.state_changer as sc

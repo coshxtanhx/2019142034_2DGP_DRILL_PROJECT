@@ -10,7 +10,7 @@ import module_object.snake_player as sp
 import module_object.snake_enemy as se
 from module_object.hpbar import *
 from module_object.screen_hider import *
-from module_object.background import *
+from module_object.ui.background import *
 import module_other.state_changer as sc
 import module_other.game_world as gw
 from pprint import pprint
