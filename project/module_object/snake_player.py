@@ -49,7 +49,7 @@ class Blue_body:
                         next_state[Blue_body.cur_direction][Blue_body.direction.pop()]
             self.number += 1
         if self.number > 30 and Blue_body.skinshed:
-            gw.add_object(Skin_wall(self.x, self.y), 'ice')
+            gw.add_object(Skin_wall(self.x, self.y), 'breakable')
     def get_longer():
         if Blue_body.longer == False:
             return

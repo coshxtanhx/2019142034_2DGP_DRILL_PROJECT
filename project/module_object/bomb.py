@@ -112,24 +112,24 @@ class Bomb:
             if not(-1 < self.gx+x < 15): continue
             if gw.field_array[self.gx+x+1][self.gy+1] \
                 & ICE_REMOVER: continue
-            gw.add_object(Ice(self.gx+x+1, self.gy+1), 'ice')
+            gw.add_object(Ice(self.gx+x+1, self.gy+1), 'breakable')
         for y in range(-3, 4, 1):
             if not(-1 < self.gy+y < 9): continue
             if gw.field_array[self.gx+1][self.gy+y+1] \
                 & ICE_REMOVER: continue
-            gw.add_object(Ice(self.gx+1, self.gy+1+y), 'ice')
+            gw.add_object(Ice(self.gx+1, self.gy+1+y), 'breakable')
 
     def explode_ice_cross(self):
         for i in range(-2, 3, 1):
             if not(-1 < self.gx+i < 15 and -1 < self.gy+i < 9): continue
             if gw.field_array[self.gx+i+1][self.gy+i+1] \
                 & ICE_REMOVER: continue
-            gw.add_object(Ice(self.gx+1+i, self.gy+1+i), 'ice')
+            gw.add_object(Ice(self.gx+1+i, self.gy+1+i), 'breakable')
         for i in range(-2, 3, 1):
             if not(-1 < self.gx+i < 15 and -1 < self.gy-i < 9): continue
             if gw.field_array[self.gx+i+1][self.gy-i+1] \
                 & ICE_REMOVER: continue
-            gw.add_object(Ice(self.gx+1+i, self.gy+1-i), 'ice')
+            gw.add_object(Ice(self.gx+1+i, self.gy+1-i), 'breakable')
 
     def draw(self):
         if(self.counter > 0):

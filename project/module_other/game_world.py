@@ -5,7 +5,7 @@ from module_other.coordinates_module import *
 DEPTH_DICT = dict()
 obj_list = [
     'bg', 'obj', 'bomb', 'player', 'enemy',
-    'explode', 'ice', 'hider', 'ui'
+    'explode', 'breakable', 'hider', 'ui'
 ]
 obj_list_len = len(obj_list)
 

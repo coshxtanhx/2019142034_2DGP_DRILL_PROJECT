@@ -8,7 +8,7 @@ from module_object.bomb import *
 from module_object.mine import *
 import module_object.snake_player as sp
 import module_object.snake_enemy as se
-from module_object.hpbar import *
+from module_object.ui.hpbar import *
 from module_object.screen_hider import *
 from module_object.ui.background import *
 import module_other.state_changer as sc
