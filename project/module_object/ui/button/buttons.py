@@ -1,11 +1,16 @@
-from module_other.coordinates_module import UI_WIDTH, UI_HEIGHT, get_distance
+from module_other.coordinates_module import *
 from pico2d import *
 
 class Circle_button:
-    pass
+    def isclicked(self, x, y):
+        if(get_distance(x, y, *convert_coordinates(self.x, self.y)) < self.r):
+            return True
+        else:
+            return False
 
 class Rect_button:
-    pass
+    def isclicked(self, x, y):
+        return is_in_rect(x, y, self.x, self.y, self.w, self.h)
 
 class Title_button(Rect_button):
     def __init__(self, image, y):
@@ -26,34 +31,21 @@ class Game_menu_button(Circle_button):
     def __init__(self, x):
         self.x = x
         self.y = 330
-        self.enabled = True
-    def isclicked(self, x, y):
-        if(get_distance(x, y, self.x, self.y) < 60):
-            return True
-        else:
-            return False
+        self.r = 60
 
 class Option_volume_line(Rect_button):
     def __init__(self, y):
         self.x = UI_WIDTH // 2
         self.y = y
-    def isclicked(self, x, y):
-        if((self.x - 216 <= x <= self.x + 216) and \
-            (UI_HEIGHT - (self.y + 7) < y < UI_HEIGHT - (self.y - 7))):
-            return True
-        else:
-            return False
+        self.w = 216
+        self.h = 7
 
 class Option_button(Rect_button):
     def __init__(self, x):
         self.x = x
         self.y = 230
-    def isclicked(self, x, y):
-        if((self.x - 70 <= x <= self.x + 70) and \
-            (UI_HEIGHT - (self.y + 35) < y < UI_HEIGHT - (self.y - 35))):
-            return True
-        else:
-            return False
+        self.w = 70
+        self.h = 35
 
 class Option_volume_button(Circle_button):
     image = None
@@ -79,23 +71,15 @@ class Start_and_Guide_Button(Rect_button):
     def __init__(self, x):
         self.x = x
         self.y = UI_HEIGHT - 525
-    def isclicked(self, x, y):
-        if((self.x - 145 <= x <= self.x + 145) and \
-            (UI_HEIGHT - (self.y + 65) < y < UI_HEIGHT - (self.y - 65))):
-            return True
-        else:
-            return False
+        self.w = 145
+        self.h = 65
 
 class Char_sel_button(Rect_button):
     def __init__(self, x):
         self.x = x
         self.y = UI_HEIGHT - 277
-    def isclicked(self, x, y):
-        if((self.x - 27 <= x <= self.x + 27) and \
-            (UI_HEIGHT - (self.y + 33) < y < UI_HEIGHT - (self.y - 33))):
-            return True
-        else:
-            return False
+        self.w = 27
+        self.h = 33
 
 class Next_page_button(Rect_button):
     def __init__(self, num):
@@ -104,26 +88,17 @@ class Next_page_button(Rect_button):
             self.x, self.y = 774, 107
         else:
             self.x, self.y = 133, 100
-    def isclicked(self, x, y):
-        if((self.x - 40 <= x <= self.x + 40) and \
-            (UI_HEIGHT - (self.y + 16) < y < UI_HEIGHT - (self.y - 16))):
-            return True
-        else:
-            return False
+        self.w = 40
+        self.h = 16
 
 class Close_book_button(Circle_button):
     def __init__(self):
         self.x = 802
         self.y = 544
-    def isclicked(self, x, y):
-        if(get_distance(x, y, self.x, UI_HEIGHT - self.y) < 30):
-            self.clicked = True
-            return True
-        else:
-            return False
+        self.r = 30
 
 class Game_end_button(Rect_button):
-    image = [None, None, None]
+    image = [None for _ in range(3)]
     def __init__(self, x, y, n):
         self.x = x
         self.y = y
@@ -131,13 +106,9 @@ class Game_end_button(Rect_button):
         if(Game_end_button.image[self.n] == None):
             Game_end_button.image[self.n] = \
                 load_image('img/clear_button_ui_' + str(self.n) + '.png')
+        self.w = 140
+        self.h = 65
     def draw(self):
         self.image[self.n].draw(self.x, self.y)
-    def isclicked(self, x, y):
-        if((self.x - 140 <= x <= self.x + 140) and \
-            (UI_HEIGHT - (self.y + 65) < y < UI_HEIGHT - (self.y - 65))):
-            return True
-        else:
-            return False
     def update(self):
         pass

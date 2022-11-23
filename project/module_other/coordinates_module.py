@@ -26,6 +26,14 @@ def grid_to_coordinates(x, y):
 def coordinates_to_grid(x, y):
     return (x - 40 + 30) // 60, (-y + UI_HEIGHT - 120 + 30) // 60
 
+def is_in_rect(clicked_x, clicked_y, center_x, center_y, rect_w, rect_h):
+    clicked_x, clicked_y = convert_coordinates(clicked_x, clicked_y)
+    if((center_x - rect_w <= clicked_x <= center_x + rect_w) and \
+        (center_y - rect_h <= clicked_y <= center_y + rect_h)):
+        return True
+    else:
+        return False
+
 def creatable_loc(field_array, edge = 0):
     able_to_create = []
     for x in range(edge, 15-edge):
