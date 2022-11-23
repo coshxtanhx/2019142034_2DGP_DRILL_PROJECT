@@ -1,7 +1,13 @@
 from module_other.coordinates_module import UI_WIDTH, UI_HEIGHT, get_distance
 from pico2d import *
 
-class Title_button:
+class Circle_button:
+    pass
+
+class Rect_button:
+    pass
+
+class Title_button(Rect_button):
     def __init__(self, image, y):
         self.image = image
         self.x = UI_WIDTH//2
@@ -16,7 +22,7 @@ class Title_button:
     def draw(self):
         self.image.draw(UI_WIDTH // 2, self.y)
 
-class Game_menu_button:
+class Game_menu_button(Circle_button):
     def __init__(self, x):
         self.x = x
         self.y = 330
@@ -27,7 +33,7 @@ class Game_menu_button:
         else:
             return False
 
-class Option_volume_line:
+class Option_volume_line(Rect_button):
     def __init__(self, y):
         self.x = UI_WIDTH // 2
         self.y = y
@@ -38,7 +44,7 @@ class Option_volume_line:
         else:
             return False
 
-class Option_button:
+class Option_button(Rect_button):
     def __init__(self, x):
         self.x = x
         self.y = 230
@@ -49,7 +55,7 @@ class Option_button:
         else:
             return False
 
-class Option_volume_button:
+class Option_volume_button(Circle_button):
     image = None
     def __init__(self, x, y):
         self.x = x
@@ -69,7 +75,7 @@ class Option_volume_button:
         if(self.clicked):
             self.x = clamp(256, x, 664)
             
-class Start_and_Guide_Button:
+class Start_and_Guide_Button(Rect_button):
     def __init__(self, x):
         self.x = x
         self.y = UI_HEIGHT - 525
@@ -80,7 +86,7 @@ class Start_and_Guide_Button:
         else:
             return False
 
-class Char_sel_button:
+class Char_sel_button(Rect_button):
     def __init__(self, x):
         self.x = x
         self.y = UI_HEIGHT - 277
@@ -91,7 +97,7 @@ class Char_sel_button:
         else:
             return False
 
-class Next_page_button:
+class Next_page_button(Rect_button):
     def __init__(self, num):
         self.num = num
         if self.num == 1:
@@ -105,7 +111,7 @@ class Next_page_button:
         else:
             return False
 
-class Close_book_button:
+class Close_book_button(Circle_button):
     def __init__(self):
         self.x = 802
         self.y = 544
@@ -116,7 +122,7 @@ class Close_book_button:
         else:
             return False
 
-class Game_end_button:
+class Game_end_button(Rect_button):
     image = [None, None, None]
     def __init__(self, x, y, n):
         self.x = x
