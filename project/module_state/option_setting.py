@@ -7,6 +7,7 @@ from module_object.ui.button.buttons \
     import Option_volume_button, Option_volume_line, Option_button
 import module_other.state_changer as sc
 import module_other.game_world as gw
+import module_other.bgm_player as bp
 
 MAX_VOL = 128
 
@@ -33,8 +34,10 @@ def change_volume(i):
         file = open('data/savevolume.txt', 'w')
         file.write(str(volumes[0]) + ' ' + str(volumes[1]))
         file.close()
+        bp.bgm.set_volume(volumes[1])
     elif(i == 1):
         volumes[0], volumes[1] = volumes_before[0], volumes_before[1]
+        bp.bgm.set_volume(volumes[1])
 
 def handle_events():
     events = get_events()
@@ -47,8 +50,10 @@ def handle_events():
             sc.change_state('lastest', 'resume')
         elif event == MM:
             for i in range(2):
-                volume_buttons[i].drag_move(raw_event.x)
-                volumes[i] = button_pos_to_volume(volume_buttons[i].x)
+                if volume_buttons[i].clicked:
+                    volume_buttons[i].drag_move(raw_event.x)
+                    volumes[i] = button_pos_to_volume(volume_buttons[i].x)
+                    if i == 1: bp.bgm.set_volume(volumes[i])
         elif event == MLD:
             for i in range(2):
                 if(volume_buttons[i].isclicked(raw_event.x, raw_event.y)):
@@ -62,12 +67,16 @@ def handle_events():
                     sc.change_state('lastest', 'resume')
                     break
         elif event == MLU:
-            for i in range(2): volume_buttons[i].clicked = False
+            for i in range(2):
+                if i == 0 and volume_buttons[i].clicked:
+                    bp.volume_check_sound.set_volume_and_play(volumes[i])
+                volume_buttons[i].clicked = False
 
 def enters(option):
     global img_bg
     global img_ui, volume_buttons, volume_lines, option_buttons
     load_volume_data()
+    bp.volume_check_sound = bp.Volume_check_sound()
     img_ui = Option_ui()
     volume_buttons = [Option_volume_button(volume_to_button_pos(volumes[i]), \
         UI_HEIGHT//2 + i * 90) for i in range(2)]

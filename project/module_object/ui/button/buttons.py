@@ -64,8 +64,7 @@ class Option_volume_button(Circle_button):
     def draw(self):
         self.image.draw(self.x, self.y)
     def drag_move(self, x):
-        if(self.clicked):
-            self.x = clamp(256, x, 664)
+        self.x = clamp(256, x, 664)
             
 class Start_and_Guide_Button(Rect_button):
     def __init__(self, x):

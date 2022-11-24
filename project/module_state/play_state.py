@@ -13,6 +13,7 @@ from module_object.screen_hider import *
 from module_object.ui.background import *
 import module_other.state_changer as sc
 import module_other.game_world as gw
+import module_other.bgm_player as bp
 from pprint import pprint
 
 def is_game_ended():
@@ -67,6 +68,8 @@ def enters(data):
     gw.add_objects([se.Enemy_body(i, color=se.COLOR_DICT[cur_stage]) \
         for i in range(0, 12*(6-1)+1)], 'enemy')
     gw.add_object(HP_bar(int(cur_stage)-1), 'ui')
+
+    bp.bgm = bp.Stage_bgm(cur_stage)
 
 def exits():
     global frame, field_array, isended
