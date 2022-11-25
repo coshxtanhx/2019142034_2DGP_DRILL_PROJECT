@@ -52,8 +52,6 @@ def handle_events():
             for i in range(2):
                 if volume_buttons[i].clicked:
                     volume_buttons[i].drag_move(raw_event.x)
-                    volumes[i] = button_pos_to_volume(volume_buttons[i].x)
-                    if i == 1: bp.bgm.set_volume(volumes[i])
         elif event == MLD:
             for i in range(2):
                 if(volume_buttons[i].isclicked(raw_event.x, raw_event.y)):
@@ -68,8 +66,6 @@ def handle_events():
                     break
         elif event == MLU:
             for i in range(2):
-                if i == 0 and volume_buttons[i].clicked:
-                    bp.volume_check_sound.set_volume_and_play(volumes[i])
                 volume_buttons[i].clicked = False
 
 def enters(option):
@@ -111,7 +107,10 @@ def draw_all():
     update_canvas()
 
 def update():
-    pass
+    for i in range(2):
+        volumes[i] = button_pos_to_volume(volume_buttons[i].x)
+    bp.bgm.update()
+    bp.volume_check_sound.update()
 
 img_ui = None
 img_button = None

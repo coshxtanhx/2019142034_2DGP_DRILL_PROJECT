@@ -6,6 +6,7 @@ from module_object.ui.title import Title
 from math import *
 import module_other.game_world as gw
 import module_other.state_changer as sc
+import module_other.bgm_player as bp
 
 def handle_events():
     events = get_events()
@@ -26,6 +27,7 @@ def enters(option):
     gw.add_object(img_title_bg, 0)
     gw.add_objects(img_title_text, 1)
     gw.add_object(img_title_msg, 1)
+    bp.bgm = bp.Title_bgm()
 
 
 def exits():
