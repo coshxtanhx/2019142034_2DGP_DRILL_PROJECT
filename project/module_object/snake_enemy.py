@@ -5,6 +5,7 @@ from random import choice
 from module_object.bomb import Bomb
 from module_enemy_ai.enemy_movement_ai import enemy_ai
 import module_other.game_world as gw
+import module_other.time_manager as tm
 from module_object.screen_hider import *
 from module_other.term_table import *
 
@@ -53,6 +54,8 @@ class Enemy_body:
     hx, hy = grid_to_coordinates(0, 8)
     tx, ty = hx, hy
     damaged = 0
+    move_times = 0
+    rest_time = 0
     screen_break_cnt = 0
     cloud_cnt = 0
     def __init__(self, number, color = 'orange', x=40, y=-1):
@@ -72,19 +75,22 @@ class Enemy_body:
         if Enemy_body.damaged < damage:
             Enemy_body.damaged = damage
     def update(self):
-        if(self.number == self.length - 1):
+        if(self.number == self.length - Enemy_body.move_times):
             self.x, self.y = Enemy_body.hx + dx[Enemy_body.enemy_direction], \
                 Enemy_body.hy + dy[Enemy_body.enemy_direction]
-            self.number = 0
-            if Enemy_body.bomb_cool_down > 0: Enemy_body.bomb_cool_down -= 1
-            if Enemy_body.screen_off_cool_down > 0: Enemy_body.screen_off_cool_down -= 1
+            Enemy_body.hx, Enemy_body.hy = self.x, self.y
             if Enemy_body.damaged:
                 Enemy_body.enemy_hp -= Enemy_body.damaged
                 Enemy_body.damaged = 0
         else:
             if(self.number == 0):
+                Enemy_body.rest_time += tm.elapsed_time
+                Enemy_body.move_times = int(Enemy_body.rest_time / 0.014)
+                Enemy_body.rest_time = Enemy_body.rest_time % 0.014
+                Enemy_body.bomb_cool_down -= tm.elapsed_time
+                Enemy_body.screen_off_cool_down -= tm.elapsed_time
                 self.enemy_ai_update()
-            self.number += 1
+        self.number = (self.number + Enemy_body.move_times) % Enemy_body.length
         if Enemy_body.enemy_hp <= 0:
             Enemy_body.enemy_hp = 0
             import module_state.play_state as ps
@@ -98,7 +104,6 @@ class Enemy_body:
         self.image = Enemy_body.img_body
         if(self.number == 0):
             gw.field_array[self.gx+1][self.gy+1] |= FIELD_DICT['ehead']
-            Enemy_body.hx, Enemy_body.hy = self.x, self.y
             return
         else:
             if(self.number == self.length-1):
@@ -123,14 +128,17 @@ class Enemy_body:
         Enemy_body.img_head = None
         Enemy_body.enemy_direction = 0
         Enemy_body.enemy_order = 0
-        Enemy_body.bomb_cool_down = 500
+        Enemy_body.bomb_cool_down = 7.5
         Enemy_body.screen_off_cool_down = 0
         Enemy_body.enemy_hp = 960 // 1
         Enemy_body.ai = 0
         Enemy_body.bomb_type = 0
         Enemy_body.damaged = 0
+        Enemy_body.move_times = 0
+        Enemy_body.rest_time = 0
         Enemy_body.screen_break_cnt = 0
         Enemy_body.cloud_cnt = 0
+        Enemy_body.hx, Enemy_body.hy = grid_to_coordinates(0, 8)
 
     def change_ai():
         Enemy_body.ai = \
@@ -166,7 +174,7 @@ class Enemy_body:
         if Enemy_body.screen_off_cool_down > 0:
             return
         gw.add_object(Screen_off(), 'hider')
-        Enemy_body.screen_off_cool_down = 700
+        Enemy_body.screen_off_cool_down = 10
 
     def check_col(self):
         cur_loc = gw.field_array[self.gx+1][self.gy+1]

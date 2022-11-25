@@ -5,7 +5,7 @@ from module_object.ui.blinking_msg import Blinking_message
 from module_object.ui.title import Title
 from math import *
 import module_other.game_world as gw
-import module_other.state_changer as sc
+import module_other.game_framework as gf
 import module_other.sound_manager as sm
 
 def handle_events():
@@ -13,11 +13,11 @@ def handle_events():
     for raw_event in events:
         event = convert_event(raw_event)
         if event == QUIT:
-            sc.change_state('', None)
+            gf.change_state('', None)
         elif event == KSD:
-            sc.change_state('title_menu', None)
+            gf.change_state('title_menu', None)
         elif event == KESCD:
-            sc.change_state('', None)
+            gf.change_state('', None)
 
 def enter(option):
     global img_title_msg, img_title_bg, img_title_text

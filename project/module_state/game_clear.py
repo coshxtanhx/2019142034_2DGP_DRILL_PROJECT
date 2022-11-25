@@ -4,7 +4,7 @@ from module_other.event_table_module import *
 from module_object.ui.background import Background
 from module_object.ui.clear import Clear_ui
 from module_object.ui.star import *
-import module_other.state_changer as sc
+import module_other.game_framework as gf
 import module_other.game_world as gw
 
 def handle_events():
@@ -13,9 +13,9 @@ def handle_events():
         event = convert_event(raw_event)
         ex, ey = raw_event.x, raw_event.y
         if event == QUIT:
-            sc.change_state('', None)
+            gf.change_state('', None)
         elif event == KESCD:
-            sc.change_state('title', None)
+            gf.change_state('title', None)
         elif event == MLD:
             isclicked = None
             for i in range(2):
@@ -23,9 +23,9 @@ def handle_events():
                     isclicked = i
                     break
             if isclicked == 0:
-                sc.change_state('title', 'exitall')
+                gf.change_state('title', 'exitall')
             elif isclicked == 1:
-                sc.change_state('play_state', 'exitall', cur_game_data)
+                gf.change_state('play_state', 'exitall', cur_game_data)
 
 def get_stars_num(n):
     if n > 5: return 3

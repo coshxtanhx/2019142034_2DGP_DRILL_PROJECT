@@ -2,11 +2,12 @@ from module_other.coordinates_module import *
 from pico2d import *
 from module_object.bomb import *
 import module_other.game_world as gw
+import module_other.time_manager as tm
 
 class Mine:
     image = None
     def __init__(self):
-        self.counter = 40
+        self.counter = 0.57
         self.destructing = False
         self.sweeping = 180
         self.gx, self.gy = creatable_loc(gw.field_array, 1)
@@ -33,7 +34,7 @@ class Mine:
                 gw.remove_object(self)
     def update(self):
         if self.destructing:
-            self.counter -= 1
+            self.counter -= tm.elapsed_time
         if self.counter <= 0: self.sweeping -= 6
         if self.sweeping <= 6: gw.remove_object(self)
     def check_if_snake_here(self):

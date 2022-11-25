@@ -1,13 +1,14 @@
 from module_other.coordinates_module import *
 from pico2d import *
 import module_other.game_world as gw
+import module_other.time_manager as tm
 
 class Skin_wall:
     image = None
     def __init__(self, x, y):
         self.x, self.y = x, y
         self.gx, self.gy = coordinates_to_grid(x, y)
-        self.frame = 700
+        self.frame = 70
         if(Skin_wall.image == None):
             Skin_wall.image = load_image('img/snake_skinwall.png')
     def draw(self):
@@ -17,7 +18,7 @@ class Skin_wall:
         self.image.clip_draw(0, 0, 60, 60, self.x, self.y, \
             10 * drawframe, 10 * drawframe)
     def update(self):
-        self.frame -= 1
+        self.frame -= tm.elapsed_time
         if self.frame <= 0:
             gw.remove_object(self)
     def check_col(self):

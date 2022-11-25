@@ -1,6 +1,7 @@
 from random import randint
 from pico2d import *
 import module_other.game_world as gw
+import module_other.time_manager as tm
 
 class Broken:
     image = None
@@ -35,7 +36,7 @@ class Screen_off:
         self.image2.draw(x + 615, y)
         self.image2.draw(x - 615, y)
     def update(self):
-        self.frame -= 1
+        self.frame -= tm.elapsed_time
         if self.frame <= 0:
             gw.remove_object(self)
     def check_col(self):
@@ -51,7 +52,7 @@ class Cloud:
     def draw(self):
         self.image.draw(self.x, self.y)
     def update(self):
-        self.x -= 1
+        self.x -= tm.elapsed_time
         if self.x < -165:
             gw.addleft_object(Cloud(), 'hider')
             gw.remove_object(self)

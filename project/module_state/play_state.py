@@ -11,18 +11,18 @@ import module_object.snake_enemy as se
 from module_object.ui.hpbar import *
 from module_object.screen_hider import *
 from module_object.ui.background import *
-import module_other.state_changer as sc
+import module_other.game_framework as gf
 import module_other.game_world as gw
 import module_other.sound_manager as sm
 from pprint import pprint
 
 def is_game_ended():
     if isended == DEFEAT:
-        sc.change_state('game_over', None, cur_char + cur_stage)
+        gf.change_state('game_over', None, cur_char + cur_stage)
     elif isended == VICTORY:
         next_stage = str(int(cur_stage) + 1)
         length = str(sp.Player_body.length // 12 - 1) 
-        sc.change_state('game_clear', 'exitall', cur_char + next_stage + length)
+        gf.change_state('game_clear', 'exitall', cur_char + next_stage + length)
     return
 
 def handle_events():
@@ -30,9 +30,9 @@ def handle_events():
     for raw_event in events:
         event = convert_event(raw_event)
         if event == QUIT:
-            sc.change_state('', None)
+            gf.change_state('', None)
         elif event == KESCD:
-            sc.change_state('game_menu', 'pause')
+            gf.change_state('game_menu', 'pause')
         else:
             sp.Player_body.handle_events(event)
         if raw_event.key == SDLK_p: se.Enemy_body.damaged = 125
@@ -44,7 +44,7 @@ def enter(data):
     cur_char, cur_stage = data[0], data[1]
 
     if data[1] == ENDING:
-        sc.change_state('ending', None)
+        gf.change_state('ending', None)
         return
 
     frame = 0
@@ -89,8 +89,8 @@ def draw_all():
 def update():
     for objs in gw.all_objects_copy():
         objs.update()
-    gw.rotate_object(1, 'player')
-    gw.rotate_object(1, 'enemy')
+    gw.rotate_object(sp.Player_body.move_times, 'player')
+    gw.rotate_object(se.Enemy_body.move_times, 'enemy')
 
     for objs in gw.all_collision_objects():
         objs.check_col()

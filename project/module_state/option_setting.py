@@ -5,7 +5,7 @@ from module_object.ui.background import *
 from module_object.ui.option import Option_ui
 from module_object.ui.button.buttons \
     import Option_volume_button, Option_volume_line, Option_button
-import module_other.state_changer as sc
+import module_other.game_framework as gf
 import module_other.game_world as gw
 import module_other.sound_manager as sm
 
@@ -44,10 +44,10 @@ def handle_events():
     for raw_event in events:
         event = convert_event(raw_event)
         if event == QUIT:
-            sc.change_state('', None)
+            gf.change_state('', None)
         elif event == KESCD:
             change_volume(1)
-            sc.change_state('lastest', 'resume')
+            gf.change_state('lastest', 'resume')
         elif event == MM:
             for i in range(2):
                 if volume_buttons[i].clicked:
@@ -62,7 +62,7 @@ def handle_events():
                     break
                 elif(option_buttons[i].isclicked(raw_event.x, raw_event.y)):
                     change_volume(i)
-                    sc.change_state('lastest', 'resume')
+                    gf.change_state('lastest', 'resume')
                     break
         elif event == MLU:
             for i in range(2):
@@ -79,7 +79,7 @@ def enter(option):
     volume_lines = [Option_volume_line(UI_HEIGHT//2 + i * 90) for i in range(2)]
     option_buttons = [Option_button(UI_WIDTH//2 + i) for i in (-135, 135)]
 
-    previous_state = sc.get_previous_state()
+    previous_state = gf.get_previous_state()
     if(previous_state == 'game_menu'):
         img_bg = Background('menu')
     elif(previous_state == 'title_menu'):

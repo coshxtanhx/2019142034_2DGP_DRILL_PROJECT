@@ -2,7 +2,7 @@ from pico2d import *
 from module_object.ui.button.buttons import *
 from module_other.event_table_module import *
 from module_object.ui.background import *
-import module_other.state_changer as sc
+import module_other.game_framework as gf
 import module_other.game_world as gw
 
 def is_able_load():
@@ -24,9 +24,9 @@ def handle_events():
     for raw_event in events:
         event = convert_event(raw_event)
         if event == QUIT:
-            sc.change_state('', None)
+            gf.change_state('', None)
         elif event == KESCD:
-            sc.change_state('title', None)
+            gf.change_state('title', None)
         elif event == MLD:
             button_clicked = -1
             for i in range(4):
@@ -34,13 +34,13 @@ def handle_events():
                     button_clicked = i
                     break
             if(button_clicked == 0):
-                sc.change_state('select_char', None)
+                gf.change_state('select_char', None)
             elif(button_clicked == 1):
-                sc.change_state('play_state', None, loaded_dat)
+                gf.change_state('play_state', None, loaded_dat)
             elif(button_clicked == 2):
-                sc.change_state('option_setting', 'pause')
+                gf.change_state('option_setting', 'pause')
             elif(button_clicked == 3):
-                sc.change_state('', None)
+                gf.change_state('', None)
 
 def enter(option):
     global frame, title_bg, buttons

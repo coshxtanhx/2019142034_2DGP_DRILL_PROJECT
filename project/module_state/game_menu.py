@@ -3,7 +3,7 @@ from module_object.ui.button.buttons import *
 from module_object.ui.background import Background
 from module_object.ui.blinking_msg import Blinking_message
 from module_other.event_table_module import *
-import module_other.state_changer as sc
+import module_other.game_framework as gf
 import module_other.game_world as gw
 
 def handle_events():
@@ -11,9 +11,9 @@ def handle_events():
     for raw_event in events:
         event = convert_event(raw_event)
         if event == QUIT:
-            sc.change_state('', None)
+            gf.change_state('', None)
         elif event == KESCD:
-            sc.change_state('play_state', 'resume')
+            gf.change_state('play_state', 'resume')
         elif event == MLD:
             button_clicked = -1
             for i in range(4):
@@ -21,15 +21,15 @@ def handle_events():
                     button_clicked = i
                     break
             if(button_clicked == 0):
-                sc.change_state('title', 'exitall')
+                gf.change_state('title', 'exitall')
             elif(button_clicked == 1):
                 from module_state.play_state import cur_char, cur_stage
-                sc.change_state('play_state', 'exitall', \
+                gf.change_state('play_state', 'exitall', \
                     cur_char + cur_stage)
             elif(button_clicked == 2):
-                sc.change_state('option_setting', 'pause')
+                gf.change_state('option_setting', 'pause')
             elif(button_clicked == 3):
-                sc.change_state('play_state', 'resume')
+                gf.change_state('play_state', 'resume')
 
 def enter(option):
     global img_ui_bg, img_ui_text, buttons

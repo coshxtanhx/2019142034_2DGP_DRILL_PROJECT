@@ -8,6 +8,7 @@ from module_object.mine import Mine
 from module_object.skin_wall import Skin_wall
 import module_other.game_world as gw
 import module_other.sound_manager as sm
+import module_other.time_manager as tm
 
 class Player_body:
     img_snake_blue_head = None
@@ -18,7 +19,9 @@ class Player_body:
     longer = False
     skinshed = False
     direction = deque(maxlen=2)
-    bomb_cool_down = 10
+    move_times = 0
+    rest_time = 0
+    bomb_cool_down = 1
     length = 12*(3-1)+1
     hx, hy = convert_coordinates(40, 120)
     tx, ty = hx, hy
@@ -37,19 +40,21 @@ class Player_body:
                     for i in range(4)]
             Player_body.img_snake_blue_body = load_image('img/snake_blue_body.png')
     def update(self):
-        if(self.number == self.length - 1):
+        if(self.number == self.length - Player_body.move_times):
             self.x = Player_body.hx + dx[Player_body.cur_direction]
             self.y = Player_body.hy + dy[Player_body.cur_direction]
             Player_body.hx, Player_body.hy = self.x, self.y
-            self.number = 0
-            if Player_body.bomb_cool_down > 0: Player_body.bomb_cool_down -= 1
             Player_body.skinshed = False
         else:
             if(self.number == 0):
+                Player_body.rest_time += tm.elapsed_time
+                Player_body.move_times = int(Player_body.rest_time / 0.014)
+                Player_body.rest_time = Player_body.rest_time % 0.014
+                Player_body.bomb_cool_down -= tm.elapsed_time
                 if(Player_body.direction and self.x % 60 == 40 and self.y % 60 == 40):
                     Player_body.cur_direction = \
                         next_state[Player_body.cur_direction][Player_body.direction.pop()]
-            self.number += 1
+        self.number = (self.number + Player_body.move_times) % Player_body.length
         if self.number > 30 and Player_body.skinshed:
             gw.add_object(Skin_wall(self.x, self.y), 'breakable')
     def get_longer():
@@ -96,16 +101,19 @@ class Player_body:
     def reset():
         Player_body.cur_direction = 0
         Player_body.direction = deque(maxlen=2)
-        Player_body.bomb_cool_down = 10
+        Player_body.bomb_cool_down = 0
         Player_body.length = 12*(3-1)+1
+        Player_body.move_times = 0
+        Player_body.rest_time = 0
+        Player_body.hx, Player_body.hy = convert_coordinates(40, 120)
 
     def handle_events(event):
         if event in next_state[Player_body.cur_direction]:
             if event == KED:
-                if Player_body.bomb_cool_down == 0:
+                if Player_body.bomb_cool_down <= 0:
                     bx, by = Player_body.tx, Player_body.ty
                     gw.addleft_object(Bomb(bx, by, Player_body.length), 'bomb')
-                    Player_body.bomb_cool_down = 100
+                    Player_body.bomb_cool_down = 1
             else:
                 Player_body.direction.appendleft(event)
     

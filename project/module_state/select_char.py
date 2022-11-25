@@ -4,8 +4,8 @@ from module_other.event_table_module import *
 from module_other.term_table import *
 from module_object.ui.background import Background
 from module_object.ui.selection import Selection
-import module_other.state_changer
-import module_other.game_world
+import module_other.game_framework as gf
+import module_other.game_world as gw
 
 def handle_events():
     global cur_selecting
@@ -13,9 +13,9 @@ def handle_events():
     for raw_event in events:
         event = convert_event(raw_event)
         if event == QUIT:
-            module_other.state_changer.change_state('', None)
+            gf.change_state('', None)
         elif event == KESCD:
-            module_other.state_changer.change_state('title_menu', None)
+            gf.change_state('title_menu', None)
         elif event == MLD:
             button_clicked = -1
             for i in range(4):
@@ -23,10 +23,10 @@ def handle_events():
                     button_clicked = i
                     break
             if button_clicked == 0:
-                module_other.state_changer.change_state('play_state', None, \
+                gf.change_state('play_state', None, \
                     str(Selection.num+1) + STAGE1)
             if button_clicked == 1:
-                module_other.state_changer.change_state('how_to_play', 'pause')
+                gf.change_state('how_to_play', 'pause')
             elif button_clicked == 2:
                 Selection.change_img(-1)
             elif button_clicked == 3:
@@ -39,8 +39,8 @@ def enter(option):
     cur_selecting = 0
     buttons = [Start_and_Guide_Button(x) for x in (250, 670)] \
         + [Char_sel_button(x) for x in (260, 660)]
-    module_other.game_world.add_object(bg, 0)
-    module_other.game_world.add_object(selection_images, 1)
+    gw.add_object(bg, 0)
+    gw.add_object(selection_images, 1)
 
 def exit():
     global bg, selection_images, cur_selecting, buttons
@@ -48,11 +48,11 @@ def exit():
     selection_images = None
     cur_selecting = None
     buttons = None
-    module_other.game_world.clear_world()
+    gw.clear_world()
 
 def draw_all():
     clear_canvas()
-    for objs in module_other.game_world.all_objects():
+    for objs in gw.all_objects():
         objs.draw()
     update_canvas()
 

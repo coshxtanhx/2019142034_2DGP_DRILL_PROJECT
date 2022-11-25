@@ -3,7 +3,7 @@ from module_object.ui.button.buttons import *
 from module_other.event_table_module import *
 from module_object.ui.background import Background
 from module_object.ui.book import Book_page
-import module_other.state_changer as sc
+import module_other.game_framework as gf
 import module_other.game_world as gw
 
 def handle_events():
@@ -12,9 +12,9 @@ def handle_events():
     for raw_event in events:
         event = convert_event(raw_event)
         if event == QUIT:
-            sc.change_state('', None)
+            gf.change_state('', None)
         elif event == KESCD:
-            sc.change_state('select_char', 'resume')
+            gf.change_state('select_char', 'resume')
         elif event == MLD:
             button_clicked = -1
             for i in range(3):
@@ -26,7 +26,7 @@ def handle_events():
             if button_clicked == 1:
                 Book_page.change_page(+1)
             elif button_clicked == 2:
-                sc.change_state('select_char', 'resume')
+                gf.change_state('select_char', 'resume')
 
 def enter(option):
     global bg, book, cur_selecting, buttons

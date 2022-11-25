@@ -5,21 +5,14 @@ from module_object.ice import Ice
 from module_object.explosion import Explosion
 import module_other.game_world as gw
 import module_other.sound_manager as sm
+import module_other.time_manager as tm
+
+TIME_PER_ACTION = 0.2
+ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
+FRAMES_PER_ACTION = 3
 
 ICE_REMOVER = FIELD_DICT['enemy'] + FIELD_DICT['explode'] \
     + FIELD_DICT['bomb'] + FIELD_DICT['apple'] + FIELD_DICT['ice']
-
-def bomb_draw_case(option, is_enemy, count, x, y):
-    cntnum = ceil(count / 70)
-    if(option == 0):
-        Bomb.image[cntnum-1+is_enemy].clip_draw(60 * (count % 3), 0, 60, 60, x, y)
-    elif(option == 1):
-        Bomb.image2.clip_draw(60 * (count % 3), 60 * (cntnum-1), 60, 60, x, y)
-    elif(option == 2):
-        Bomb.image3.clip_draw(60 * (count % 3), 60 * (cntnum-1), 60, 60, x, y)
-    elif(option == 3):
-        Bomb.image4.clip_draw(60 * (count % 3), 60 * (cntnum-1), 60, 60, x, y)
-            
 
 class Bomb:
     image = None
@@ -29,9 +22,10 @@ class Bomb:
     def __init__(self, x, y, damage, option = 0):
         self.gx, self.gy = coordinates_to_grid(x, y)
         self.x, self.y = grid_to_coordinates(self.gx, self.gy)
-        self.counter = 350 if (option != 4) else 1
+        self.counter = 5 if (option != 4) else 0
         self.damage = damage
         self.option = option
+        self.frame = 0
         self.is_enemy = 5 if (self.damage == 0) else 0
         if Bomb.image == None:
             Bomb.image = \
@@ -40,8 +34,9 @@ class Bomb:
             Bomb.image3 = load_image('img/bomb_ice.png')
             Bomb.image4 = load_image('img/bomb_ice_cross.png')
     def update(self):
-        self.counter -= 1
-        if(self.counter == 0 or self.counter <= -65535):
+        self.counter -= tm.elapsed_time
+        self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * tm.elapsed_time) % 3
+        if(self.counter <= 0):
             self.ready_to_explode()
     def ready_to_explode(self):
         sm.sound_effect.play(SE_BOMB)
@@ -131,8 +126,24 @@ class Bomb:
 
     def draw(self):
         if(self.counter > 0):
-            bomb_draw_case(self.option, self.is_enemy, self.counter, self.x, self.y)
+            self.bomb_draw_case()
             gw.field_array[self.gx+1][self.gy+1] |= FIELD_DICT['bomb']
+
+    def bomb_draw_case(self):
+        cntnum = ceil(self.counter)
+        drawing_pos = None
+        if self.option == 0:
+            drawing_pos = (60 * int(self.frame), 0, 60, 60, self.x, self.y)
+        else:
+            drawing_pos = (60 * int(self.frame), 60 * (cntnum-1), 60, 60, self.x, self.y)
+        if(self.option == 0):
+            Bomb.image[cntnum-1+self.is_enemy].clip_draw(*drawing_pos)
+        elif(self.option == 1):
+            Bomb.image2.clip_draw(*drawing_pos)
+        elif(self.option == 2):
+            Bomb.image3.clip_draw(*drawing_pos)
+        elif(self.option == 3):
+            Bomb.image4.clip_draw(*drawing_pos)
         
     def check_col(self):
         cur_loc = gw.field_array[self.gx+1][self.gy+1]
