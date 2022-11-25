@@ -21,15 +21,18 @@ class Stage_bgm(Game_bgm):
             Stage_bgm.stage_bgm[self.idx] = \
                 load_music('snd/stage' + num_str + '_bgm.mp3')
         self.bgm = Stage_bgm.stage_bgm[self.idx]
+        ops.load_volume_data()
+        self.update()
         self.play()
 
 class Title_bgm(Game_bgm):
     title_bgm = None
     def __init__(self):
-        ops.load_volume_data()
         if Title_bgm.title_bgm == None:
             Title_bgm.title_bgm = load_music('snd/title_bgm.mp3')
         self.bgm = Title_bgm.title_bgm
+        ops.load_volume_data()
+        self.update()
         self.play()
 
 class Volume_check_sound:

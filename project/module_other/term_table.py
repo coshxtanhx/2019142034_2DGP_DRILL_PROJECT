@@ -18,7 +18,7 @@ RANK_A, RANK_B, RANK_C, RANK_D, RANK_E = '01234'
 
 # Sound Effect
 SE_BOMB = 'snd/ttafi200.wav'
-SE_EAT = 'snd/zovtra00.wav'
+SE_EAT = 'snd/eat.wav'
 
 # Stage
 STAGE1, STAGE2, STAGE3, STAGE4, ENDING = '12345'
