@@ -8,7 +8,7 @@ from module_object.mine import Mine
 from module_object.skin_wall import Skin_wall
 import module_other.game_world as gw
 import module_other.sound_manager as sm
-import module_other.time_manager as tm
+import module_other.game_framework as gf
 
 class Player_body:
     img_snake_blue_head = None
@@ -47,10 +47,10 @@ class Player_body:
             Player_body.skinshed = False
         else:
             if(self.number == 0):
-                Player_body.rest_time += tm.elapsed_time
+                Player_body.rest_time += gf.elapsed_time
                 Player_body.move_times = int(Player_body.rest_time / 0.014)
                 Player_body.rest_time = Player_body.rest_time % 0.014
-                Player_body.bomb_cool_down -= tm.elapsed_time
+                Player_body.bomb_cool_down -= gf.elapsed_time
                 if(Player_body.direction and self.x % 60 == 40 and self.y % 60 == 40):
                     Player_body.cur_direction = \
                         next_state[Player_body.cur_direction][Player_body.direction.pop()]

@@ -5,7 +5,7 @@ from module_object.ice import Ice
 from module_object.explosion import Explosion
 import module_other.game_world as gw
 import module_other.sound_manager as sm
-import module_other.time_manager as tm
+import module_other.game_framework as gf
 
 TIME_PER_ACTION = 0.2
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
@@ -22,11 +22,11 @@ class Bomb:
     def __init__(self, x, y, damage, option = 0):
         self.gx, self.gy = coordinates_to_grid(x, y)
         self.x, self.y = grid_to_coordinates(self.gx, self.gy)
-        self.counter = 5 if (option != 4) else 0
+        self.counter = 5 if (option != MINE_BOMB) else 0
         self.damage = damage
         self.option = option
         self.frame = 0
-        self.is_enemy = 5 if (self.damage == 0) else 0
+        self.owner = ENEMY_OWNS if (self.damage == 0) else PLAYER_OWNS
         if Bomb.image == None:
             Bomb.image = \
                 [load_image('img/bomb_' + str(i) + '.png') for i in range(1, 11)]
@@ -34,23 +34,23 @@ class Bomb:
             Bomb.image3 = load_image('img/bomb_ice.png')
             Bomb.image4 = load_image('img/bomb_ice_cross.png')
     def update(self):
-        self.counter -= tm.elapsed_time
-        self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * tm.elapsed_time) % 3
+        self.counter -= gf.elapsed_time
+        self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * gf.elapsed_time) % 3
         if(self.counter <= 0):
             self.ready_to_explode()
     def ready_to_explode(self):
         sm.sound_effect.play(SE_BOMB)
         gw.field_array[self.gx+1][self.gy+1] &= \
             MAX_BITS - FIELD_DICT['bomb']
-        if(self.option == 0):
+        if(self.option == GENERAL_BOMB):
             self.explode()
-        elif(self.option == 1):
+        elif(self.option == CROSS_BOMB):
             self.explode_cross()
-        elif(self.option == 2):
+        elif(self.option == ICE_BOMB):
             self.explode_ice()
-        elif(self.option == 3):
+        elif(self.option == ICE_CROSS_BOMB):
             self.explode_ice_cross()
-        elif(self.option == 4):
+        elif(self.option == MINE_BOMB):
             self.explode_mine()
         gw.remove_object(self)
     def explode(self):
@@ -137,7 +137,7 @@ class Bomb:
         else:
             drawing_pos = (60 * int(self.frame), 60 * (cntnum-1), 60, 60, self.x, self.y)
         if(self.option == 0):
-            Bomb.image[cntnum-1+self.is_enemy].clip_draw(*drawing_pos)
+            Bomb.image[cntnum-1+self.owner].clip_draw(*drawing_pos)
         elif(self.option == 1):
             Bomb.image2.clip_draw(*drawing_pos)
         elif(self.option == 2):

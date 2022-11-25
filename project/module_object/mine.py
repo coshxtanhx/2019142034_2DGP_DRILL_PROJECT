@@ -2,7 +2,7 @@ from module_other.coordinates_module import *
 from pico2d import *
 from module_object.bomb import *
 import module_other.game_world as gw
-import module_other.time_manager as tm
+import module_other.game_framework as gf
 
 class Mine:
     image = None
@@ -34,7 +34,7 @@ class Mine:
                 gw.remove_object(self)
     def update(self):
         if self.destructing:
-            self.counter -= tm.elapsed_time
+            self.counter -= gf.elapsed_time
         if self.counter <= 0: self.sweeping -= 6
         if self.sweeping <= 6: gw.remove_object(self)
     def check_if_snake_here(self):

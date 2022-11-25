@@ -1,7 +1,7 @@
 from module_other.coordinates_module import *
 from pico2d import *
 import module_other.game_world as gw
-import module_other.time_manager as tm
+import module_other.game_framework as gf
 
 class Explosion:
     image = None
@@ -16,7 +16,7 @@ class Explosion:
         drawing_size = (int(600 * (0.1 - self.frame)),) * 2
         self.image.clip_draw(0, 0, 60, 60, self.x, self.y, *drawing_size)
     def update(self):
-        self.frame -= tm.elapsed_time
+        self.frame -= gf.elapsed_time
         if self.frame <= 0:
             gw.remove_object(self)
     def check_col(self):

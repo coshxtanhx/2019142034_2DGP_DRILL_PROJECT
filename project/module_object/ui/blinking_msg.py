@@ -1,12 +1,14 @@
 from pico2d import *
 from module_other.coordinates_module import UI_HEIGHT, UI_WIDTH
+import module_other.game_framework as gf
 
 class Blinking_message:
     image_main = None
     image_menu = None
     image_over = None
+    blinking_period = 0.64
     def __init__(self, type):
-        self.frame = 0
+        self.timer = 0
         self.type = type
         self.y = None
         if self.type == 'main':
@@ -23,7 +25,8 @@ class Blinking_message:
             Blinking_message.image_over = load_image('img/gameover_msg.png')
         self.image = eval('Blinking_message.image_' + self.type)
     def draw(self):
-        if (self.frame % 90) < 45:
+        if self.timer < Blinking_message.blinking_period: 
             self.image.draw(UI_WIDTH // 2, self.y)
     def update(self):
-        self.frame = (self.frame + 1) % 180
+        self.timer = (self.timer + gf.elapsed_time) % \
+            (Blinking_message.blinking_period * 2)

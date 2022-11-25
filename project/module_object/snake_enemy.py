@@ -5,7 +5,7 @@ from random import choice
 from module_object.bomb import Bomb
 from module_enemy_ai.enemy_movement_ai import enemy_ai
 import module_other.game_world as gw
-import module_other.time_manager as tm
+import module_other.game_framework as gf
 from module_object.screen_hider import *
 from module_other.term_table import *
 
@@ -84,11 +84,11 @@ class Enemy_body:
                 Enemy_body.damaged = 0
         else:
             if(self.number == 0):
-                Enemy_body.rest_time += tm.elapsed_time
+                Enemy_body.rest_time += gf.elapsed_time
                 Enemy_body.move_times = int(Enemy_body.rest_time / 0.014)
                 Enemy_body.rest_time = Enemy_body.rest_time % 0.014
-                Enemy_body.bomb_cool_down -= tm.elapsed_time
-                Enemy_body.screen_off_cool_down -= tm.elapsed_time
+                Enemy_body.bomb_cool_down -= gf.elapsed_time
+                Enemy_body.screen_off_cool_down -= gf.elapsed_time
                 self.enemy_ai_update()
         self.number = (self.number + Enemy_body.move_times) % Enemy_body.length
         if Enemy_body.enemy_hp <= 0:
@@ -154,7 +154,7 @@ class Enemy_body:
         bx, by = Enemy_body.tx, Enemy_body.ty
         gw.addleft_object(Bomb(bx, by, 0, \
             choice(BOMB_TYPE_DICT[Enemy_body.bomb_type])), 'bomb')
-        Enemy_body.bomb_cool_down = 200
+        Enemy_body.bomb_cool_down = 7
 
     def create_cloud():
         if Enemy_body.color != 'brown':

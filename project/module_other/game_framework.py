@@ -1,5 +1,4 @@
 from pico2d import delay
-import module_other.time_manager as tm
 import module_state.title
 import module_state.title_menu
 import module_state.play_state
@@ -41,12 +40,12 @@ def state_exit_all():
 def state_act(next_module_str):
     import module_other.game_world
     module_other.game_world.cur_world = next_module_str
-    global running, next_module, next_module_option, data
+    global running, next_module, next_module_option, data, elapsed_time
     running = True
     start_time = time()
     cur_module = eval('module_state.' + next_module_str)
     while(running):
-        tm.elapsed_time = time() - start_time
+        elapsed_time = time() - start_time
         start_time = time()
         cur_module.draw_all()
         cur_module.handle_events()
@@ -54,7 +53,7 @@ def state_act(next_module_str):
     return next_module, next_module_option, data
 
 
-def state_changer_activate(start_module_str):
+def game_framework_activate(start_module_str):
     option, data = None, None
     next_module_str = start_module_str
     while(next_module_str != ''):
@@ -74,3 +73,4 @@ running = False
 next_module = None
 next_module_option = None
 data = None
+elapsed_time = 0.0
