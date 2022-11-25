@@ -7,7 +7,7 @@ from module_object.ui.button.buttons \
     import Option_volume_button, Option_volume_line, Option_button
 import module_other.state_changer as sc
 import module_other.game_world as gw
-import module_other.bgm_player as bp
+import module_other.sound_manager as sm
 
 MAX_VOL = 128
 
@@ -34,10 +34,10 @@ def change_volume(i):
         file = open('data/savevolume.txt', 'w')
         file.write(str(volumes[0]) + ' ' + str(volumes[1]))
         file.close()
-        bp.bgm.set_volume(volumes[1])
+        sm.bgm.set_volume(volumes[1])
     elif(i == 1):
         volumes[0], volumes[1] = volumes_before[0], volumes_before[1]
-        bp.bgm.set_volume(volumes[1])
+        sm.bgm.set_volume(volumes[1])
 
 def handle_events():
     events = get_events()
@@ -72,7 +72,7 @@ def enters(option):
     global img_bg
     global img_ui, volume_buttons, volume_lines, option_buttons
     load_volume_data()
-    bp.volume_check_sound = bp.Volume_check_sound()
+    sm.volume_check_sound = sm.Volume_check_sound()
     img_ui = Option_ui()
     volume_buttons = [Option_volume_button(volume_to_button_pos(volumes[i]), \
         UI_HEIGHT//2 + i * 90) for i in range(2)]
@@ -109,8 +109,9 @@ def draw_all():
 def update():
     for i in range(2):
         volumes[i] = button_pos_to_volume(volume_buttons[i].x)
-    bp.bgm.update()
-    bp.volume_check_sound.update()
+    sm.bgm.update()
+    sm.volume_check_sound.update()
+    sm.sound_effect.update()
 
 img_ui = None
 img_button = None

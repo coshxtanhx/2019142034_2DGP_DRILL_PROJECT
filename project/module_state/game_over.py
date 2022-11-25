@@ -16,7 +16,6 @@ def handle_events():
         elif event == KESCD:
             sc.change_state('title', 'exitall')
         elif event == MLD:
-            print(ex, ey)
             isclicked = None
             for i in range(2):
                 if buttons[i].isclicked(ex, ey):

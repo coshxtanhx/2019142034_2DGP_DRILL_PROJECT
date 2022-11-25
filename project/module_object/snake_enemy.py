@@ -6,7 +6,6 @@ from module_object.bomb import Bomb
 from module_enemy_ai.enemy_movement_ai import enemy_ai
 import module_other.game_world as gw
 from module_object.screen_hider import *
-import module_other.bgm_player as bp
 from module_other.term_table import *
 
 COLOR_DICT = {'1': 'orange', '2': 'brown', '3': 'purple', '4': 'green'}

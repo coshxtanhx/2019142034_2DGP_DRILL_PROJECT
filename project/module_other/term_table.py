@@ -18,8 +18,12 @@ PHASE = (None,) + tuple(range(3, -1, -1))
 # Rank
 RANK_A, RANK_B, RANK_C, RANK_D, RANK_E = '01234'
 
+# SE
+SE_BOMB = 'snd/ttafi200.wav'
+SE_EAT = 'snd/zovtra00.wav'
+
 # Stage
 STAGE1, STAGE2, STAGE3, STAGE4, ENDING = '12345'
 
-# Victory or Defeat
+# Victory/Defeat
 VICTORY, DEFEAT, STILL_PLAYING = 1, -1, 0

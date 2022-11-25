@@ -1,12 +1,13 @@
+from pico2d import *
 from module_other.coordinates_module import *
 from collections import deque
-from pico2d import *
+from module_other.term_table import *
 from module_other.event_table_module import *
 from module_object.bomb import Bomb
 from module_object.mine import Mine
 from module_object.skin_wall import Skin_wall
 import module_other.game_world as gw
-from module_other.term_table import *
+import module_other.sound_manager as sm
 
 class Blue_body:
     img_snake_blue_head = None
@@ -54,6 +55,7 @@ class Blue_body:
         if Blue_body.longer == False:
             return
         Blue_body.longer = False
+        sm.sound_effect.play(SE_EAT)
         for i in range(12):
             gw.add_object(Blue_body(Blue_body.length+i, \
                 Blue_body.tx, Blue_body.ty), 'player')

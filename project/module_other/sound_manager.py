@@ -1,5 +1,7 @@
 from pico2d import *
-import module_state.option_setting as os
+from module_other.term_table import *
+from collections import defaultdict
+import module_state.option_setting as ops
 
 class Game_bgm:
     def play(self):
@@ -9,7 +11,7 @@ class Game_bgm:
     def set_volume(self, v):
         self.bgm.set_volume(v)
     def update(self):
-        self.set_volume(os.volumes[1])
+        self.set_volume(ops.volumes[1])
 
 class Stage_bgm(Game_bgm):
     stage_bgm = [None for _ in range(5)]
@@ -36,15 +38,32 @@ class Volume_check_sound:
     def __init__(self):
         if Volume_check_sound.sound == None:
             Volume_check_sound.sound = load_wav('snd/zrescue.wav')
-            Volume_check_sound.volume = os.volumes[0]
+        Volume_check_sound.volume = ops.volumes[0]
     def update(self):
-        if Volume_check_sound.volume != os.volumes[0]\
-            and os.volume_buttons[0].clicked == False:
-            Volume_check_sound.volume = os.volumes[0]
+        if abs(Volume_check_sound.volume - ops.volumes[0]) > 1\
+            and ops.volume_buttons[0].clicked == False:
+            Volume_check_sound.volume = ops.volumes[0]
             self.sound.set_volume(Volume_check_sound.volume)
             self.play()
     def play(self):
         Volume_check_sound.sound.play()
 
+class Sound_effect:
+    se_dict = defaultdict(str)
+    volume = None
+    se = None
+    def __init__(self):
+        Sound_effect.volume = ops.volumes[0]
+    def update(self):
+        Sound_effect.volume = ops.volumes[0]
+    def play(self, snd):
+        if Sound_effect.se_dict[snd] == '':
+            Sound_effect.se_dict[snd] = load_wav(snd)
+        Sound_effect.se = Sound_effect.se_dict[snd]
+        Sound_effect.se.set_volume(Sound_effect.volume)
+        Sound_effect.se.play()
+
+
 bgm = None
 volume_check_sound = None
+sound_effect = None

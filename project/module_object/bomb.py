@@ -1,8 +1,10 @@
-from module_other.coordinates_module import *
 from pico2d import *
+from module_other.coordinates_module import *
+from module_other.term_table import *
 from module_object.ice import Ice
 from module_object.explosion import Explosion
 import module_other.game_world as gw
+import module_other.sound_manager as sm
 
 ICE_REMOVER = FIELD_DICT['enemy'] + FIELD_DICT['explode'] \
     + FIELD_DICT['bomb'] + FIELD_DICT['apple'] + FIELD_DICT['ice']
@@ -20,7 +22,6 @@ def bomb_draw_case(option, is_enemy, count, x, y):
             
 
 class Bomb:
-    explode_snd = None
     image = None
     image2 = None
     image3 = None
@@ -32,8 +33,6 @@ class Bomb:
         self.damage = damage
         self.option = option
         self.is_enemy = 5 if (self.damage == 0) else 0
-        if Bomb.explode_snd == None:
-            Bomb.explode_snd = load_wav('snd/ttafi200.wav')
         if Bomb.image == None:
             Bomb.image = \
                 [load_image('img/bomb_' + str(i) + '.png') for i in range(1, 11)]
@@ -45,7 +44,7 @@ class Bomb:
         if(self.counter == 0 or self.counter <= -65535):
             self.ready_to_explode()
     def ready_to_explode(self):
-        Bomb.explode_snd.play()
+        sm.sound_effect.play(SE_BOMB)
         gw.field_array[self.gx+1][self.gy+1] &= \
             MAX_BITS - FIELD_DICT['bomb']
         if(self.option == 0):
@@ -82,7 +81,6 @@ class Bomb:
             for y in range(-1, 2):
                 gw.addleft_object(\
                     Explosion(self.gx+1+x, self.gy+1+y, self.damage), 'explode')
-
 
     def explode_cross(self):
         for i in range(0, 9, 1):
