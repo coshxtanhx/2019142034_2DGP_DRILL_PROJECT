@@ -68,7 +68,7 @@ def handle_events():
             for i in range(2):
                 volume_buttons[i].clicked = False
 
-def enters(option):
+def enter(option):
     global img_bg
     global img_ui, volume_buttons, volume_lines, option_buttons
     load_volume_data()
@@ -89,7 +89,7 @@ def enters(option):
     gw.add_object(img_ui, 1)
     gw.add_objects(volume_buttons, 2)
 
-def exits():
+def exit():
     global img_ui, img_button, img_bg, volume_buttons, volume_lines, option_buttons
     img_ui = None
     img_button = None

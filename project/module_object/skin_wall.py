@@ -24,7 +24,7 @@ class Skin_wall:
         cur_loc = gw.field_array[self.gx+1][self.gy+1]
         if cur_loc & (FIELD_DICT['head']):
             import module_object.snake_player
-            module_object.snake_player.Blue_body.get_damaged()
+            module_object.snake_player.Player_body.get_damaged()
         if cur_loc & (FIELD_DICT['head'] + FIELD_DICT['enemy'] \
             + FIELD_DICT['explode']):
             gw.remove_object(self)

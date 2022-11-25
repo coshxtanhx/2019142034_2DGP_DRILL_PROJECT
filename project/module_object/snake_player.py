@@ -9,7 +9,7 @@ from module_object.skin_wall import Skin_wall
 import module_other.game_world as gw
 import module_other.sound_manager as sm
 
-class Blue_body:
+class Player_body:
     img_snake_blue_head = None
     img_snake_blue_body = None
     character = None
@@ -31,96 +31,96 @@ class Blue_body:
         self.frame = 0
         self.number = number
         self.image = 0
-        if(Blue_body.img_snake_blue_head == None):
-            Blue_body.img_snake_blue_head = \
+        if(Player_body.img_snake_blue_head == None):
+            Player_body.img_snake_blue_head = \
                 [load_image('img/snake_blue_head_' + str(i) + '.png')\
                     for i in range(4)]
-            Blue_body.img_snake_blue_body = load_image('img/snake_blue_body.png')
+            Player_body.img_snake_blue_body = load_image('img/snake_blue_body.png')
     def update(self):
         if(self.number == self.length - 1):
-            self.x, self.y = self.hx + dx[Blue_body.cur_direction], \
-                self.hy + dy[Blue_body.cur_direction]
+            self.x = Player_body.hx + dx[Player_body.cur_direction]
+            self.y = Player_body.hy + dy[Player_body.cur_direction]
+            Player_body.hx, Player_body.hy = self.x, self.y
             self.number = 0
-            if Blue_body.bomb_cool_down > 0: Blue_body.bomb_cool_down -= 1
-            Blue_body.skinshed = False
+            if Player_body.bomb_cool_down > 0: Player_body.bomb_cool_down -= 1
+            Player_body.skinshed = False
         else:
             if(self.number == 0):
-                if(Blue_body.direction and self.x % 60 == 40 and self.y % 60 == 40):
-                    Blue_body.cur_direction = \
-                        next_state[Blue_body.cur_direction][Blue_body.direction.pop()]
+                if(Player_body.direction and self.x % 60 == 40 and self.y % 60 == 40):
+                    Player_body.cur_direction = \
+                        next_state[Player_body.cur_direction][Player_body.direction.pop()]
             self.number += 1
-        if self.number > 30 and Blue_body.skinshed:
+        if self.number > 30 and Player_body.skinshed:
             gw.add_object(Skin_wall(self.x, self.y), 'breakable')
     def get_longer():
-        if Blue_body.longer == False:
+        if Player_body.longer == False:
             return
-        Blue_body.longer = False
+        Player_body.longer = False
         sm.sound_effect.play(SE_EAT)
         for i in range(12):
-            gw.add_object(Blue_body(Blue_body.length+i, \
-                Blue_body.tx, Blue_body.ty), 'player')
-        Blue_body.length += 12
-        if Blue_body.character == MINE_SWEEPER_SNAKE:
+            gw.add_object(Player_body(Player_body.length+i, \
+                Player_body.tx, Player_body.ty), 'player')
+        Player_body.length += 12
+        if Player_body.character == MINE_SWEEPER_SNAKE:
             gw.add_object(Mine(), 'obj')
-        if Blue_body.character == SKIN_SHEDDER_SNAKE:
-            Blue_body.skinshed = True
+        if Player_body.character == SKIN_SHEDDER_SNAKE:
+            Player_body.skinshed = True
     def get_shorter():
-        if Blue_body.damaged == False:
+        if Player_body.damaged == False:
             return
-        Blue_body.damaged = False
-        if Blue_body.length < 15:
+        Player_body.damaged = False
+        if Player_body.length < 15:
             game_over()
         else:
-            Blue_body.length -= 12
+            Player_body.length -= 12
             for _ in range(12):
                 gw.pop_object('player')
     def draw(self):
         self.gx, self.gy = coordinates_to_grid(self.x, self.y)
         if(self.number == 0):
             gw.field_array[self.gx+1][self.gy+1] |= FIELD_DICT['head']
-            Blue_body.hx, Blue_body.hy = self.x, self.y
             return
         else:
             if(self.number > 30):
                 gw.field_array[self.gx+1][self.gy+1] |= FIELD_DICT['body']
-            self.image = Blue_body.img_snake_blue_body
+            self.image = Player_body.img_snake_blue_body
             if(self.number == self.length-1):
-                Blue_body.tx, Blue_body.ty = self.x, self.y
+                Player_body.tx, Player_body.ty = self.x, self.y
         self.image.draw(self.x, self.y)
         gw.field_array[self.gx+1][self.gy+1] |= FIELD_DICT['player']
         if(self.number == self.length - 1):
-            (Blue_body.img_snake_blue_head[Blue_body.cur_direction]\
-                ).draw(Blue_body.hx, Blue_body.hy)
+            (Player_body.img_snake_blue_head[Player_body.cur_direction]\
+                ).draw(Player_body.hx, Player_body.hy)
     def get_damaged():
-        Blue_body.damaged = True
+        Player_body.damaged = True
     def reset():
-        Blue_body.cur_direction = 0
-        Blue_body.direction = deque(maxlen=2)
-        Blue_body.bomb_cool_down = 10
-        Blue_body.length = 12*(3-1)+1
+        Player_body.cur_direction = 0
+        Player_body.direction = deque(maxlen=2)
+        Player_body.bomb_cool_down = 10
+        Player_body.length = 12*(3-1)+1
 
     def handle_events(event):
-        if event in next_state[Blue_body.cur_direction]:
+        if event in next_state[Player_body.cur_direction]:
             if event == KED:
-                if Blue_body.bomb_cool_down == 0:
-                    bx, by = Blue_body.tx, Blue_body.ty
-                    gw.addleft_object(Bomb(bx, by, Blue_body.length), 'bomb')
-                    Blue_body.bomb_cool_down = 100
+                if Player_body.bomb_cool_down == 0:
+                    bx, by = Player_body.tx, Player_body.ty
+                    gw.addleft_object(Bomb(bx, by, Player_body.length), 'bomb')
+                    Player_body.bomb_cool_down = 100
             else:
-                Blue_body.direction.appendleft(event)
+                Player_body.direction.appendleft(event)
     
     def check_col(self):
         cur_loc = gw.field_array[self.gx+1][self.gy+1]
-        if Blue_body.length >= 40 and \
+        if Player_body.length >= 40 and \
             (cur_loc & (FIELD_DICT['body']+FIELD_DICT['head']) \
                 == (FIELD_DICT['body']+FIELD_DICT['head'])):
             game_over()
         if cur_loc & (FIELD_DICT['wall']):
             game_over()
         if cur_loc & (FIELD_DICT['apple']):
-            Blue_body.longer = True
+            Player_body.longer = True
         if cur_loc & (FIELD_DICT['poison']):
-            Blue_body.get_damaged()
+            Player_body.get_damaged()
 
 def game_over():
     import module_state.play_state as ps

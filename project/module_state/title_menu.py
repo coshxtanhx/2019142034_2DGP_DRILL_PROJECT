@@ -42,7 +42,7 @@ def handle_events():
             elif(button_clicked == 3):
                 sc.change_state('', None)
 
-def enters(option):
+def enter(option):
     global frame, title_bg, buttons
     global img_menu_button, file
     frame = 0
@@ -57,7 +57,7 @@ def enters(option):
     gw.add_object(title_bg, 1)
     gw.add_objects(buttons, 2)
 
-def exits():
+def exit():
     global frame, buttons, img_menu_button, title_bg
     global file, loaded_dat
     frame = None

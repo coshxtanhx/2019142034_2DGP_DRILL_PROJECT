@@ -26,4 +26,4 @@ class Explosion:
             se.Enemy_body.get_damaged(self.damage)
         if cur_loc & (FIELD_DICT['player']):
             import module_object.snake_player as sp
-            sp.Blue_body.get_damaged()
+            sp.Player_body.get_damaged()

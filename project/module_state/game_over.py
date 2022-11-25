@@ -26,7 +26,7 @@ def handle_events():
             elif isclicked == 1:
                 sc.change_state('play_state', None, cur_game_data)
 
-def enters(option):
+def enter(option):
     global buttons, cur_game_data
     cur_game_data = option
     gw.add_object(Background('over'), 0)
@@ -34,7 +34,7 @@ def enters(option):
     buttons = [Game_end_button(270 + 190*i, 150, i) for i in (0,2)]
     gw.add_objects(buttons, 1)
 
-def exits():
+def exit():
     global buttons
     buttons = None
     gw.clear_world()

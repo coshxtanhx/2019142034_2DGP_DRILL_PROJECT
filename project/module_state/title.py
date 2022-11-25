@@ -19,7 +19,7 @@ def handle_events():
         elif event == KESCD:
             sc.change_state('', None)
 
-def enters(option):
+def enter(option):
     global img_title_msg, img_title_bg, img_title_text
     img_title_bg = Background('main')
     img_title_text = [Title(num) for num in range(2)]
@@ -31,7 +31,7 @@ def enters(option):
     sm.sound_effect = sm.Sound_effect()
 
 
-def exits():
+def exit():
     global img_title_msg, img_title_bg, img_title_text
     img_title_bg = None
     img_title_msg = None

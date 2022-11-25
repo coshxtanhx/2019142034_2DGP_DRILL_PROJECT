@@ -31,7 +31,7 @@ def handle_events():
             elif(button_clicked == 3):
                 sc.change_state('play_state', 'resume')
 
-def enters(option):
+def enter(option):
     global img_ui_bg, img_ui_text, buttons
     img_ui_bg = Background('menu')
     img_ui_text = Blinking_message('menu')
@@ -39,7 +39,7 @@ def enters(option):
     gw.add_object(img_ui_bg, 'bg')
     gw.add_object(img_ui_text, 'obj')
 
-def exits():
+def exit():
     global img_ui_bg, img_ui_text, buttons
     img_ui_bg = None
     img_ui_text = None

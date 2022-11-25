@@ -22,14 +22,14 @@ def load_score(n):
         return 0
     return num
 
-def enters(option):
+def enter(option):
     star_sum = 0
     for i in '1234':
         star_sum += load_score(i)
     gw.add_object(Background('ends'), 0)
     gw.add_object(Rank(star_sum), 1)
 
-def exits():
+def exit():
     gw.clear_world()
 
 def draw_all():

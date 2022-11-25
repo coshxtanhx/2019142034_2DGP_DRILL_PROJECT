@@ -28,7 +28,7 @@ def handle_events():
             elif button_clicked == 2:
                 sc.change_state('select_char', 'resume')
 
-def enters(option):
+def enter(option):
     global bg, book, cur_selecting, buttons
     bg = Background('howt')
     cur_selecting = 0
@@ -37,7 +37,7 @@ def enters(option):
     gw.add_object(bg, 0)
     gw.add_object(book, 1)
 
-def exits():
+def exit():
     global bg, book, cur_selecting, buttons
     bg = None
     book = None

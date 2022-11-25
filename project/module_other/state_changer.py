@@ -21,14 +21,16 @@ def get_previous_state():
     return state_stack[-2]
 
 def state_enter(next_module_str, data):
+    global running
     import module_other.game_world
     module_other.game_world.cur_world = next_module_str
     state_stack.append(next_module_str)
-    eval('module_state.' + next_module_str).enters(data)
+    running = True
+    eval('module_state.' + next_module_str).enter(data)
     print(next_module_str + ' entered')
 
 def state_exit(current_module_str):
-    eval('module_state.' + current_module_str).exits()
+    eval('module_state.' + current_module_str).exit()
     state_stack.pop()
     print(current_module_str + ' exited')
 
@@ -36,7 +38,7 @@ def state_exit_all():
     for i in range(len(state_stack)-1, -1, -1):
         import module_other.game_world
         module_other.game_world.cur_world = state_stack[i]
-        eval('module_state.' + state_stack[i]).exits()
+        eval('module_state.' + state_stack[i]).exit()
         print(state_stack[i] + ' exited')
         state_stack.pop()
 
@@ -44,16 +46,13 @@ def state_act(next_module_str):
     import module_other.game_world
     module_other.game_world.cur_world = next_module_str
     global running, next_module, next_module_option, data
-    running = True
     start_time = time()
     cur_module = eval('module_state.' + next_module_str)
     while(running):
-        while(time() > start_time + 0.014 and running):
-            start_time += 0.014
-            if running: cur_module.draw_all()
-            if running: cur_module.handle_events()
-            if running: cur_module.update()
-        # delay(0.5)
+        time() - start_time
+        cur_module.draw_all()
+        cur_module.handle_events()
+        cur_module.update()
     return next_module, next_module_option, data
 
 

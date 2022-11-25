@@ -26,11 +26,11 @@ class Stage_bgm(Game_bgm):
 class Title_bgm(Game_bgm):
     title_bgm = None
     def __init__(self):
+        ops.load_volume_data()
         if Title_bgm.title_bgm == None:
             Title_bgm.title_bgm = load_music('snd/title_bgm.mp3')
         self.bgm = Title_bgm.title_bgm
         self.play()
-
 
 class Volume_check_sound:
     sound = None

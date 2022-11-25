@@ -9,16 +9,13 @@ GENERAL_BOMB, CROSS_BOMB, ICE_BOMB, ICE_CROSS_BOMB = range(4)
 GENERAL_SNAKE, POISON_APPLE_SNAKE, \
     MINE_SWEEPER_SNAKE, SKIN_SHEDDER_SNAKE = '1234'
 
-# Color
-ORANGE, BROWN, PURPLE, GREEN = range(1,5)
-
 # Phase
 PHASE = (None,) + tuple(range(3, -1, -1))
 
 # Rank
 RANK_A, RANK_B, RANK_C, RANK_D, RANK_E = '01234'
 
-# SE
+# Sound Effect
 SE_BOMB = 'snd/ttafi200.wav'
 SE_EAT = 'snd/zovtra00.wav'
 

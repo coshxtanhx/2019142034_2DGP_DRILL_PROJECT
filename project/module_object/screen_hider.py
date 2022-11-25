@@ -30,7 +30,7 @@ class Screen_off:
         if self.frame > 160 and ((self.frame-160) // 6) % 2 == 0:
             return
         import module_object.snake_player as sp
-        x, y = sp.Blue_body.hx, sp.Blue_body.hy
+        x, y = sp.Player_body.hx, sp.Player_body.hy
         self.image1.draw(x, y)
         self.image2.draw(x + 615, y)
         self.image2.draw(x - 615, y)

@@ -9,20 +9,19 @@ from module_object.screen_hider import *
 from module_other.term_table import *
 
 COLOR_DICT = {'1': 'orange', '2': 'brown', '3': 'purple', '4': 'green'}
-COLOR_DICT2 = {'orange': 1, 'brown': 2, 'purple': 3, 'green': 4}
 
 AI_DICT = {
-    (PHASE[1], ORANGE): CIRCLE, (PHASE[2], ORANGE): SWEEP,
-    (PHASE[3], ORANGE): RANDOM, (PHASE[4], ORANGE): APPLE_HUNTER,
+    (PHASE[1], 'orange'): CIRCLE, (PHASE[2], 'orange'): SWEEP,
+    (PHASE[3], 'orange'): RANDOM, (PHASE[4], 'orange'): APPLE_HUNTER,
 
-    (PHASE[1], BROWN): CIRCLE, (PHASE[2], BROWN): SWEEP,
-    (PHASE[3], BROWN): RANDOM, (PHASE[4], BROWN): RANDOM,
+    (PHASE[1], 'brown'): CIRCLE, (PHASE[2], 'brown'): SWEEP,
+    (PHASE[3], 'brown'): RANDOM, (PHASE[4], 'brown'): RANDOM,
 
-    (PHASE[1], PURPLE): CIRCLE, (PHASE[2], PURPLE): RANDOM,
-    (PHASE[3], PURPLE): CIRCLE, (PHASE[4], PURPLE): APPLE_HUNTER,
+    (PHASE[1], 'purple'): CIRCLE, (PHASE[2], 'purple'): RANDOM,
+    (PHASE[3], 'purple'): CIRCLE, (PHASE[4], 'purple'): APPLE_HUNTER,
 
-    (PHASE[1], GREEN): SMARTER, (PHASE[2], GREEN): BOMB_TOUCH,
-    (PHASE[3], GREEN): APPLE_DEFENDER, (PHASE[4], GREEN): STALKER,
+    (PHASE[1], 'green'): SMARTER, (PHASE[2], 'green'): BOMB_TOUCH,
+    (PHASE[3], 'green'): APPLE_DEFENDER, (PHASE[4], 'green'): STALKER,
 }
 
 BOMB_TYPE_DICT = {
@@ -90,6 +89,9 @@ class Enemy_body:
             Enemy_body.enemy_hp = 0
             import module_state.play_state as ps
             ps.isended = VICTORY
+        Enemy_body.enemy_set_bomb()
+        Enemy_body.enemy_screen_off()
+        Enemy_body.create_cloud()
 
     def draw(self):
         self.gx, self.gy = coordinates_to_grid(self.x, self.y)
@@ -132,7 +134,7 @@ class Enemy_body:
 
     def change_ai():
         Enemy_body.ai = \
-            AI_DICT[(Enemy_body.enemy_hp // 241, COLOR_DICT2[Enemy_body.color])]
+            AI_DICT[(Enemy_body.enemy_hp // 241, Enemy_body.color)]
         if Enemy_body.color == 'purple':
             Enemy_body.bomb_type = 4 - Enemy_body.enemy_hp // 241
         elif Enemy_body.color == 'brown':
@@ -170,7 +172,7 @@ class Enemy_body:
         cur_loc = gw.field_array[self.gx+1][self.gy+1]
         if cur_loc & (FIELD_DICT['player']):
             import module_object.snake_player as sp
-            sp.Blue_body.get_damaged()
+            sp.Player_body.get_damaged()
 
 def screen_break(hp):
     if Enemy_body.screen_break_cnt != hp:

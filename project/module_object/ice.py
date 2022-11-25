@@ -24,7 +24,7 @@ class Ice:
         cur_loc = gw.field_array[self.gx][self.gy]
         if cur_loc & (FIELD_DICT['player']):
             import module_object.snake_player
-            module_object.snake_player.Blue_body.get_damaged()
+            module_object.snake_player.Player_body.get_damaged()
         if cur_loc & (FIELD_DICT['player'] + FIELD_DICT['enemy'] \
             + FIELD_DICT['explode']):
             gw.remove_object(self)

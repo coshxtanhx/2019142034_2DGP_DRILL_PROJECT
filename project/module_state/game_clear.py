@@ -27,12 +27,12 @@ def handle_events():
             elif isclicked == 1:
                 sc.change_state('play_state', 'exitall', cur_game_data)
 
-def get_stars(n):
+def get_stars_num(n):
     if n > 5: return 3
     if n > 1: return 2
     return 1
 
-def saves(data):
+def save_data(data):
     file = open('data/savedata.txt', 'w')
     file.write(data)
     file.close()
@@ -42,20 +42,20 @@ def saves(data):
     file.write(str(star_num))
     file.close()
 
-def enters(option):
+def enter(option):
     if not(option):
         option = '114'
     global cur_game_data, buttons, star_num
     cur_game_data = option[:2]
-    star_num = get_stars(int(option[2]))
+    star_num = get_stars_num(int(option[2]))
     gw.add_object(Background('menu'), 0)
     gw.add_object(Clear_ui(), 1)
     buttons = [Game_end_button(272 + 377*i, 115, i) for i in range(2)]
     gw.add_objects(buttons, 1)
     gw.add_objects([Star(i) for i in range(star_num)], 2)
-    saves(cur_game_data)
+    save_data(cur_game_data)
 
-def exits():
+def exit():
     gw.clear_world()
 
 def draw_all():

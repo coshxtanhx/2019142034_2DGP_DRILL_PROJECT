@@ -32,7 +32,7 @@ def handle_events():
             elif button_clicked == 3:
                 Selection.change_img(+1)
 
-def enters(option):
+def enter(option):
     global bg, selection_images, cur_selecting, buttons
     bg = Background('selc')
     selection_images = Selection()
@@ -42,7 +42,7 @@ def enters(option):
     module_other.game_world.add_object(bg, 0)
     module_other.game_world.add_object(selection_images, 1)
 
-def exits():
+def exit():
     global bg, selection_images, cur_selecting, buttons
     bg = None
     selection_images = None
