@@ -97,12 +97,12 @@ class Player:
             self.cur_state.enter(self, event)
 
     def handle_collision(self, other, group):
-        if group == COL_PLAYER_APPLE:
+        if group == COL_PHEAD_APPLE:
             sm.sound_effect.play(SE_EAT)
             if type(other) == Poison_apple:
                 pass
             else: pass
-        elif group in (COL_PLAYER_ENEMY, COL_PLAYER_ICE):
+        elif group in (COL_PLAYER_EHEAD, COL_PLAYER_ICE):
             pass
         elif group == COL_EXPLOSION_PLAYER:
             if self.invincible_timer <= 0:
