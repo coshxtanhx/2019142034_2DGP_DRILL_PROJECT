@@ -146,7 +146,7 @@ class Bomb:
             Bomb.image4.clip_draw(*drawing_pos)
         
     def handle_collision(self, other, group):
-        if group == COL_PLAYER_BOMB:
+        if group == COL_PHEAD_BOMB:
             self.counter = -65536
-        elif group == COL_ENEMY_BOMB:
+        elif group == COL_EHEAD_BOMB:
             self.counter = -65536

@@ -1,6 +1,8 @@
 bg = None
 player = None
+player_head = None
 enemy = None
+enemy_head = None
 bomb = None
 apple = None
 hp_bar = None

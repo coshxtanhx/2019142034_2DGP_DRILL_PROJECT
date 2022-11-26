@@ -58,6 +58,7 @@ def enter(data):
 
     sv.bg = Background('play')
     sv.player = sp.Player(cur_char)
+    sv.player_head = sp.Player_head()
     sv.apple = create_first_apple()
     sv.enemy = [se.Enemy_body(i, color=se.COLOR_DICT[cur_stage]) \
         for i in range(0, 12*(6-1)+1)]
@@ -65,7 +66,7 @@ def enter(data):
 
     gw.add_object(sv.bg, 'bg')
     gw.add_object(sv.player, 'player')
-    gw.add_object(sp.pHead(), 'player')
+    gw.add_object(sv.player_head, 'player')
     gw.addleft_object(sv.apple, 'obj')
     gw.add_objects(sv.enemy, 'enemy')
     gw.add_object(sv.hp_bar, 'ui')
@@ -103,8 +104,6 @@ def update():
             a.handle_collision(b, group)
             b.handle_collision(a, group)
 
-    sp.Player_body.get_longer()
-    sp.Player_body.get_shorter()
     is_game_ended()
 
 frame = None

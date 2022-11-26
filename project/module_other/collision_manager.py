@@ -21,11 +21,11 @@ def collide(a, b):
 def add_collision_pairs_automatically(o, is_list=False):
     if is_list: ot = type(o[0])
     else: ot = type(o)
-    if ot == pHead:
+    if ot == Player:
         gw.add_collision_pairs(o, None, COL_PLAYER_ICE)
         gw.add_collision_pairs(None, o, COL_EXPLOSION_PLAYER)
         gw.add_collision_pairs(o, None, COL_PLAYER_EHEAD)
-    if ot == Player:
+    if ot == Player_head:
         gw.add_collision_pairs(o, None, COL_PHEAD_APPLE)
         gw.add_collision_pairs(o, None, COL_PHEAD_BOMB)
         gw.add_collision_pairs(o, None, COL_PHEAD_SKINWALL)

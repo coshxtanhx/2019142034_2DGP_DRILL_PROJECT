@@ -26,7 +26,7 @@ def create_new_apple():
 
 class Apple:
     def handle_collision(self, other, group):
-        if group in (COL_PLAYER_APPLE, COL_ENEMY_APPLE):
+        if group in (COL_PHEAD_APPLE, COL_EHEAD_APPLE):
             self.get_removed()
         if group == COL_EXPLOSION_APPLE:
             self.get_removed()

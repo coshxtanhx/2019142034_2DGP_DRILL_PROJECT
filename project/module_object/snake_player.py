@@ -47,15 +47,15 @@ class MOVE_LEFT(MOVE):
 class MOVE_DOWN(MOVE):
     direction = DOWN
 
-class pHead:
+class Player_head:
     def __init__(self):
         self.x, self.y = 0, 0
     def update(self):
         self.x, self.y = sv.player.bodies_pos[0]
     def draw(self):
         pass
-    def handle_collision():
-        pass
+    def handle_collision(self, other, group):
+        sv.player.handle_collision(other, group)
 
 class Player:
     img_head = None
@@ -101,7 +101,10 @@ class Player:
             sm.sound_effect.play(SE_EAT)
             if type(other) == Poison_apple:
                 pass
-            else: pass
+            else:
+                self.length += 6
+                tail_pos = self.bodies_pos[-1]
+                self.bodies_pos += [tail_pos.copy() for _ in range(6)]
         elif group in (COL_PLAYER_EHEAD, COL_PLAYER_ICE):
             pass
         elif group == COL_EXPLOSION_PLAYER:

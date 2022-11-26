@@ -25,5 +25,5 @@ class Skin_wall:
         if self.remove_timer <= 0:
             gw.remove_object(self)
     def handle_collision(self, other, group):
-        if group in (COL_ENEMY_SKINWALL, COL_PLAYER_SKINWALL, COL_EXPLOSION_SKINWALL):
+        if group in (COL_EHEAD_SKINWALL, COL_PHEAD_SKINWALL, COL_EXPLOSION_SKINWALL):
             gw.remove_object(self)

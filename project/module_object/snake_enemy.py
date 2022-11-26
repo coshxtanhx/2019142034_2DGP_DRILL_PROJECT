@@ -181,7 +181,7 @@ class Enemy_body:
         Enemy_body.screen_off_cool_down = 10
 
     def handle_collision(self, other, group):
-        if group == COL_ENEMY_APPLE:
+        if group == COL_EHEAD_APPLE:
             sm.sound_effect.play(SE_EAT) 
         elif group == COL_EXPLOSION_ENEMY:
             if Enemy_body.invincible_timer <= 0:
