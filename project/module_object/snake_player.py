@@ -40,6 +40,7 @@ class MOVE:
         move_times = int(self.cumulative_time / UNIT_TIME)
         self.cumulative_time = self.cumulative_time % UNIT_TIME
         if self.bomb_cool_down > 0: self.bomb_cool_down -= gf.elapsed_time
+        if self.invincible_timer > 0: self.invincible_timer -= gf.elapsed_time
         if move_times > 0:
             self.unable_to_receive_order = False
             for i in range(-1, -1-move_times, -1):
@@ -137,7 +138,7 @@ class Player:
             game_over()
         elif group == COL_EXPLOSION_PLAYER:
             if self.invincible_timer <= 0:
-                pass
+                self.get_shorter()
                 self.invincible_timer += 0.15
 
     def add_event(self, event):

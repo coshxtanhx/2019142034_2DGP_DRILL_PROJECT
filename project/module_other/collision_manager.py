@@ -13,10 +13,16 @@ import module_other.game_world as gw
 import module_other.server as sv
 
 def collide(a, b):
-    if type(a) == Player or type(b) == Player:
-        return
-    if get_distance(a.x, a.y, b.x, b.y) < 40:
-        return True
+    if type(a) in (Player,):
+        return collide_with_snake_body(a, b)
+    if type(b) in (Player,):
+        return collide_with_snake_body(b, a)
+    return (get_distance(a.x, a.y, b.x, b.y) < 40)
+
+def collide_with_snake_body(snake, o):
+    for i in range(0, snake.length, LENGTH_PER_GRID):
+        if get_distance(*snake.bodies_pos[i], o.x, o.y) < 40:
+            return True
     return False
 
 def add_collision_pairs_automatically(o, is_list=False):
