@@ -11,6 +11,93 @@ import module_other.game_world as gw
 import module_other.sound_manager as sm
 import module_other.game_framework as gf
 
+class MOVE:
+    def enter(self, event):
+        pass
+    def exit(self, event):
+        if event == KED:
+            if self.bomb_cool_down <= 0:
+                bx, by = self.bodies_pos[-1]
+                gw.addleft_object(Bomb(bx, by, self.length), 'bomb')
+                self.bomb_cool_down = 1
+
+    def do(self):
+        self.cumulative_time += gf.elapsed_time
+        move_times = int(self.cumulative_time / 0.028)
+        self.cumulative_time = self.cumulative_time % 0.028
+        if self.bomb_cool_down > 0: self.bomb_cool_down -= gf.elapsed_time
+        for i in range(-1, -1-move_times, -1):
+            self.bodies_pos[i][0] = \
+                self.bodies_pos[0][0] + dx[self.cur_state.direction]
+            self.bodies_pos[i][1] = \
+                self.bodies_pos[0][1] + dy[self.cur_state.direction]
+            self.bodies_pos.rotate(1)
+
+class MOVE_RIGHT(MOVE):
+    direction = RIGHT
+
+class MOVE_UP(MOVE):
+    direction = UP
+
+class MOVE_LEFT(MOVE):
+    direction = LEFT
+
+class MOVE_DOWN(MOVE):
+    direction = DOWN
+
+class Player:
+    img_head = None
+    img_body = None
+    def __init__(self):
+        self.cumulative_time = 0.0
+        self.invincible_timer = 0.0
+        self.bodies_pos = deque()
+        start_pos = list(grid_to_coordinates(0, 0))
+        self.bodies_pos += [start_pos.copy() for _ in range(6*(3-1)+1)]
+        self.length = 13
+        self.bomb_cool_down = 0.0
+        self.event_que = deque()
+        self.cur_state = MOVE_RIGHT
+        self.cur_state.enter(self, None)
+        if Player.img_head == None: get_image()
+    def draw(self):
+        img = None
+        for i in range(-1, -self.length-1, -1):
+            img = Player.img_head[self.cur_state.direction] \
+                if (i == -self.length) else Player.img_body
+            img.draw(*self.bodies_pos[i])
+            gx, gy = coordinates_to_grid(*self.bodies_pos[i])
+            gw.field_array[gx+1][gy+1] |= FIELD_DICT['player']
+    def update(self):
+        self.cur_state.do(self)
+        if self.event_que:
+            event = self.event_que.pop()
+            self.cur_state.exit(self, event)
+            self.cur_state = next_state[self.cur_state][event]
+            self.cur_state.enter(self, event)
+
+    def handle_collision(self, other, group):
+        if group == COL_PLAYER_APPLE:
+            sm.sound_effect.play(SE_EAT)
+            if type(other) == Poison_apple:
+                pass
+            else: pass
+        elif group in (COL_PLAYER_ENEMY, COL_PLAYER_ICE):
+            pass
+        elif group == COL_EXPLOSION_PLAYER:
+            if self.invincible_timer <= 0:
+                pass
+                self.invincible_timer += 0.15
+
+    def add_event(self, event):
+        self.event_que.appendleft(event)
+
+    def handle_events(self, event):
+        if event in EVENT_SNAKE_HANDLES:
+            print(event)
+            self.add_event(event)
+
+
 class Player_body:
     invincible_timer = None
     img_snake_blue_head = None
@@ -133,27 +220,23 @@ class Player_body:
             if Player_body.invincible_timer <= 0:
                 Player_body.get_damaged()
                 Player_body.invincible_timer += 0.15
-        # cur_loc = gw.field_array[self.gx+1][self.gy+1]
-        # if Player_body.length >= 40 and \
-        #     (cur_loc & (FIELD_DICT['body']+FIELD_DICT['head']) \
-        #         == (FIELD_DICT['body']+FIELD_DICT['head'])):
-        #     game_over()
-        # if cur_loc & (FIELD_DICT['wall']):
-        #     game_over()
-        # if cur_loc & (FIELD_DICT['apple']):
-        #     Player_body.longer = True
-        # if cur_loc & (FIELD_DICT['poison']):
-        #     Player_body.get_damaged()
-
 
 def game_over():
     import module_state.play_state as ps
     ps.isended = DEFEAT
 
-GO_D, GO_W, GO_A, GO_S = range(4)
+def get_image():
+    Player.img_head = [load_image('img/snake_blue_head_' + str(i) + '.png')\
+        for i in range(4)]
+    Player.img_body = load_image('img/snake_blue_body.png')
+
 next_state = {
-    GO_D: {KDD: GO_D, KWD: GO_W, KAD: GO_D, KSD: GO_S, KED: GO_D},
-    GO_W: {KDD: GO_D, KWD: GO_W, KAD: GO_A, KSD: GO_W, KED: GO_W},
-    GO_A: {KDD: GO_A, KWD: GO_W, KAD: GO_A, KSD: GO_S, KED: GO_A},
-    GO_S: {KDD: GO_D, KWD: GO_S, KAD: GO_A, KSD: GO_S, KED: GO_S}
+    MOVE_RIGHT: {KDD: MOVE_RIGHT, KWD: MOVE_UP,
+        KAD: MOVE_RIGHT, KSD: MOVE_DOWN, KED: MOVE_RIGHT},
+    MOVE_UP: {KDD: MOVE_RIGHT, KWD: MOVE_UP,
+        KAD: MOVE_LEFT, KSD: MOVE_UP, KED: MOVE_UP},
+    MOVE_LEFT: {KDD: MOVE_LEFT, KWD: MOVE_UP,
+        KAD: MOVE_LEFT, KSD: MOVE_DOWN, KED: MOVE_LEFT},
+    MOVE_DOWN: {KDD: MOVE_RIGHT, KWD: MOVE_DOWN,
+        KAD: MOVE_LEFT, KSD: MOVE_DOWN, KED: MOVE_DOWN}
 }

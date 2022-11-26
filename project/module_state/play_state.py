@@ -37,7 +37,7 @@ def handle_events():
         elif event == KESCD:
             gf.change_state('game_menu', 'pause')
         else:
-            sp.Player_body.handle_events(event)
+            sv.player.handle_events(event)
         if raw_event.key == SDLK_p: se.Enemy_body.damaged = 125
 
 def enter(data):
@@ -58,14 +58,14 @@ def enter(data):
         snake.reset()
 
     sv.bg = Background('play')
-    sv.player = [sp.Player_body(i) for i in range(12*(3-1)+1)]
+    sv.player = sp.Player()
     sv.apple = create_first_apple()
     sv.enemy = [se.Enemy_body(i, color=se.COLOR_DICT[cur_stage]) \
         for i in range(0, 12*(6-1)+1)]
     sv.hp_bar = HP_bar(int(cur_stage)-1)
 
     gw.add_object(sv.bg, 'bg')
-    gw.add_objects(sv.player, 'player')
+    gw.add_object(sv.player, 'player')
     gw.addleft_object(sv.apple, 'obj')
     gw.add_objects(sv.enemy, 'enemy')
     gw.add_object(sv.hp_bar, 'ui')

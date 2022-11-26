@@ -19,8 +19,10 @@ EVENT_DICT = {
     (SDL_QUIT, None, None): QUIT
 }
 
-def convert_event(event):
-    event_tuple = (event.type, event.key, event.button)
+EVENT_SNAKE_HANDLES = (KWD, KAD, KSD, KDD, KED)
+
+def convert_event(raw_event):
+    event_tuple = (raw_event.type, raw_event.key, raw_event.button)
     #print(event_tuple)
     if(event_tuple in EVENT_DICT):
         return EVENT_DICT[event_tuple]

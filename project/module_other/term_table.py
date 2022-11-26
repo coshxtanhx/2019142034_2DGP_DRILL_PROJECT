@@ -18,6 +18,9 @@ COL_PLAYER_APPLE, COL_PLAYER_ENEMY, COL_PLAYER_ICE, COL_PLAYER_MINE, \
     COL_EXPLOSION_ICE, COL_EXPLOSION_SKINWALL,\
     *_ = range(50)
 
+# Direction
+RIGHT, UP, LEFT, DOWN = range(4)
+
 # Phase
 PHASE = (None,) + tuple(range(3, -1, -1))
 
