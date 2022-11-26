@@ -3,9 +3,10 @@ from module_other.coordinates_module import *
 from collections import deque
 from module_other.term_table import *
 from module_other.event_table_module import *
-from module_object.bomb import Bomb
-from module_object.mine import Mine
-from module_object.skin_wall import Skin_wall
+from module_object.bomb import *
+from module_object.mine import *
+from module_object.apple import *
+from module_object.skin_wall import *
 import module_other.game_world as gw
 import module_other.sound_manager as sm
 import module_other.game_framework as gf
@@ -117,18 +118,23 @@ class Player_body:
             else:
                 Player_body.direction.appendleft(event)
     
-    def check_col(self):
-        cur_loc = gw.field_array[self.gx+1][self.gy+1]
-        if Player_body.length >= 40 and \
-            (cur_loc & (FIELD_DICT['body']+FIELD_DICT['head']) \
-                == (FIELD_DICT['body']+FIELD_DICT['head'])):
-            game_over()
-        if cur_loc & (FIELD_DICT['wall']):
-            game_over()
-        if cur_loc & (FIELD_DICT['apple']):
-            Player_body.longer = True
-        if cur_loc & (FIELD_DICT['poison']):
-            Player_body.get_damaged()
+    def handle_collision(self, other, group):
+        if group == COL_PLAYER_APPLE:
+            if type(other) == Poison_apple:
+                Player_body.get_damaged()
+            else: Player_body.longer = True
+        # cur_loc = gw.field_array[self.gx+1][self.gy+1]
+        # if Player_body.length >= 40 and \
+        #     (cur_loc & (FIELD_DICT['body']+FIELD_DICT['head']) \
+        #         == (FIELD_DICT['body']+FIELD_DICT['head'])):
+        #     game_over()
+        # if cur_loc & (FIELD_DICT['wall']):
+        #     game_over()
+        # if cur_loc & (FIELD_DICT['apple']):
+        #     Player_body.longer = True
+        # if cur_loc & (FIELD_DICT['poison']):
+        #     Player_body.get_damaged()
+
 
 def game_over():
     import module_state.play_state as ps

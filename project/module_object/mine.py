@@ -9,17 +9,18 @@ class Mine:
     def __init__(self):
         self.counter = 0.57
         self.destructing = False
-        self.sweeping = 180
+        self.sweeping = 1
         self.gx, self.gy = creatable_loc(gw.field_array, 1)
         self.x, self.y = grid_to_coordinates(self.gx, self.gy)
         if Mine.image == None:
             Mine.image = load_image('img/mine.png')
     def draw(self):
-        self.image.clip_draw(0,0,180,180, self.x, self.y, self.sweeping, self.sweeping)
+        self.image.clip_draw(0,0,180,180, self.x, self.y, \
+            180*self.sweeping, 180*self.sweeping)
         gw.field_array[self.gx+1][self.gy+1] |= FIELD_DICT['mine']
     def check_col(self):
         if self.counter <= 0: return
-        if self.destructing and self.counter == 1:
+        if self.destructing and self.counter <= 0.02:
             for x in range(-1, 2):
                 for y in range(-1, 2):
                     cur_loc = gw.field_array[self.gx+1+x][self.gy+1+y]
@@ -35,8 +36,8 @@ class Mine:
     def update(self):
         if self.destructing:
             self.counter -= gf.elapsed_time
-        if self.counter <= 0: self.sweeping -= 6
-        if self.sweeping <= 6: gw.remove_object(self)
+        if self.counter <= 0: self.sweeping -= gf.elapsed_time
+        if self.sweeping <= 0: gw.remove_object(self)
     def check_if_snake_here(self):
         if self.destructing:
             return

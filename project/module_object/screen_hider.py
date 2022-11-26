@@ -4,6 +4,11 @@ from math import ceil
 import module_other.game_world as gw
 import module_other.game_framework as gf
 
+# Cloud Speed
+PIXEL_PER_MM = (1.0 / 1.6)  # 1 pixel 1.6 mm
+MOVE_SPEED_MMPS = 140
+MOVE_SPEED_PPS = (MOVE_SPEED_MMPS * PIXEL_PER_MM)
+
 class Broken:
     image = None
     def __init__(self):
@@ -57,7 +62,7 @@ class Cloud:
     def draw(self):
         self.image.draw(self.x, self.y)
     def update(self):
-        self.x -= gf.elapsed_time * 70
+        self.x -= gf.elapsed_time * MOVE_SPEED_PPS
         if self.x < -165:
             gw.addleft_object(Cloud(), 'hider')
             gw.remove_object(self)

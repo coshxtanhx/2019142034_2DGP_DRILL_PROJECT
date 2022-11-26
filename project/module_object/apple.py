@@ -24,10 +24,8 @@ def create_new_apple():
         return Normal_apple()
 
 class Apple:
-    def check_col(self):
-        cur_loc = gw.field_array[self.gx+1][self.gy+1]
-        if cur_loc & (FIELD_DICT['head'] + FIELD_DICT['ehead'] \
-            + FIELD_DICT['explode']):
+    def handle_collision(self, other, group):
+        if group == COL_PLAYER_APPLE:
             gw.remove_object(self)
             gw.addleft_object(create_new_apple(), 'obj')
     def update(self):

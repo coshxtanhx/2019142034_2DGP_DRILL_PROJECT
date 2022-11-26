@@ -6,6 +6,7 @@ from module_other.event_table_module import *
 from module_object.apple import *
 from module_object.bomb import *
 from module_object.mine import *
+from module_object.skin_wall import *
 import module_object.snake_player as sp
 import module_object.snake_enemy as se
 from module_object.ui.hpbar import *
@@ -14,6 +15,8 @@ from module_object.ui.background import *
 import module_other.game_framework as gf
 import module_other.game_world as gw
 import module_other.sound_manager as sm
+import module_other.collision_manager as cm
+import module_other.server as sv
 from pprint import pprint
 
 def is_game_ended():
@@ -50,19 +53,23 @@ def enter(data):
     frame = 0
     field_array = field_array_reset()
     isended = STILL_PLAYING
-
     sp.Player_body.character = cur_char
-
     for snake in (sp.Player_body, se.Enemy_body):
         snake.reset()
 
-    gw.add_object(Background('play'), 'bg')
-    gw.add_objects([sp.Player_body(i) for i in range(12*(3-1)+1)], 'player')
-    gw.addleft_object(create_first_apple(), 'obj')
-    gw.add_objects([se.Enemy_body(i, color=se.COLOR_DICT[cur_stage]) \
-        for i in range(0, 12*(6-1)+1)], 'enemy')
-    gw.add_object(HP_bar(int(cur_stage)-1), 'ui')
+    sv.bg = Background('play')
+    sv.player = [sp.Player_body(i) for i in range(12*(3-1)+1)]
+    sv.apple = create_first_apple()
+    sv.enemy = [se.Enemy_body(i, color=se.COLOR_DICT[cur_stage]) \
+        for i in range(0, 12*(6-1)+1)]
+    sv.hp_bar = HP_bar(int(cur_stage)-1)
 
+    gw.add_object(sv.bg, 'bg')
+    gw.add_objects(sv.player, 'player')
+    gw.addleft_object(sv.apple, 'obj')
+    gw.add_objects(sv.enemy, 'enemy')
+    gw.add_object(sv.hp_bar, 'ui')
+    cm.add_collision_pairs_pack()
     sm.bgm = sm.Stage_bgm(cur_stage)
 
 def exit():
@@ -92,12 +99,13 @@ def update():
     gw.rotate_object(sp.Player_body.move_times, 'player')
     gw.rotate_object(se.Enemy_body.move_times, 'enemy')
 
-    for objs in gw.all_collision_objects():
-        objs.check_col()
+    for a, b, group in gw.all_collision_pairs():
+        if cm.collide(a, b):
+            a.handle_collision(b, group)
+            b.handle_collision(a, group)
 
     sp.Player_body.get_longer()
     sp.Player_body.get_shorter()
-
     is_game_ended()
 
 frame = None

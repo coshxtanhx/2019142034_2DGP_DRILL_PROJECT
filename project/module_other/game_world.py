@@ -17,6 +17,7 @@ for obj_name in obj_list:
 field_array = field_array_reset()
 
 world = dict()
+collision_group = dict()
 cur_world = None
 
 state_list = [
@@ -43,13 +44,6 @@ def all_objects():
 def all_objects_copy():
     for layer in world[cur_world]:
         for o in layer.copy():
-            yield o
-
-def all_collision_objects():
-    for layer_index in range(obj_list_len):
-        if layer_index in (0,7,8):
-            continue
-        for o in world[cur_world][layer_index].copy():
             yield o
 
 def add_object(o, depth):
@@ -88,3 +82,33 @@ def remove_object(o):
 
 def pop_object(depth):
     world[cur_world][DEPTH_DICT[depth]].pop()
+
+
+def add_collision_pairs(a, b, group):
+    if group not in collision_group:
+        collision_group[group] = [ [], [] ] # list of list : list pair
+
+    if a:
+        if type(a) is list:
+            collision_group[group][1] += a
+        else:
+            collision_group[group][1].append(a)
+
+    if b:
+        if type(b) is list:
+            collision_group[group][0] += b
+        else:
+            collision_group[group][0].append(b)
+
+def all_collision_pairs():
+    for group, pairs in collision_group.items():
+        for a in pairs[0]:
+            for b in pairs[1]:
+                yield a, b, group
+
+def remove_collision_object(o):
+    for pairs in collision_group.values():
+        if o in pairs[0]:
+            pairs[0].remove(o)
+        if o in pairs[1]:
+            pairs[1].remove(o)

@@ -1,0 +1,13 @@
+bg = None
+player = None
+enemy = None
+bomb = None
+apple = None
+hp_bar = None
+explosion = None
+ice = None
+mine = None
+cloud = None
+broken = None
+skin_wall = None
+wall = None
