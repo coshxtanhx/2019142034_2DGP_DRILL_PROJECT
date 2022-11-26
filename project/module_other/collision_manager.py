@@ -12,6 +12,8 @@ import module_other.game_world as gw
 import module_other.server as sv
 
 def collide(a, b):
+    if type(a) == Player or type(b) == Player:
+        return
     if get_distance(a.x, a.y, b.x, b.y) < 40:
         return True
     return False
@@ -19,7 +21,7 @@ def collide(a, b):
 def add_collision_pairs_automatically(o, is_list=False):
     if is_list: ot = type(o[0])
     else: ot = type(o)
-    if ot == Player_body:
+    if ot == Player:
         gw.add_collision_pairs(o, None, COL_PLAYER_APPLE)
         gw.add_collision_pairs(o, None, COL_PLAYER_ICE)
         gw.add_collision_pairs(o, None, COL_PLAYER_BOMB)

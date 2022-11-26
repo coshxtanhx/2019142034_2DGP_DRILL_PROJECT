@@ -26,12 +26,14 @@ class MOVE:
         move_times = int(self.cumulative_time / 0.028)
         self.cumulative_time = self.cumulative_time % 0.028
         if self.bomb_cool_down > 0: self.bomb_cool_down -= gf.elapsed_time
-        for i in range(-1, -1-move_times, -1):
-            self.bodies_pos[i][0] = \
-                self.bodies_pos[0][0] + dx[self.cur_state.direction]
-            self.bodies_pos[i][1] = \
-                self.bodies_pos[0][1] + dy[self.cur_state.direction]
-            self.bodies_pos.rotate(1)
+        if move_times > 0:
+            self.unable_to_receive_order = False
+            for i in range(-1, -1-move_times, -1):
+                self.bodies_pos[i][0] = \
+                    self.bodies_pos[0][0] + dx[self.cur_state.direction]
+                self.bodies_pos[i][1] = \
+                    self.bodies_pos[0][1] + dy[self.cur_state.direction]
+                self.bodies_pos.rotate(1)
 
 class MOVE_RIGHT(MOVE):
     direction = RIGHT
@@ -45,10 +47,21 @@ class MOVE_LEFT(MOVE):
 class MOVE_DOWN(MOVE):
     direction = DOWN
 
+class pHead:
+    def __init__(self):
+        self.x, self.y = 0, 0
+    def update(self):
+        self.x, self.y = sv.player.bodies_pos[0]
+    def draw(self):
+        pass
+    def handle_collision():
+        pass
+
 class Player:
     img_head = None
     img_body = None
-    def __init__(self):
+    def __init__(self, character):
+        self.character = character
         self.cumulative_time = 0.0
         self.invincible_timer = 0.0
         self.bodies_pos = deque()
@@ -56,7 +69,8 @@ class Player:
         self.bodies_pos += [start_pos.copy() for _ in range(6*(3-1)+1)]
         self.length = 13
         self.bomb_cool_down = 0.0
-        self.event_que = deque()
+        self.unable_to_receive_order = False
+        self.event_que = deque(maxlen=2)
         self.cur_state = MOVE_RIGHT
         self.cur_state.enter(self, None)
         if Player.img_head == None: get_image()
@@ -69,8 +83,14 @@ class Player:
             gx, gy = coordinates_to_grid(*self.bodies_pos[i])
             gw.field_array[gx+1][gy+1] |= FIELD_DICT['player']
     def update(self):
+        self.unable_to_receive_order = True
         self.cur_state.do(self)
         if self.event_que:
+            if self.event_que[-1] != KED:
+                if self.bodies_pos[0][0] % 60 != 40 \
+                    or self.bodies_pos[0][1] % 60 != 40 \
+                        or self.unable_to_receive_order:
+                    return
             event = self.event_que.pop()
             self.cur_state.exit(self, event)
             self.cur_state = next_state[self.cur_state][event]
@@ -94,10 +114,9 @@ class Player:
 
     def handle_events(self, event):
         if event in EVENT_SNAKE_HANDLES:
-            print(event)
             self.add_event(event)
 
-
+'''
 class Player_body:
     invincible_timer = None
     img_snake_blue_head = None
@@ -220,6 +239,7 @@ class Player_body:
             if Player_body.invincible_timer <= 0:
                 Player_body.get_damaged()
                 Player_body.invincible_timer += 0.15
+'''
 
 def game_over():
     import module_state.play_state as ps

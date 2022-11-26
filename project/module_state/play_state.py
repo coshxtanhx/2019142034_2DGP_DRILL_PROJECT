@@ -53,12 +53,11 @@ def enter(data):
     frame = 0
     field_array = field_array_reset()
     isended = STILL_PLAYING
-    sp.Player_body.character = cur_char
-    for snake in (sp.Player_body, se.Enemy_body):
+    for snake in (se.Enemy_body,):
         snake.reset()
 
     sv.bg = Background('play')
-    sv.player = sp.Player()
+    sv.player = sp.Player(cur_char)
     sv.apple = create_first_apple()
     sv.enemy = [se.Enemy_body(i, color=se.COLOR_DICT[cur_stage]) \
         for i in range(0, 12*(6-1)+1)]
@@ -66,6 +65,7 @@ def enter(data):
 
     gw.add_object(sv.bg, 'bg')
     gw.add_object(sv.player, 'player')
+    gw.add_object(sp.pHead(), 'player')
     gw.addleft_object(sv.apple, 'obj')
     gw.add_objects(sv.enemy, 'enemy')
     gw.add_object(sv.hp_bar, 'ui')
@@ -96,7 +96,6 @@ def draw_all():
 def update():
     for objs in gw.all_objects_copy():
         objs.update()
-    gw.rotate_object(sp.Player_body.move_times, 'player')
     gw.rotate_object(se.Enemy_body.move_times, 'enemy')
 
     for a, b, group in gw.all_collision_pairs():
