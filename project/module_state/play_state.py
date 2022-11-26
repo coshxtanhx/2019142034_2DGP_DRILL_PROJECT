@@ -11,6 +11,7 @@ import module_object.snake_player as sp
 import module_object.snake_enemy as se
 from module_object.ui.hpbar import *
 from module_object.screen_hider import *
+from module_object.wall import *
 from module_object.ui.background import *
 import module_other.game_framework as gf
 import module_other.game_world as gw
@@ -24,7 +25,7 @@ def is_game_ended():
         gf.change_state('game_over', None, cur_char + cur_stage)
     elif isended == VICTORY:
         next_stage = str(int(cur_stage) + 1)
-        length = str(sp.Player_body.length // 12 - 1) 
+        length = str(sv.player.length // sp.LENGTH_PER_GRID - 1) 
         gf.change_state('game_clear', 'exitall', cur_char + next_stage + length)
     return
 
@@ -56,6 +57,13 @@ def enter(data):
     for snake in (se.Enemy_body,):
         snake.reset()
 
+    for x in range(15):
+        sv.wall.append(Wall(x, -1))
+        sv.wall.append(Wall(x, 9))
+    for y in range(9):
+        sv.wall.append(Wall(-1, y))
+        sv.wall.append(Wall(15, y))
+
     sv.bg = Background('play')
     sv.player = sp.Player(cur_char)
     sv.player_head = sp.Player_head()
@@ -70,12 +78,13 @@ def enter(data):
     gw.addleft_object(sv.apple, 'obj')
     gw.add_objects(sv.enemy, 'enemy')
     gw.add_object(sv.hp_bar, 'ui')
+    gw.add_objects(sv.wall, 0)
     sm.bgm = sm.Stage_bgm(cur_stage)
 
 def exit():
     global frame, field_array, isended
     global cur_char, cur_stage
-    for snake in (sp.Player_body, se.Enemy_body):
+    for snake in (se.Enemy_body,):
         snake.reset()
     frame = None
     field_array = None

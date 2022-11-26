@@ -8,6 +8,7 @@ from module_object.skin_wall import *
 from module_object.bomb import *
 from module_object.explosion import *
 from module_object.mine import *
+from module_object.wall import *
 import module_other.game_world as gw
 import module_other.server as sv
 
@@ -63,3 +64,5 @@ def add_collision_pairs_automatically(o, is_list=False):
         gw.add_collision_pairs(None, o, COL_PHEAD_SKINWALL)
         gw.add_collision_pairs(None, o, COL_EHEAD_SKINWALL)
         gw.add_collision_pairs(None, o, COL_EXPLOSION_SKINWALL)
+    elif ot == Wall:
+        gw.add_collision_pairs(None, o, COL_PHEAD_WALL)

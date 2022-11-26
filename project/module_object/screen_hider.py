@@ -3,6 +3,7 @@ from pico2d import *
 from math import ceil
 import module_other.game_world as gw
 import module_other.game_framework as gf
+import module_other.server as sv
 
 # Cloud Speed
 PIXEL_PER_MM = (1.0 / 1.6)  # 1 pixel 1.6 mm
@@ -38,8 +39,7 @@ class Screen_off:
     def draw(self):
         if self.remove_timer > 2.4 and ceil(self.blinking_timer * 15) % 2: return
         if self.remove_timer < 0.3 and ceil(self.blinking_timer * 15) % 2: return
-        import module_object.snake_player as sp
-        x, y = sp.Player_body.hx, sp.Player_body.hy
+        x, y = sv.player_head.x, sv.player_head.y
         self.image1.draw(x, y)
         self.image2.draw(x + 615, y)
         self.image2.draw(x - 615, y)
