@@ -12,6 +12,7 @@ import module_other.sound_manager as sm
 import module_other.game_framework as gf
 
 class Player_body:
+    invincible_timer = None
     img_snake_blue_head = None
     img_snake_blue_body = None
     character = None
@@ -52,6 +53,8 @@ class Player_body:
                 Player_body.move_times = int(Player_body.rest_time / 0.014)
                 Player_body.rest_time = Player_body.rest_time % 0.014
                 Player_body.bomb_cool_down -= gf.elapsed_time
+                if Player_body.invincible_timer > 0:
+                    Player_body.invincible_timer -= gf.elapsed_time
                 if(Player_body.direction and self.x % 60 == 40 and self.y % 60 == 40):
                     Player_body.cur_direction = \
                         next_state[Player_body.cur_direction][Player_body.direction.pop()]
@@ -62,7 +65,6 @@ class Player_body:
         if Player_body.longer == False:
             return
         Player_body.longer = False
-        sm.sound_effect.play(SE_EAT)
         for i in range(12):
             gw.add_object(Player_body(Player_body.length+i, \
                 Player_body.tx, Player_body.ty), 'player')
@@ -107,6 +109,7 @@ class Player_body:
         Player_body.move_times = 0
         Player_body.rest_time = 0
         Player_body.hx, Player_body.hy = convert_coordinates(40, 120)
+        Player_body.invincible_timer = 0.0
 
     def handle_events(event):
         if event in next_state[Player_body.cur_direction]:
@@ -120,9 +123,16 @@ class Player_body:
     
     def handle_collision(self, other, group):
         if group == COL_PLAYER_APPLE:
+            sm.sound_effect.play(SE_EAT)
             if type(other) == Poison_apple:
                 Player_body.get_damaged()
             else: Player_body.longer = True
+        elif group == COL_PLAYER_ENEMY:
+            Player_body.get_damaged()
+        elif group == COL_EXPLOSION_PLAYER:
+            if Player_body.invincible_timer <= 0:
+                Player_body.get_damaged()
+                Player_body.invincible_timer += 0.15
         # cur_loc = gw.field_array[self.gx+1][self.gy+1]
         # if Player_body.length >= 40 and \
         #     (cur_loc & (FIELD_DICT['body']+FIELD_DICT['head']) \

@@ -1,5 +1,6 @@
 from module_other.coordinates_module import *
 from pico2d import *
+from module_other.term_table import *
 import module_other.game_world as gw
 import module_other.game_framework as gf
 
@@ -19,13 +20,5 @@ class Explosion:
         self.frame -= gf.elapsed_time
         if self.frame <= 0:
             gw.remove_object(self)
-    def check_col(self):
-        if self.frame != 3:
-            return
-        cur_loc = gw.field_array[self.gx][self.gy]
-        if cur_loc & (FIELD_DICT['enemy']):
-            import module_object.snake_enemy as se
-            se.Enemy_body.get_damaged(self.damage)
-        if cur_loc & (FIELD_DICT['player']):
-            import module_object.snake_player as sp
-            sp.Player_body.get_damaged()
+    def handle_collision(self, other, group):
+        pass

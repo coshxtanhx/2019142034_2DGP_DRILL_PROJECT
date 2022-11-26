@@ -1,6 +1,7 @@
 # from pico2d import *
 from collections import deque
 from module_other.coordinates_module import *
+import module_other.collision_manager as cm
 
 DEPTH_DICT = dict()
 obj_list = [
@@ -50,17 +51,20 @@ def add_object(o, depth):
     if type(depth) == int:
         depth = obj_list[depth]
     world[cur_world][DEPTH_DICT[depth]].append(o)
+    cm.add_collision_pairs_automatically(o)
 
 def add_objects(ol, depth):
     if type(depth) == int:
         depth = obj_list[depth]
     world[cur_world][DEPTH_DICT[depth]] += ol
+    cm.add_collision_pairs_automatically(ol, is_list=True)
 
 def addleft_object(o, depth):
     if(type(world[cur_world][DEPTH_DICT[depth]]) != deque):
         print('Error: unable to use appendleft')
         return
     world[cur_world][DEPTH_DICT[depth]].appendleft(o)
+    cm.add_collision_pairs_automatically(o)
 
 def rotate_object(i, depth):
     if(type(world[cur_world][DEPTH_DICT[depth]]) != deque):
@@ -72,16 +76,21 @@ def clear_world():
     for layer in world[cur_world]:
         layer.clear()
 
-def remove_object(o):
+def clear_collision_pairs():
+    global collision_group
+    collision_group = dict()
+
+def remove_object(o, auto_remove=True):
     for layer in world[cur_world]:
         if(o in layer):
             layer.remove(o)
+            remove_collision_object(o)
             del(o)
             return
-    raise ValueError('value error')
 
 def pop_object(depth):
-    world[cur_world][DEPTH_DICT[depth]].pop()
+    o = world[cur_world][DEPTH_DICT[depth]].pop()
+    remove_collision_object(o)
 
 
 def add_collision_pairs(a, b, group):
@@ -90,18 +99,18 @@ def add_collision_pairs(a, b, group):
 
     if a:
         if type(a) is list:
-            collision_group[group][1] += a
+            collision_group[group][0] += a
         else:
-            collision_group[group][1].append(a)
+            collision_group[group][0].append(a)
 
     if b:
         if type(b) is list:
-            collision_group[group][0] += b
+            collision_group[group][1] += b
         else:
-            collision_group[group][0].append(b)
+            collision_group[group][1].append(b)
 
 def all_collision_pairs():
-    for group, pairs in collision_group.items():
+    for group, pairs in (collision_group.copy()).items():
         for a in pairs[0]:
             for b in pairs[1]:
                 yield a, b, group

@@ -69,7 +69,6 @@ def enter(data):
     gw.addleft_object(sv.apple, 'obj')
     gw.add_objects(sv.enemy, 'enemy')
     gw.add_object(sv.hp_bar, 'ui')
-    cm.add_collision_pairs_pack()
     sm.bgm = sm.Stage_bgm(cur_stage)
 
 def exit():
@@ -83,6 +82,7 @@ def exit():
     cur_stage = None
     isended = None
     gw.clear_world()
+    gw.clear_collision_pairs()
 
 def draw_all():
     global field_array, frame

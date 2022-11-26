@@ -2,6 +2,7 @@ from module_other.coordinates_module import *
 from pico2d import *
 import module_enemy_ai.apple_hunter
 import module_other.game_world as gw
+import module_other.server as sv
 from module_other.term_table import *
 
 poisoned = False
@@ -25,11 +26,16 @@ def create_new_apple():
 
 class Apple:
     def handle_collision(self, other, group):
-        if group == COL_PLAYER_APPLE:
-            gw.remove_object(self)
-            gw.addleft_object(create_new_apple(), 'obj')
+        if group in (COL_PLAYER_APPLE, COL_ENEMY_APPLE):
+            self.get_removed()
+        if group == COL_EXPLOSION_APPLE:
+            self.get_removed()
     def update(self):
         pass
+    def get_removed(self):
+        gw.remove_object(self)
+        sv.apple = create_new_apple()
+        gw.addleft_object(sv.apple, 'obj')
 
 class Normal_apple(Apple):
     image = None

@@ -6,6 +6,7 @@ from module_object.bomb import Bomb
 from module_enemy_ai.enemy_movement_ai import enemy_ai
 import module_other.game_world as gw
 import module_other.game_framework as gf
+import module_other.sound_manager as sm
 from module_object.screen_hider import *
 from module_other.term_table import *
 
@@ -40,6 +41,7 @@ def get_image(color):
     return img_head, img_body
 
 class Enemy_body:
+    invincible_timer = None
     enemy_direction = 0
     enemy_order = 0
     bomb_cool_down = 500
@@ -88,6 +90,7 @@ class Enemy_body:
                 Enemy_body.move_times = int(Enemy_body.rest_time / 0.014)
                 Enemy_body.rest_time = Enemy_body.rest_time % 0.014
                 Enemy_body.bomb_cool_down -= gf.elapsed_time
+                Enemy_body.invincible_timer -= gf.elapsed_time
                 Enemy_body.screen_off_cool_down -= gf.elapsed_time
                 self.enemy_ai_update()
         self.number = (self.number + Enemy_body.move_times) % Enemy_body.length
@@ -123,6 +126,7 @@ class Enemy_body:
                 gw.field_array, Enemy_body.ai)
 
     def reset():
+        Enemy_body.invincible_timer = 0.0
         Enemy_body.color = None
         Enemy_body.img_body = None
         Enemy_body.img_head = None
@@ -176,11 +180,13 @@ class Enemy_body:
         gw.add_object(Screen_off(), 'hider')
         Enemy_body.screen_off_cool_down = 10
 
-    def check_col(self):
-        cur_loc = gw.field_array[self.gx+1][self.gy+1]
-        if cur_loc & (FIELD_DICT['player']):
-            import module_object.snake_player as sp
-            sp.Player_body.get_damaged()
+    def handle_collision(self, other, group):
+        if group == COL_ENEMY_APPLE:
+            sm.sound_effect.play(SE_EAT) 
+        elif group == COL_EXPLOSION_ENEMY:
+            if Enemy_body.invincible_timer <= 0:
+                Enemy_body.get_damaged(other.damage)
+                Enemy_body.invincible_timer += 0.15
 
 def screen_break(hp):
     if Enemy_body.screen_break_cnt != hp:

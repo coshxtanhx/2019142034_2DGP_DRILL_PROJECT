@@ -28,6 +28,7 @@ RANK_A, RANK_B, RANK_C, RANK_D, RANK_E = '01234'
 SE_BOMB = 'snd/ttafi200.wav'
 SE_EAT = 'snd/eat.wav'
 SE_MOVE = ('snd/move_' + i + '.wav' for i in '1234')
+SE_CRASHED = 'snd/crashed.wav'
 
 # Stage
 STAGE1, STAGE2, STAGE3, STAGE4, ENDING = '12345'

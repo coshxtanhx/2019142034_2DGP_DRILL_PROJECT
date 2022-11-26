@@ -145,7 +145,8 @@ class Bomb:
         elif(self.option == 3):
             Bomb.image4.clip_draw(*drawing_pos)
         
-    def check_col(self):
-        cur_loc = gw.field_array[self.gx+1][self.gy+1]
-        if cur_loc & (FIELD_DICT['head'] + FIELD_DICT['ehead']):
+    def handle_collision(self, other, group):
+        if group == COL_PLAYER_BOMB:
+            self.counter = -65536
+        elif group == COL_ENEMY_BOMB:
             self.counter = -65536
