@@ -46,11 +46,7 @@ def enter(data):
     global cur_char, cur_stage
     if(data == None): data = (GENERAL_SNAKE, STAGE1)
     cur_char, cur_stage = data[0], data[1]
-
-    if data[1] == ENDING:
-        gf.change_state('ending', None)
-        return
-
+    
     frame = 0
     field_array = field_array_reset()
     isended = STILL_PLAYING

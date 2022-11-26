@@ -8,7 +8,8 @@ from module_enemy_ai.smarter_move import *
 from module_enemy_ai.stalker import *
 from module_other.term_table import *
 
-def enemy_ai(enemy_dir, gx, gy, field, option = 0):
+def enemy_ai(option = 0):
+    enemy_dir, gx, gy, field = 0
     ordered = -1
     if(option == CIRCLE):
         ordered = circle_move(enemy_dir, gx, gy, field)

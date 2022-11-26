@@ -4,6 +4,7 @@ from module_other.event_table_module import *
 from module_object.ui.background import Background
 from module_object.ui.clear import Clear_ui
 from module_object.ui.star import *
+from module_other.term_table import *
 import module_other.game_framework as gf
 import module_other.game_world as gw
 
@@ -23,9 +24,12 @@ def handle_events():
                     isclicked = i
                     break
             if isclicked == 0:
-                gf.change_state('title', 'exitall')
+                gf.change_state('title', None)
             elif isclicked == 1:
-                gf.change_state('play_state', 'exitall', cur_game_data)
+                if cur_game_data[1] == ENDING:
+                    gf.change_state('ending', None)
+                else:
+                    gf.change_state('play_state', None, cur_game_data)
 
 def get_stars_num(n):
     if n > 5: return 3

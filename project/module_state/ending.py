@@ -14,7 +14,12 @@ def handle_events():
         elif raw_event.type == SDL_KEYDOWN:
             gf.change_state('title', None)
 
-def load_gfore(n):
+def remove_data():
+    file = open('data/savedata.txt', 'w')
+    file.write('')
+    file.close()
+
+def load_score(n):
     try:
         file = open('data/savestar' + n + '.txt', 'r')
         num = int(file.read())
@@ -25,9 +30,10 @@ def load_gfore(n):
 def enter(option):
     star_sum = 0
     for i in '1234':
-        star_sum += load_gfore(i)
+        star_sum += load_score(i)
     gw.add_object(Background('ends'), 0)
     gw.add_object(Rank(star_sum), 1)
+    remove_data()
 
 def exit():
     gw.clear_world()
