@@ -2,6 +2,7 @@ from module_other.coordinates_module import *
 from pico2d import *
 import module_other.game_world as gw
 import module_other.game_framework as gf
+from module_other.term_table import *
 
 class Skin_wall:
     image = None
@@ -23,11 +24,6 @@ class Skin_wall:
         self.remove_timer -= gf.elapsed_time
         if self.remove_timer <= 0:
             gw.remove_object(self)
-    def check_col(self):
-        cur_loc = gw.field_array[self.gx+1][self.gy+1]
-        if cur_loc & (FIELD_DICT['head']):
-            import module_object.snake_player
-            module_object.snake_player.Player_body.get_damaged()
-        if cur_loc & (FIELD_DICT['head'] + FIELD_DICT['enemy'] \
-            + FIELD_DICT['explode']):
+    def handle_collision(self, other, group):
+        if group in (COL_ENEMY_SKINWALL, COL_PLAYER_SKINWALL, COL_EXPLOSION_SKINWALL):
             gw.remove_object(self)

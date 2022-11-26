@@ -127,7 +127,7 @@ class Player_body:
             if type(other) == Poison_apple:
                 Player_body.get_damaged()
             else: Player_body.longer = True
-        elif group == COL_PLAYER_ENEMY:
+        elif group in (COL_PLAYER_ENEMY, COL_PLAYER_ICE):
             Player_body.get_damaged()
         elif group == COL_EXPLOSION_PLAYER:
             if Player_body.invincible_timer <= 0:
