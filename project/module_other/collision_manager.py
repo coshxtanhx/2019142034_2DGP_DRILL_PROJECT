@@ -13,9 +13,9 @@ import module_other.game_world as gw
 import module_other.server as sv
 
 def collide(a, b):
-    if type(a) in (Player,):
+    if type(a) in (Player, Enemy):
         return collide_with_snake_body(a, b)
-    if type(b) in (Player,):
+    if type(b) in (Player, Enemy):
         return collide_with_snake_body(b, a)
     return (get_distance(a.x, a.y, b.x, b.y) < 40)
 
@@ -39,14 +39,15 @@ def add_collision_pairs_automatically(o, is_list=False):
         gw.add_collision_pairs(o, None, COL_PHEAD_MINE)
         gw.add_collision_pairs(o, None, COL_PHEAD_ENEMY)
         gw.add_collision_pairs(o, None, COL_PHEAD_WALL)
-    elif ot == Enemy_body:
-        gw.add_collision_pairs(o, None, COL_EHEAD_APPLE)
+    elif ot == Enemy:
         gw.add_collision_pairs(o, None, COL_ENEMY_ICE)
+        gw.add_collision_pairs(None, o, COL_EXPLOSION_ENEMY)
+        gw.add_collision_pairs(None, o, COL_PHEAD_ENEMY)
+    elif ot == Enemy_head:
+        gw.add_collision_pairs(o, None, COL_EHEAD_APPLE)
         gw.add_collision_pairs(o, None, COL_EHEAD_BOMB)
         gw.add_collision_pairs(o, None, COL_EHEAD_SKINWALL)
         gw.add_collision_pairs(None, o, COL_PLAYER_EHEAD)
-        gw.add_collision_pairs(None, o, COL_EXPLOSION_ENEMY)
-        gw.add_collision_pairs(None, o, COL_PHEAD_ENEMY)
     elif ot == Explosion:
         gw.add_collision_pairs(o, None, COL_EXPLOSION_ENEMY)
         gw.add_collision_pairs(o, None, COL_EXPLOSION_PLAYER)

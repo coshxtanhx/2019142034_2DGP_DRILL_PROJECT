@@ -39,10 +39,10 @@ def handle_events():
             gf.change_state('game_menu', 'pause')
         else:
             sv.player.handle_events(event)
-        if raw_event.key == SDLK_p: se.Enemy_body.damaged = 125
+        if raw_event.key == SDLK_p: sv.enemy.get_damaged(125)
 
 def enter(data):
-    global frame, field_array, isended
+    global frame, isended
     global cur_char, cur_stage
     if(data == None): data = (GENERAL_SNAKE, STAGE1)
     cur_char, cur_stage = data[0], data[1]
@@ -50,8 +50,6 @@ def enter(data):
     frame = 0
     field_array = field_array_reset()
     isended = STILL_PLAYING
-    for snake in (se.Enemy_body,):
-        snake.reset()
 
     for x in range(15):
         sv.wall.append(Wall(x, -1))
@@ -64,26 +62,24 @@ def enter(data):
     sv.player = sp.Player(cur_char)
     sv.player_head = sp.Player_head()
     sv.apple = create_first_apple()
-    sv.enemy = [se.Enemy_body(i, color=se.COLOR_DICT[cur_stage]) \
-        for i in range(0, 12*(6-1)+1)]
-    sv.hp_bar = HP_bar(int(cur_stage)-1)
+    sv.enemy = se.Enemy(cur_stage)
+    sv.enemy_head = se.Enemy_head()
+    sv.hp_bar = HP_bar(cur_stage)
 
     gw.add_object(sv.bg, 'bg')
     gw.add_object(sv.player, 'player')
     gw.add_object(sv.player_head, 'player')
     gw.addleft_object(sv.apple, 'obj')
-    gw.add_objects(sv.enemy, 'enemy')
+    gw.add_object(sv.enemy, 'enemy')
+    gw.add_object(sv.enemy_head, 'enemy')
     gw.add_object(sv.hp_bar, 'ui')
     gw.add_objects(sv.wall, 0)
     sm.bgm = sm.Stage_bgm(cur_stage)
 
 def exit():
-    global frame, field_array, isended
+    global frame, isended
     global cur_char, cur_stage
-    for snake in (se.Enemy_body,):
-        snake.reset()
     frame = None
-    field_array = None
     cur_char = None
     cur_stage = None
     isended = None
@@ -91,18 +87,16 @@ def exit():
     gw.clear_collision_pairs()
 
 def draw_all():
-    global field_array, frame
     clear_canvas()
     gw.field_array = field_array_reset()
     for objs in gw.all_objects():
         objs.draw()
     update_canvas()
-    # pprint(game_world.field_array)
+    #pprint(gw.field_array)
 
 def update():
     for objs in gw.all_objects_copy():
         objs.update()
-    gw.rotate_object(se.Enemy_body.move_times, 'enemy')
 
     for a, b, group in gw.all_collision_pairs():
         if cm.collide(a, b):
@@ -112,7 +106,6 @@ def update():
     is_game_ended()
 
 frame = None
-field_array = None
 cur_char = None
 cur_stage = None
 isended = None

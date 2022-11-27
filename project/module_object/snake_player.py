@@ -83,7 +83,7 @@ class Player:
         start_pos = list(grid_to_coordinates(0, 0))
         self.bodies_pos += [start_pos.copy() for _ in range(6*(3-1)+1)]
         self.length = 13
-        self.bomb_cool_down = 0.0
+        self.bomb_cool_down = 1.0
         self.unable_to_receive_order = False
         self.event_que = deque(maxlen=2)
         self.cur_state = MOVE_RIGHT

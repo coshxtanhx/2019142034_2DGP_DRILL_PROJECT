@@ -7,9 +7,13 @@ from module_enemy_ai.touch_bomb import *
 from module_enemy_ai.smarter_move import *
 from module_enemy_ai.stalker import *
 from module_other.term_table import *
+import module_state.play_state as ps
+from pprint import pprint
 
-def enemy_ai(option = 0):
-    enemy_dir, gx, gy, field = 0
+def get_order_from_enemy_ai(option = 0):
+    enemy_dir = sv.enemy.cur_state.direction
+    gx, gy = coordinates_to_grid(sv.enemy_head.x, sv.enemy_head.y)
+    field = gw.field_array
     ordered = -1
     if(option == CIRCLE):
         ordered = circle_move(enemy_dir, gx, gy, field)
