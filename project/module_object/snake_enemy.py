@@ -27,14 +27,6 @@ AI_DICT = {
     (PHASE3, 'green'): APPLE_DEFENDER, (PHASE4, 'green'): STALKER,
 }
 
-BOMB_TYPE_DICT = {
-    0: (0,),
-    1: (0, 1),
-    2: (0, 0, 1, 3),
-    3: (0, 0, 1, 3, 2, 2),
-    4: (3, 3, 3, 2, 2, 2, 1, 0)
-}
-
 PIXEL_PER_MM = (1.0 / 1.6)  # 1 pixel 1.6 mm
 MOVE_SPEED_MMPS = 571
 MOVE_SPEED_PPS = (MOVE_SPEED_MMPS * PIXEL_PER_MM)
@@ -44,6 +36,17 @@ UNIT_TIME = 1.0 / (MOVE_SPEED_MMPS * PIXEL_PER_MM / MOVE_PIXEL_PER_A_TIME)
 
 ENEMY_MAX_HP = 960
 
+BOMB_PROBABILITY_DICT = {
+    GENERAL_BOMB:
+        {PHASE1: 500, PHASE2: 500, PHASE3: 333, PHASE4: 125},
+    CROSS_BOMB:
+        {PHASE1: 500, PHASE2: 250, PHASE3: 167, PHASE4: 125},
+    ICE_CROSS_BOMB:
+        {PHASE1: 0, PHASE2: 250, PHASE3: 167, PHASE4: 375},
+    ICE_BOMB:
+        {PHASE1: 0, PHASE2: 0, PHASE3: 333, PHASE4: 375}
+}
+
 class MOVE:
     def do(self):
         self.cumulative_time += gf.elapsed_time
@@ -51,6 +54,7 @@ class MOVE:
         self.cumulative_time = self.cumulative_time % UNIT_TIME
         if self.bomb_cool_down > 0: self.bomb_cool_down -= gf.elapsed_time
         if self.invincible_timer > 0: self.invincible_timer -= gf.elapsed_time
+        if self.screen_off_cool_down > 0: self.screen_off_cool_down -= gf.elapsed_time
         if move_times > 0:
             self.unable_to_receive_order = False
             for i in range(-1, -1-move_times, -1):
@@ -97,7 +101,7 @@ class Enemy:
         self.length = 6*(6-1)+1
         self.hp = ENEMY_MAX_HP
         self.bomb_cool_down = 7.0
-        self.screen_off_cool_down = 10.0
+        self.screen_off_cool_down = 0.0
         self.unable_to_receive_order = False
         self.cur_state = MOVE_RIGHT
         self.damaged = 0
@@ -160,12 +164,14 @@ class Enemy:
 
     def set_bomb(self):
         bx, by = self.bodies_pos[-1]
-        sv.bomb.append(Bomb(bx, by, 0, self.bomb_type))
-        gw.addleft_object(sv.bomb[-1], 'bomb')
+        sv.bomb.appendleft(Bomb(bx, by, 0, self.bomb_type))
+        gw.addleft_object(sv.bomb[0], 'bomb')
         self.bomb_cool_down = 7
 
     def activate_enemy_ability(self):
         if self.color == 'brown':
+            if self.phase >= PHASE4 and self.screen_off_cool_down <= 0:
+                self.turn_off_screen()
             if self.phase >= PHASE3 and sv.cloud == None:
                 sv.cloud = Cloud()
                 gw.addleft_object(sv.cloud, 'hider')
@@ -174,10 +180,22 @@ class Enemy:
                 sv.broken.append(Broken())
                 gw.add_object(sv.broken[-1], 'hider')
         elif self.color == 'purple':
-            pass
+            if self.bomb_cool_down > 0: return
+            self.bomb_type = self.get_bomb_type()
 
     def turn_off_screen(self):
-        pass
+        self.screen_off_cool_down = 10.0
+        sv.screen_off = Screen_off()
+        gw.add_object(sv.screen_off, 'hider')
+
+    def get_bomb_type(self):
+        random_number = randint(1, 1000)
+        for bomb_type in BOMB_TYPES:
+            prob = BOMB_PROBABILITY_DICT[bomb_type][self.phase]
+            if random_number <= prob:
+                return bomb_type
+            random_number -= prob
+        return GENERAL_BOMB
 
     def delete_from_server(self):
         sv.enemy = None

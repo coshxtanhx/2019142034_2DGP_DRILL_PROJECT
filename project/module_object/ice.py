@@ -9,7 +9,7 @@ class Ice:
     image = None
     def __init__(self, gx, gy):
         self.gx, self.gy = gx, gy
-        self.x, self.y = grid_to_coordinates(self.gx-1, self.gy-1)
+        self.x, self.y = grid_to_coordinates(self.gx, self.gy)
         self.remove_timer = 10
         if(Ice.image == None):
             Ice.image = load_image('img/ice.png')

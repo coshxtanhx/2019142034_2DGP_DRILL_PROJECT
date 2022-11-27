@@ -31,8 +31,8 @@ class MOVE:
         if event == KED:
             if self.bomb_cool_down <= 0:
                 bx, by = self.bodies_pos[-1]
-                sv.bomb.append(Bomb(bx, by, self.length))
-                gw.addleft_object(sv.bomb[-1], 'bomb')
+                sv.bomb.appendleft(Bomb(bx, by, self.length))
+                gw.addleft_object(sv.bomb[0], 'bomb')
                 self.bomb_cool_down = 1
 
     def do(self):
@@ -134,11 +134,11 @@ class Player:
                 self.get_shorter()
             else:
                 self.get_longer()
-        elif group in (COL_PLAYER_EHEAD, COL_PLAYER_ICE):
+        elif group == COL_PLAYER_EHEAD:
             self.get_shorter()
         elif group in (COL_PHEAD_ENEMY, COL_PHEAD_WALL):
             game_over()
-        elif group == COL_EXPLOSION_PLAYER:
+        elif group in (COL_EXPLOSION_PLAYER, COL_PLAYER_ICE):
             if self.invincible_timer <= 0:
                 self.get_shorter()
                 self.invincible_timer += 0.15

@@ -7,7 +7,7 @@ from module_enemy_ai.touch_bomb import *
 from module_enemy_ai.smarter_move import *
 from module_enemy_ai.stalker import *
 from module_other.term_table import *
-import module_state.play_state as ps
+import module_other.game_world as gw
 from pprint import pprint
 
 def get_order_from_enemy_ai(option = 0):
