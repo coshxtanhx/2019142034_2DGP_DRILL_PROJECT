@@ -51,7 +51,7 @@ def state_act(next_module_str):
     return next_module, next_module_option, data
 
 
-def game_framework_activate(start_module_str):
+def activate_game_framework(start_module_str):
     option, data = None, None
     next_module_str = start_module_str
     while(next_module_str != ''):

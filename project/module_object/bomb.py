@@ -59,7 +59,7 @@ class Bomb:
         if cross: signs = ((+1, +1), (-1, +1), (-1, -1), (+1, -1))
         else: signs = ((+1, 0), (-1, 0), (0, -1), (0, +1))
         for sign in signs:
-            for i in range(1, 9):
+            for i in range(1, 15):
                 x = self.gx + i * sign[0]
                 y = self.gy + i * sign[1]
                 if (x not in range(0,15)) or (y not in range(0,9)):

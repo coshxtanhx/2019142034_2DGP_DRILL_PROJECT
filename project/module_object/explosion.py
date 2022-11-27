@@ -17,6 +17,7 @@ class Explosion:
     def draw(self):
         drawing_size = (int(600 * (0.1 - self.frame)),) * 2
         self.image.clip_draw(0, 0, 60, 60, self.x, self.y, *drawing_size)
+        gw.field_array[self.gx+1][self.gy+1] |= FIELD_DICT['explode']
     def update(self):
         self.frame -= gf.elapsed_time
         if self.frame <= 0:

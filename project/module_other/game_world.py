@@ -7,7 +7,7 @@ import module_other.server as sv
 DEPTH_DICT = dict()
 obj_list = [
     'bg', 'obj', 'bomb', 'player', 'enemy',
-    'explode', 'breakable', 'hider', 'ui'
+    'explode', 'breakable', 'fragment', 'hider', 'ui'
 ]
 obj_list_len = len(obj_list)
 

@@ -58,6 +58,8 @@ def add_collision_pairs_automatically(o, is_list=False):
         gw.add_collision_pairs(None, o, COL_EXPLOSION_APPLE)
         gw.add_collision_pairs(None, o, COL_EHEAD_APPLE)
         gw.add_collision_pairs(None, o, COL_PHEAD_APPLE)
+        gw.add_collision_pairs(o, None, COL_APPLE_ICE)
+        gw.add_collision_pairs(o, None, COL_APPLE_SKINWALL)
     elif ot == Bomb:
         gw.add_collision_pairs(None, o, COL_EHEAD_BOMB)
         gw.add_collision_pairs(None, o, COL_PHEAD_BOMB)
@@ -65,11 +67,13 @@ def add_collision_pairs_automatically(o, is_list=False):
         gw.add_collision_pairs(None, o, COL_EXPLOSION_ICE)
         gw.add_collision_pairs(None, o, COL_PLAYER_ICE)
         gw.add_collision_pairs(None, o, COL_ENEMY_ICE)
+        gw.add_collision_pairs(None, o, COL_APPLE_ICE)
     elif ot == Mine:
         gw.add_collision_pairs(None, o, COL_PHEAD_MINE)
     elif ot == Skin_wall:
         gw.add_collision_pairs(None, o, COL_PHEAD_SKINWALL)
         gw.add_collision_pairs(None, o, COL_EHEAD_SKINWALL)
         gw.add_collision_pairs(None, o, COL_EXPLOSION_SKINWALL)
+        gw.add_collision_pairs(None, o, COL_APPLE_SKINWALL)
     elif ot == Wall:
         gw.add_collision_pairs(None, o, COL_PHEAD_WALL)

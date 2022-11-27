@@ -3,6 +3,7 @@ from pico2d import *
 import module_enemy_ai.apple_hunter
 import module_other.game_world as gw
 import module_other.server as sv
+from module_object.fragment import *
 from module_other.term_table import *
 
 poisoned = False
@@ -26,9 +27,10 @@ def create_new_apple():
 
 class Apple:
     def handle_collision(self, other, group):
-        if group in (COL_PHEAD_APPLE, COL_EHEAD_APPLE):
+        if group in (COL_PHEAD_APPLE, COL_EHEAD_APPLE, COL_APPLE_SKINWALL):
             self.get_removed()
-        if group == COL_EXPLOSION_APPLE:
+        if group in (COL_EXPLOSION_APPLE, COL_APPLE_ICE):
+            create_fragments(self)
             self.get_removed()
     def update(self):
         pass
