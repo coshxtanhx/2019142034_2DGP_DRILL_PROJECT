@@ -23,8 +23,8 @@ class Broken:
             self.x, self.y)
     def update(self):
         pass
-    def check_col(self):
-        pass
+    def delete_from_server(self):
+        sv.broken.remove(self)
 
 class Screen_off:
     image1 = None
@@ -49,8 +49,8 @@ class Screen_off:
             (Screen_off.blinking_period * 2)
         if self.remove_timer <= 0:
             gw.remove_object(self)
-    def check_col(self):
-        pass
+    def delete_from_server(self):
+        sv.screen_off = None
 
 class Cloud:
     image = None
@@ -64,7 +64,6 @@ class Cloud:
     def update(self):
         self.x -= gf.elapsed_time * MOVE_SPEED_PPS
         if self.x < -165:
-            gw.addleft_object(Cloud(), 'hider')
             gw.remove_object(self)
-    def check_col(self):
-        pass
+    def delete_from_server(self):
+        sv.cloud = None

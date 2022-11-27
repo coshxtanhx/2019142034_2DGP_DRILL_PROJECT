@@ -1,6 +1,7 @@
 from pico2d import *
 from module_other.coordinates_module import UI_HEIGHT, UI_WIDTH
 from math import *
+import module_other.server as sv
 
 class Background:
     image_main = None
@@ -31,5 +32,5 @@ class Background:
         self.image.draw(UI_WIDTH//2, UI_HEIGHT//2)
     def update(self):
         pass
-    def check_col(self):
-        pass
+    def delete_from_server(self):
+        sv.bg = None

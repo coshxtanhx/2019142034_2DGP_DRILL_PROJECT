@@ -1,4 +1,5 @@
 from pico2d import delay
+import module_other.game_world as gw
 import module_state.title
 import module_state.title_menu
 import module_state.play_state
@@ -21,8 +22,7 @@ def get_previous_state():
     return state_stack[-2]
 
 def state_enter(next_module_str, data):
-    import module_other.game_world
-    module_other.game_world.cur_world = next_module_str
+    gw.cur_world = next_module_str
     state_stack.append(next_module_str)
     eval('module_state.' + next_module_str).enter(data)
 
@@ -32,14 +32,12 @@ def state_exit(current_module_str):
 
 def state_exit_all():
     for i in range(len(state_stack)-1, -1, -1):
-        import module_other.game_world
-        module_other.game_world.cur_world = state_stack[i]
+        gw.cur_world = state_stack[i]
         eval('module_state.' + state_stack[i]).exit()
         state_stack.pop()
 
 def state_act(next_module_str):
-    import module_other.game_world
-    module_other.game_world.cur_world = next_module_str
+    gw.cur_world = next_module_str
     global running, next_module, next_module_option, data, elapsed_time
     running = True
     start_time = time()

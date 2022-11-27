@@ -1,4 +1,5 @@
-from module_other.coordinates_module import * 
+from module_other.coordinates_module import *
+import module_other.server as sv
 
 class Wall:
     def __init__(self, gx, gy):
@@ -9,3 +10,5 @@ class Wall:
         pass
     def draw(self):
         pass
+    def delete_from_server(self):
+        sv.wall = None

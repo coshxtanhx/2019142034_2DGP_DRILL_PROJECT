@@ -3,6 +3,7 @@ from pico2d import *
 import module_other.game_world as gw
 import module_other.game_framework as gf
 from module_other.term_table import *
+import module_other.server as sv
 
 class Ice:
     image = None
@@ -27,3 +28,5 @@ class Ice:
     def handle_collision(self, other, group):
         if group in (COL_ENEMY_ICE, COL_PLAYER_ICE, COL_EXPLOSION_ICE):
             gw.remove_object(self)
+    def delete_from_server(self):
+        sv.ice.remove(self)

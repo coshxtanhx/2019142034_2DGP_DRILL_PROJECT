@@ -2,6 +2,7 @@
 from collections import deque
 from module_other.coordinates_module import *
 import module_other.collision_manager as cm
+import module_other.server as sv
 
 DEPTH_DICT = dict()
 obj_list = [
@@ -75,23 +76,24 @@ def rotate_object(i, depth):
 def clear_world():
     for layer in world[cur_world]:
         layer.clear()
+    if cur_world == 'play_state':
+        sv.clear_server()
 
 def clear_collision_pairs():
     global collision_group
     collision_group = dict()
 
-def remove_object(o, auto_remove=True):
+def remove_object(o):
     for layer in world[cur_world]:
         if(o in layer):
             layer.remove(o)
             remove_collision_object(o)
-            del(o)
+            #del(o)
+            o.delete_from_server()
             return
 
 def pop_object(depth):
-    o = world[cur_world][DEPTH_DICT[depth]].pop()
-    remove_collision_object(o)
-
+    remove_object(world[cur_world][DEPTH_DICT[depth]][-1])
 
 def add_collision_pairs(a, b, group):
     if group not in collision_group:

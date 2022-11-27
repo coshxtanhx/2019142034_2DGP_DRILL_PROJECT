@@ -6,6 +6,7 @@ from module_object.explosion import Explosion
 import module_other.game_world as gw
 import module_other.sound_manager as sm
 import module_other.game_framework as gf
+import module_other.server as sv
 
 TIME_PER_ACTION = 0.2
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
@@ -54,22 +55,12 @@ class Bomb:
             self.explode_mine()
         gw.remove_object(self)
     def explode(self):
-        for x in range(self.gx+1, 0, -1):
-            gw.field_array[x][self.gy+1] |= FIELD_DICT['explode']
-            gw.addleft_object(\
-                Explosion(x, self.gy+1, self.damage), 'explode')
-        for x in range(self.gx+1, 16, +1):
-            gw.field_array[x][self.gy+1] |= FIELD_DICT['explode']
-            gw.addleft_object(\
-                Explosion(x, self.gy+1, self.damage), 'explode')
-        for y in range(self.gy+1, 10, +1):
-            gw.field_array[self.gx+1][y] |= FIELD_DICT['explode']
-            gw.addleft_object(\
-                Explosion(self.gx+1, y, self.damage), 'explode')
-        for y in range(self.gy+1, 0, -1):
-            gw.field_array[self.gx+1][y] |= FIELD_DICT['explode']
-            gw.addleft_object(\
-                Explosion(self.gx+1, y, self.damage), 'explode')
+        for x in range(0, 15):
+            sv.explosion.append(Explosion(x, self.gy, self.damage))
+            gw.addleft_object(sv.explosion[-1], 'explode')
+        for y in range(0, 9):
+            sv.explosion.append(Explosion(self.gx, y, self.damage))
+            gw.addleft_object(sv.explosion[-1], 'explode')
         self.x = -65535
     def explode_mine(self):
         for x in range(-1, 2):
@@ -150,3 +141,6 @@ class Bomb:
             self.counter = -65536
         elif group == COL_EHEAD_BOMB:
             self.counter = -65536
+
+    def delete_from_server(self):
+        sv.bomb.remove(self)

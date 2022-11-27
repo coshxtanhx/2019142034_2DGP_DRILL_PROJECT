@@ -36,6 +36,8 @@ class Apple:
         gw.remove_object(self)
         sv.apple = create_new_apple()
         gw.addleft_object(sv.apple, 'obj')
+    def delete_from_server(self):
+        sv.apple = None
 
 class Normal_apple(Apple):
     image = None

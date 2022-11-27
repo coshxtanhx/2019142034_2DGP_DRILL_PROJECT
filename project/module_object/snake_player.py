@@ -71,6 +71,8 @@ class Player_head:
         pass
     def handle_collision(self, other, group):
         sv.player.handle_collision(other, group)
+    def delete_from_server(self):
+        sv.player_head = None
 
 class Player:
     img_head = None
@@ -156,6 +158,9 @@ class Player:
             for i in range(self.length - 1, 12, -1):
                 sv.skin_wall.append(Skin_wall(*self.bodies_pos[i]))
                 gw.add_object(sv.skin_wall[-1], 'breakable')
+
+    def delete_from_server(self):
+        sv.player = None
 
 def game_over():
     import module_state.play_state as ps

@@ -48,3 +48,6 @@ class Mine:
                     & FIELD_DICT['head']:
                     self.destructing = True
                     break
+
+    def delete_from_server(self):
+        sv.mine.remove(self)

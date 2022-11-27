@@ -81,6 +81,8 @@ class Enemy_head:
         pass
     def handle_collision(self, other, group):
         sv.enemy.handle_collision(other, group)
+    def delete_from_server(self):
+        sv.enemy_head = None
 
 class Enemy:
     img_head = None
@@ -99,6 +101,9 @@ class Enemy:
         self.unable_to_receive_order = False
         self.cur_state = MOVE_RIGHT
         self.damaged = 0
+        self.phase = PHASE1
+        self.screen_break_cnt = 0
+        self.bomb_type = GENERAL_BOMB
         self.get_image()
     def draw(self):
         img = None
@@ -109,12 +114,11 @@ class Enemy:
             gx, gy = coordinates_to_grid(*self.bodies_pos[i])
             gw.field_array[gx+1][gy+1] |= FIELD_DICT['enemy']
     def update(self):
+        self.activate_enemy_ability()
         if self.bomb_cool_down <= 0:
             self.set_bomb()
         if self.damaged:
-            self.invincible_timer += 0.15
-            self.hp -= self.damaged
-            self.damaged = 0
+            self.reduce_hp()
             if self.hp <= 0:
                 game_clear()
         self.unable_to_receive_order = True
@@ -123,7 +127,7 @@ class Enemy:
             or self.bodies_pos[0][1] % 60 != 40 \
                 or self.unable_to_receive_order:
             return
-        ai = AI_DICT[(self.get_phase_num(), self.color)]
+        ai = AI_DICT[(self.phase, self.color)]
         self.cur_state = next_state[get_order_from_enemy_ai(ai)]
 
     def handle_collision(self, other, group):
@@ -145,13 +149,38 @@ class Enemy:
         Enemy.img_body = load_image('img/snake_' + self.color + '_body.png')
 
     def get_damaged(self, damage):
+        if damage == 0: return
         self.damaged = max(self.damaged, damage)
+
+    def reduce_hp(self):
+        self.invincible_timer += 0.15
+        self.hp -= self.damaged
+        self.phase = self.get_phase_num()
+        self.damaged = 0
 
     def set_bomb(self):
         bx, by = self.bodies_pos[-1]
-        sv.bomb.append(Bomb(bx, by, 0))
+        sv.bomb.append(Bomb(bx, by, 0, self.bomb_type))
         gw.addleft_object(sv.bomb[-1], 'bomb')
         self.bomb_cool_down = 7
+
+    def activate_enemy_ability(self):
+        if self.color == 'brown':
+            if self.phase >= PHASE3 and sv.cloud == None:
+                sv.cloud = Cloud()
+                gw.addleft_object(sv.cloud, 'hider')
+            if self.screen_break_cnt != self.phase:
+                self.screen_break_cnt += 1
+                sv.broken.append(Broken())
+                gw.add_object(sv.broken[-1], 'hider')
+        elif self.color == 'purple':
+            pass
+
+    def turn_off_screen(self):
+        pass
+
+    def delete_from_server(self):
+        sv.enemy = None
 
 def game_clear():
     import module_state.play_state as ps

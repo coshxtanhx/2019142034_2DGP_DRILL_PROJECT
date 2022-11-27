@@ -24,5 +24,5 @@ class HP_bar:
         self.image_frame2.draw(105+160, 590)
     def update(self):
         pass
-    def check_col(self):
-        pass
+    def delete_from_server(self):
+        sv.hp_bar = None
