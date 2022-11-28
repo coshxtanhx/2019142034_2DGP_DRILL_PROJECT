@@ -1,9 +1,11 @@
 from random import randint
 from pico2d import *
 from math import ceil
+from module_other.coordinates_module import *
 import module_other.game_world as gw
 import module_other.game_framework as gf
 import module_other.server as sv
+from module_object.fragment import *
 
 # Cloud Speed
 PIXEL_PER_MM = (1.0 / 1.6)  # 1 pixel 1.6 mm
@@ -15,9 +17,12 @@ class Broken:
     def __init__(self):
         self.x = randint(70, 70+780)
         self.y = randint(70, 70+420)
+        self.gx, self.gy = coordinates_to_grid(self.x, self.y)
         self.shape = randint(0, 3)
+        create_fragments(self, bigger=True)
         if Broken.image == None:
             Broken.image = load_image('img/broken_screen.png')
+        
     def draw(self):
         self.image.clip_draw(self.shape * 240, 0, 240, 240, \
             self.x, self.y)
