@@ -9,16 +9,17 @@ PIXEL_PER_MM = (1.0 / 1.6)  # 1 pixel 1.6 mm
 MOVE_SPEED_MMPS = 600
 MOVE_SPEED_PPS = (MOVE_SPEED_MMPS * PIXEL_PER_MM)
 
-NUMBER_OF_FRAGMENTS = 20
+NUMBER_OF_FRAGMENTS = 12
 
 def create_fragments(obj, bigger=False):
     sv.fragment += [Fragment(obj.gx, obj.gy) for _ in range(NUMBER_OF_FRAGMENTS)]
     gw.add_objects(sv.fragment[-1:-1-NUMBER_OF_FRAGMENTS:-1], 'fragment')
-    for i in range(8):
-        x, y = [(1,1),(1,0),(1,-1),(0,1),(0,-1),(-1,-1),(-1,0),(-1,1)][i]
-        sv.fragment += [Fragment(obj.gx+x, obj.gy+y) \
-            for _ in range(NUMBER_OF_FRAGMENTS)]
-        gw.add_objects(sv.fragment[-1:-1-NUMBER_OF_FRAGMENTS:-1], 'fragment')
+    if bigger:
+        for i in range(8):
+            x, y = [(1,1),(1,0),(1,-1),(0,1),(0,-1),(-1,-1),(-1,0),(-1,1)][i]
+            sv.fragment += [Fragment(obj.gx+x, obj.gy+y) \
+                for _ in range(NUMBER_OF_FRAGMENTS)]
+            gw.add_objects(sv.fragment[-1:-1-NUMBER_OF_FRAGMENTS:-1], 'fragment')
 
 
 class Fragment:
