@@ -1,7 +1,9 @@
 from module_other.coordinates_module import *
 from pico2d import *
 from module_object.bomb import *
+from module_object.mine_field import *
 import module_other.game_world as gw
+import module_other.server as sv
 import module_other.game_framework as gf
 
 class Mine:
@@ -14,6 +16,14 @@ class Mine:
         self.x, self.y = grid_to_coordinates(self.gx, self.gy)
         if Mine.image == None:
             Mine.image = load_image('img/mine.png')
+        self.child = []
+        for dx in range(-1, 2):
+            for dy in range(-1, 2):
+                if dx == 0 and dy == 0: continue
+                sv.mine_field.append(Mine_field(self, dx, dy))
+                self.child.append(sv.mine_field[-1])
+                gw.add_object(sv.mine_field[-1])
+
     def draw(self):
         self.image.clip_draw(0,0,180,180, self.x, self.y, \
             180*self.sweeping, 180*self.sweeping)
