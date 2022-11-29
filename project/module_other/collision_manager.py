@@ -8,6 +8,7 @@ from module_object.skin_wall import *
 from module_object.bomb import *
 from module_object.explosion import *
 from module_object.mine import *
+from module_object.mine_field import *
 from module_object.wall import *
 import module_other.game_world as gw
 import module_other.server as sv
@@ -37,6 +38,7 @@ def add_collision_pairs_automatically(o, is_list=False):
         gw.add_collision_pairs(o, None, COL_PHEAD_BOMB)
         gw.add_collision_pairs(o, None, COL_PHEAD_SKINWALL)
         gw.add_collision_pairs(o, None, COL_PHEAD_MINE)
+        gw.add_collision_pairs(o, None, COL_PHEAD_MINEFIELD)
         gw.add_collision_pairs(o, None, COL_PHEAD_ENEMY)
         gw.add_collision_pairs(o, None, COL_PHEAD_WALL)
     elif ot == Enemy:
@@ -70,6 +72,8 @@ def add_collision_pairs_automatically(o, is_list=False):
         gw.add_collision_pairs(None, o, COL_APPLE_ICE)
     elif ot == Mine:
         gw.add_collision_pairs(None, o, COL_PHEAD_MINE)
+    elif ot == Mine_field:
+        gw.add_collision_pairs(None, o, COL_PHEAD_MINEFIELD)
     elif ot == Skin_wall:
         gw.add_collision_pairs(None, o, COL_PHEAD_SKINWALL)
         gw.add_collision_pairs(None, o, COL_EHEAD_SKINWALL)
