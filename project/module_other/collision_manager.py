@@ -14,6 +14,8 @@ import module_other.game_world as gw
 import module_other.server as sv
 
 def collide(a, b):
+    if type(a) == Player_head and type(b) == Player:
+        return collide_self(a, b)
     if type(a) in (Player, Enemy):
         return collide_with_snake_body(a, b)
     if type(b) in (Player, Enemy):
@@ -26,6 +28,15 @@ def collide_with_snake_body(snake, o):
             return True
     return False
 
+def collide_self(head, body):
+    cnt = 0
+    if body.length < 20: return
+    for i in range(0, body.length, LENGTH_PER_GRID):
+        if get_distance(*body.bodies_pos[i], head.x, head.y) < 40:
+            cnt += 1
+            if cnt == 2: return True
+    return False
+
 def add_collision_pairs_automatically(o, is_list=False):
     if is_list: ot = type(o[0])
     else: ot = type(o)
@@ -33,6 +44,7 @@ def add_collision_pairs_automatically(o, is_list=False):
         gw.add_collision_pairs(o, None, COL_PLAYER_ICE)
         gw.add_collision_pairs(None, o, COL_EXPLOSION_PLAYER)
         gw.add_collision_pairs(o, None, COL_PLAYER_EHEAD)
+        gw.add_collision_pairs(None, o, COL_PHEAD_PLAYER)
     if ot == Player_head:
         gw.add_collision_pairs(o, None, COL_PHEAD_APPLE)
         gw.add_collision_pairs(o, None, COL_PHEAD_BOMB)
@@ -41,6 +53,7 @@ def add_collision_pairs_automatically(o, is_list=False):
         gw.add_collision_pairs(o, None, COL_PHEAD_MINEFIELD)
         gw.add_collision_pairs(o, None, COL_PHEAD_ENEMY)
         gw.add_collision_pairs(o, None, COL_PHEAD_WALL)
+        gw.add_collision_pairs(o, None, COL_PHEAD_PLAYER)
     elif ot == Enemy:
         gw.add_collision_pairs(o, None, COL_ENEMY_ICE)
         gw.add_collision_pairs(None, o, COL_EXPLOSION_ENEMY)

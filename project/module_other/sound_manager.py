@@ -54,7 +54,9 @@ class Volume_check_sound:
 class Sound_effect:
     se_dict = defaultdict(str)
     volume = None
-    se = None
+    se_cnt = 0
+    se_len = 8
+    se = [None for _ in range(se_len)]
     def __init__(self):
         Sound_effect.volume = ops.volumes[0]
     def update(self):
@@ -62,9 +64,10 @@ class Sound_effect:
     def play(self, snd):
         if Sound_effect.se_dict[snd] == '':
             Sound_effect.se_dict[snd] = load_wav(snd)
-        Sound_effect.se = Sound_effect.se_dict[snd]
-        Sound_effect.se.set_volume(Sound_effect.volume)
-        Sound_effect.se.play()
+        Sound_effect.se[Sound_effect.se_cnt] = Sound_effect.se_dict[snd]
+        Sound_effect.se[Sound_effect.se_cnt].set_volume(Sound_effect.volume)
+        Sound_effect.se[Sound_effect.se_cnt].play()
+        Sound_effect.se_cnt = (Sound_effect.se_cnt + 1) % Sound_effect.se_len
 
 
 bgm = None

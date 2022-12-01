@@ -13,7 +13,6 @@ class Mine:
     def __init__(self):
         self.remove_counter = 0.57
         self.collided = False
-        self.is_removing = False
         self.ready_to_explode = False
         self.never_explode = False
         self.drawing_size_rate = 0.5

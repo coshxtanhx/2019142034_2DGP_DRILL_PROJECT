@@ -120,6 +120,7 @@ class Player:
         tail_pos = self.bodies_pos[-1]
         self.bodies_pos += [tail_pos.copy() for _ in range(6)]
     def get_shorter(self):
+        sm.sound_effect.play(SE_CRASHED)
         if self.length <= MIN_LENGTH:
             game_over()
             return
@@ -138,10 +139,13 @@ class Player:
             self.get_shorter()
         elif group in (COL_PHEAD_ENEMY, COL_PHEAD_WALL):
             game_over()
-        elif group in (COL_EXPLOSION_PLAYER, COL_PLAYER_ICE):
+        elif group in (COL_EXPLOSION_PLAYER, COL_PLAYER_ICE, COL_PHEAD_SKINWALL):
             if self.invincible_timer <= 0:
                 self.get_shorter()
                 self.invincible_timer += 0.15
+        elif group == COL_PHEAD_PLAYER:
+            sm.sound_effect.play(SE_CRASHED)
+            game_over()
 
     def add_event(self, event):
         self.event_que.appendleft(event)
@@ -155,7 +159,7 @@ class Player:
             sv.mine.append(Mine())
             gw.add_object(sv.mine[-1], 'obj')
         elif self.character == SKIN_SHEDDER_SNAKE:
-            for i in range(self.length - 1, 12, -1):
+            for i in range(self.length - 1, 10, -1):
                 sv.skin_wall.append(Skin_wall(*self.bodies_pos[i]))
                 gw.add_object(sv.skin_wall[-1], 'breakable')
 

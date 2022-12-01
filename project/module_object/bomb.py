@@ -82,7 +82,6 @@ class Bomb:
                 sv.ice.append(Ice(x, y))
                 gw.add_object(sv.ice[-1], 'breakable')
 
-
     def explode_mine(self):
         sm.sound_effect.play(SE_BOMB)
         for x in range(-1, 2):
