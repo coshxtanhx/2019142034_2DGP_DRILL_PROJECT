@@ -84,6 +84,7 @@ class Bomb:
 
 
     def explode_mine(self):
+        sm.sound_effect.play(SE_BOMB)
         for x in range(-1, 2):
             for y in range(-1, 2):
                 sv.explosion.append(Explosion(self.gx+x, self.gy+y, self.damage))

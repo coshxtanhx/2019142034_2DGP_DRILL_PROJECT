@@ -1,6 +1,7 @@
 from module_other.coordinates_module import *
 from module_other.term_table import *
 import module_other.game_framework as gf
+import module_other.server as sv
 
 class Mine_field:
     def __init__(self, parent, dx, dy):
@@ -14,4 +15,8 @@ class Mine_field:
         pass
     def handle_collision(self, other, group):
         if group == COL_PHEAD_MINEFIELD:
-            self.parent.counter -= gf.elapsed_time
+            if self.parent.collided: return
+            self.parent.collided = True
+
+    def delete_from_server(self):
+        sv.mine_field.remove(self)

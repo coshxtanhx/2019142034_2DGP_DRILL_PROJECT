@@ -2,16 +2,22 @@ from module_other.coordinates_module import *
 from pico2d import *
 from module_object.bomb import *
 from module_object.mine_field import *
+from random import *
 import module_other.game_world as gw
 import module_other.server as sv
 import module_other.game_framework as gf
+import module_other.sound_manager as sm
 
 class Mine:
     image = None
     def __init__(self):
-        self.counter = 0.57
-        self.destructing = False
-        self.sweeping = 1
+        self.remove_counter = 0.57
+        self.collided = False
+        self.is_removing = False
+        self.ready_to_explode = False
+        self.never_explode = False
+        self.drawing_size_rate = 0.5
+        self.activated = False
         self.gx, self.gy = creatable_loc(gw.field_array, 1)
         self.x, self.y = grid_to_coordinates(self.gx, self.gy)
         if Mine.image == None:
@@ -22,42 +28,52 @@ class Mine:
                 if dx == 0 and dy == 0: continue
                 sv.mine_field.append(Mine_field(self, dx, dy))
                 self.child.append(sv.mine_field[-1])
-                gw.add_object(sv.mine_field[-1])
+                gw.add_object(sv.mine_field[-1], 'obj')
+        sm.sound_effect.play(choice(SE_PIANO))
 
     def draw(self):
         self.image.clip_draw(0,0,180,180, self.x, self.y, \
-            180*self.sweeping, 180*self.sweeping)
-        gw.field_array[self.gx+1][self.gy+1] |= FIELD_DICT['mine']
-    def check_col(self):
-        if self.counter <= 0: return
-        if self.destructing and self.counter <= 0.02:
-            for x in range(-1, 2):
-                for y in range(-1, 2):
-                    cur_loc = gw.field_array[self.gx+1+x][self.gy+1+y]
-                    if cur_loc & (FIELD_DICT['head']):
-                        gw.add_object(Bomb(self.x, self.y, 0, 4), 'bomb')
-                        gw.remove_object(self)
-        else:
-            cur_loc = gw.field_array[self.gx+1][self.gy+1]
-            self.check_if_snake_here()
-            if cur_loc & (FIELD_DICT['head']):
-                gw.add_object(Bomb(self.x, self.y, 0, 4), 'bomb')
-                gw.remove_object(self)
+            360*self.drawing_size_rate, 360*self.drawing_size_rate)
+
+    def handle_collision(self, other, group):
+        if group == COL_PHEAD_MINE:
+            if self.never_explode: return
+            self.explode()
+
+    def explode(self):
+        sv.bomb.appendleft(Bomb(self.x, self.y, 0, MINE_BOMB))
+        gw.addleft_object(sv.bomb[0], 'bomb')
+        gw.remove_object(self)
+
     def update(self):
-        if self.destructing:
-            self.counter -= gf.elapsed_time
-        if self.counter <= 0: self.sweeping -= gf.elapsed_time
-        if self.sweeping <= 0: gw.remove_object(self)
-    def check_if_snake_here(self):
-        if self.destructing:
-            return
-        for x in range(-1, 2):
-            for y in range(-1, 2):
-                if x == 0 and y == 0: continue
-                if gw.field_array[self.gx+1+x][self.gy+1+y] \
-                    & FIELD_DICT['head']:
-                    self.destructing = True
-                    break
+
+        if self.remove_counter <= 0:
+            self.ready_to_explode = True
+
+        if (self.collided and not(self.ready_to_explode)) or\
+            self.activated:
+            self.activated = True
+            self.remove_counter -= gf.elapsed_time
+
+        if self.drawing_size_rate <= 0:
+            gw.remove_object(self)
+
+        if self.ready_to_explode and self.collided and not(self.never_explode):
+            self.explode()
+        
+        elif not(self.never_explode) and \
+            self.ready_to_explode and not(self.collided):
+            sm.sound_effect.play(choice(SE_PIANO))
+            self.never_explode = True
+
+        if self.never_explode:
+            self.drawing_size_rate -= gf.elapsed_time
+
+        if self.collided:
+            self.collided = False
+
 
     def delete_from_server(self):
+        for i in range(8):
+            gw.remove_object(self.child[i])
         sv.mine.remove(self)
