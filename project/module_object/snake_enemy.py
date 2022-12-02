@@ -11,7 +11,10 @@ from module_object.screen_hider import *
 from module_other.term_table import *
 from module_other.event_table_module import *
 
-COLOR_DICT = {'1': 'orange', '2': 'brown', '3': 'purple', '4': 'green'}
+COLOR_DICT = {
+    STAGE1: 'orange', STAGE2: 'brown',
+    STAGE3: 'purple', STAGE4: 'green'
+}
 
 AI_DICT = {
     (PHASE1, 'orange'): CIRCLE, (PHASE2, 'orange'): SWEEP,

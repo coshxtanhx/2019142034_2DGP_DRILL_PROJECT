@@ -27,9 +27,9 @@ def remove_save_data():
     file.close()
 
 def save_cur_state():
-    save_file.cur_stage = end_state.stage
+    save_file.cur_stage = end_state.stage + 1
     save_file.cur_character = end_state.charcter
-    save_file.number_of_stars = end_state.get_star_num()
+    save_file.number_of_stars += end_state.get_star_num()
     save_file.is_valid_file = True
     file = open('data/save_data.sav', 'wb')
     pickle.dump(save_file, file)

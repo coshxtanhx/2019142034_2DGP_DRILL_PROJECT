@@ -1,4 +1,5 @@
 from module_other.coordinates_module import *
+from module_other.term_table import *
 from pico2d import *
 
 class Circle_button:
@@ -97,11 +98,13 @@ class Close_book_button(Circle_button):
         self.r = 30
 
 class Game_end_button(Rect_button):
-    image = [None for _ in range(3)]
+    image = [None for _ in range(4)]
     def __init__(self, x, y, n):
         self.x = x
         self.y = y
         self.n = n
+        import module_other.data_manager as dm
+        if dm.save_file.cur_stage == STAGE4 and self.n == 0: self.n = 3
         if(Game_end_button.image[self.n] == None):
             Game_end_button.image[self.n] = \
                 load_image('img/clear_button_ui_' + str(self.n) + '.png')

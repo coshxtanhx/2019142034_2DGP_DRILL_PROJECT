@@ -9,7 +9,6 @@ import module_other.game_world as gw
 import module_other.data_manager as dm
 
 def handle_events():
-    global cur_selecting
     events = get_events()
     for raw_event in events:
         event = convert_event(raw_event)
@@ -24,7 +23,7 @@ def handle_events():
                     button_clicked = i
                     break
             if button_clicked == 0:
-                dm.save_file = dm.SaveFile(cur_selecting)
+                dm.save_file = dm.SaveFile(Selection.num)
                 gf.change_state('play_state', None)
             if button_clicked == 1:
                 gf.change_state('how_to_play', 'pause')
@@ -34,20 +33,18 @@ def handle_events():
                 Selection.change_img(+1)
 
 def enter():
-    global bg, selection_images, cur_selecting, buttons
+    global bg, selection_images, buttons
     bg = Background('selc')
     selection_images = Selection()
-    cur_selecting = 0
     buttons = [Start_and_Guide_Button(x) for x in (250, 670)] \
         + [Char_sel_button(x) for x in (260, 660)]
     gw.add_object(bg, 0)
     gw.add_object(selection_images, 1)
 
 def exit():
-    global bg, selection_images, cur_selecting, buttons
+    global bg, selection_images, buttons
     bg = None
     selection_images = None
-    cur_selecting = None
     buttons = None
     gw.clear_world()
 
@@ -62,5 +59,4 @@ def update():
 
 bg = None
 selection_images = None
-cur_selecting = None
 buttons = None

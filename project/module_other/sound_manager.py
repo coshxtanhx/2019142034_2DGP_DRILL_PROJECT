@@ -15,11 +15,11 @@ class Game_bgm:
 
 class Stage_bgm(Game_bgm):
     stage_bgm = [None for _ in range(5)]
-    def __init__(self, num_str):
-        self.idx = int(num_str) - 1
+    def __init__(self, stage_num):
+        self.idx = stage_num - 1
         if Stage_bgm.stage_bgm[self.idx] == None:
             Stage_bgm.stage_bgm[self.idx] = \
-                load_music('snd/stage' + num_str + '_bgm.mp3')
+                load_music('snd/stage' + str(stage_num) + '_bgm.mp3')
         self.bgm = Stage_bgm.stage_bgm[self.idx]
         ops.load_volume_data()
         self.update()

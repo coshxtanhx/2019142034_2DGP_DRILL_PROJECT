@@ -24,10 +24,10 @@ def handle_events():
                 if buttons[i].isclicked(ex, ey):
                     isclicked = i
                     break
-            if isclicked == 0:
+            if isclicked == 0 and dm.save_file.cur_stage != ENDING:
                 gf.change_state('title', None)
             elif isclicked == 1:
-                if cur_game_data[1] == ENDING:
+                if dm.save_file.cur_stage == ENDING:
                     gf.change_state('ending', None)
                 else:
                     gf.change_state('play_state', None)
