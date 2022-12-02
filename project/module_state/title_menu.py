@@ -4,20 +4,14 @@ from module_other.event_table_module import *
 from module_object.ui.background import *
 import module_other.game_framework as gf
 import module_other.game_world as gw
+import module_other.save_file_manager as sfm
 
 def is_able_load():
-    global file, loaded_dat
-    try:
-        file = open('data/savedata.txt', 'r')
-        filestring = file.read(2)
-        if filestring[0] not in ('1','2','3','4'): 1/0
-        if filestring[1] not in ('1','2','3','4','5'): 1/0
-    except:
-        loaded_dat = 'failed'
-        return load_image('img/title_menu_load_unable.png'), False
-    else:
-        loaded_dat = filestring[0:2]
+    is_valid_file = sfm.load_cur_state()
+    if is_valid_file:
         return load_image('img/title_menu_loadgame.png'), True
+    else:
+        return load_image('img/title_menu_load_unable.png'), False
 
 def handle_events():
     events = get_events()
@@ -36,16 +30,15 @@ def handle_events():
             if(button_clicked == 0):
                 gf.change_state('select_char', None)
             elif(button_clicked == 1):
-                gf.change_state('play_state', None, loaded_dat)
+                gf.change_state('play_state', None, sfm.save_file)
             elif(button_clicked == 2):
                 gf.change_state('option_setting', 'pause')
             elif(button_clicked == 3):
                 gf.change_state('', None)
 
 def enter(option):
-    global frame, title_bg, buttons
-    global img_menu_button, file
-    frame = 0
+    global title_bg, buttons
+    global img_menu_button
     title_bg = Background('main')
     img_menu_button[0] = load_image('img/title_menu_newgame.png')
     img_menu_button[1], loaded_suc = is_able_load()
@@ -58,15 +51,9 @@ def enter(option):
     gw.add_objects(buttons, 2)
 
 def exit():
-    global frame, buttons, img_menu_button, title_bg
-    global file, loaded_dat
-    frame = None
+    global buttons, img_menu_button, title_bg
     title_bg = None
     buttons = None
-    if(loaded_dat != 'failed'):
-        file.close()
-    file = None
-    loaded_dat = None
     gw.clear_world()
 
 def draw_all():
@@ -78,9 +65,6 @@ def draw_all():
 def update():
     pass
 
-frame = None
 title_bg = None
 img_menu_button = [0,0,0,0]
 buttons = None
-file = None
-loaded_dat = None

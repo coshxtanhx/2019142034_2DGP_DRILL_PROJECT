@@ -30,7 +30,11 @@ PHASE1, PHASE2, PHASE3, PHASE4 = PHASES
 # Rank
 RANK_A, RANK_B, RANK_C, RANK_D, RANK_E = '01234'
 
-# Sound Effect
+# Save file
+CUR_CHARACTER, CUR_STAGE, CUR_NUM_OF_STARS, IS_VALID_FILE = range(4)
+LOAD_SUCCESS, LOAD_FAILURE = True, False
+
+# Sound effect
 SE_BOMB = 'snd/ttafi200.wav'
 SE_EAT = 'snd/eat.wav'
 SE_CRASHED = 'snd/crashed.wav'
