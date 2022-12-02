@@ -1,11 +1,11 @@
 from pico2d import *
-from module_object.ui.button.buttons import *
+from module_object.ui.button.rect_button import *
 from module_other.event_table_module import *
 from module_object.ui.background import Background
 from module_object.ui.blinking_msg import Blinking_message
 import module_other.game_framework as gf
 import module_other.game_world as gw
-
+import module_other.sound_manager as sm
 
 def handle_events():
     events = get_events()
@@ -29,6 +29,7 @@ def handle_events():
 
 def enter():
     global buttons
+    sm.bgm.stop()
     gw.add_object(Background('over'), 0)
     gw.add_object(Blinking_message('over'), 1)
     buttons = [Game_end_button(270 + 190*i, 150, i) for i in (0,2)]

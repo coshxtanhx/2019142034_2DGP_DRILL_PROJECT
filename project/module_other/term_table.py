@@ -45,3 +45,7 @@ STAGE1, STAGE2, STAGE3, STAGE4, ENDING = range(1, 6)
 
 # Victory/Defeat
 VICTORY, DEFEAT, STILL_PLAYING = 1, -1, 0
+
+# Volume
+SE, BGM = range(2)
+SAVE_CHANGES, DISCARD_CHANGES = range(2)

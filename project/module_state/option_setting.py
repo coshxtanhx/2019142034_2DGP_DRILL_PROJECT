@@ -3,41 +3,27 @@ from pico2d import *
 from module_other.event_table_module import *
 from module_object.ui.background import *
 from module_object.ui.option import Option_ui
-from module_object.ui.button.buttons \
-    import Option_volume_button, Option_volume_line, Option_button
+from module_object.ui.button.rect_button import *
+from module_object.ui.button.circle_button import *
 import module_other.game_framework as gf
 import module_other.game_world as gw
 import module_other.sound_manager as sm
+import module_other.data_manager as dm
+from module_other.term_table import *
 
 MAX_VOL = 128
 
-volumes = [64, 64]
-volumes_before = [64, 64]
-
-def load_volume_data():
-    try:
-        file = open('data/savevolume.txt', 'r')
-        volume_str = file.read(7)
-        file.close()
-        volume_read = [int(data) for data in volume_str.split()]
-        if not(0 <= volume_read[0] <= MAX_VOL and 0 <= volume_read[1] <= MAX_VOL):
-            1/0
-        volumes[0], volumes[1] = volume_read[0], volume_read[1]
-    except:
-        volumes[0], volumes[1] = 64, 64
-        volumes[0], volumes[1] = 64, 64
-
+volumes = {BGM: 64, SE: 64}
 
 def change_volume(i):
-    if(i == 0):
-        volumes_before[0], volumes_before[1] = volumes[0], volumes[1]
-        file = open('data/savevolume.txt', 'w')
-        file.write(str(volumes[0]) + ' ' + str(volumes[1]))
-        file.close()
-        sm.bgm.set_volume(volumes[1])
-    elif(i == 1):
-        volumes[0], volumes[1] = volumes_before[0], volumes_before[1]
-        sm.bgm.set_volume(volumes[1])
+    if(i == SAVE_CHANGES):
+        dm.save_vol_data()
+        sm.bgm.set_volume(dm.volume_data.vol_bgm)
+    elif(i == DISCARD_CHANGES):
+        dm.volume_data.vol_se = volumes[SE]
+        dm.volume_data.vol_bgm = volumes[BGM]
+        volumes[BGM] = dm.volume_data.vol_bgm
+        sm.bgm.set_volume(volumes[BGM])
 
 def handle_events():
     events = get_events()
@@ -69,9 +55,10 @@ def handle_events():
                 volume_buttons[i].clicked = False
 
 def enter():
-    global img_bg
-    global img_ui, volume_buttons, volume_lines, option_buttons
-    load_volume_data()
+    global img_bg, img_ui, volume_buttons, volume_lines, option_buttons
+    dm.load_vol_data()
+    volumes[SE] = dm.volume_data.vol_se
+    volumes[BGM] = dm.volume_data.vol_bgm
     sm.volume_check_sound = sm.Volume_check_sound()
     img_ui = Option_ui()
     volume_buttons = [Option_volume_button(volume_to_button_pos(volumes[i]), \
@@ -107,8 +94,8 @@ def draw_all():
     update_canvas()
 
 def update():
-    for i in range(2):
-        volumes[i] = button_pos_to_volume(volume_buttons[i].x)
+    dm.volume_data.vol_se = button_pos_to_volume(volume_buttons[0].x)
+    dm.volume_data.vol_bgm = button_pos_to_volume(volume_buttons[1].x)
     sm.bgm.update()
     sm.volume_check_sound.update()
     sm.sound_effect.update()

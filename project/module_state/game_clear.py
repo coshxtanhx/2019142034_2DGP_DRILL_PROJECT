@@ -1,5 +1,5 @@
 from pico2d import *
-from module_object.ui.button.buttons import *
+from module_object.ui.button.rect_button import *
 from module_other.event_table_module import *
 from module_object.ui.background import Background
 from module_object.ui.clear import Clear_ui
@@ -8,6 +8,7 @@ from module_other.term_table import *
 import module_other.game_framework as gf
 import module_other.game_world as gw
 import module_other.data_manager as dm
+import module_other.sound_manager as sm
 
 def handle_events():
     events = get_events()
@@ -34,6 +35,7 @@ def handle_events():
 
 def enter():
     global buttons
+    sm.bgm.stop()
     gw.add_object(Background('menu'), 0)
     gw.add_object(Clear_ui(), 1)
     buttons = [Game_end_button(272 + 377*i, 115, i) for i in range(2)]

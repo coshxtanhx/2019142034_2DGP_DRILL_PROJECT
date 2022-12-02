@@ -1,5 +1,5 @@
 from pico2d import *
-from module_object.ui.button.buttons import *
+from module_object.ui.button.rect_button import *
 from module_other.event_table_module import *
 from module_other.term_table import *
 from module_object.ui.background import Background

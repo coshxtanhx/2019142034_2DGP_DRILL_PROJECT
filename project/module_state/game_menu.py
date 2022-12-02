@@ -1,5 +1,6 @@
 from pico2d import *
-from module_object.ui.button.buttons import *
+from module_object.ui.button.rect_button import *
+from module_object.ui.button.circle_button import *
 from module_object.ui.background import Background
 from module_object.ui.blinking_msg import Blinking_message
 from module_other.event_table_module import *
@@ -24,8 +25,7 @@ def handle_events():
                 gf.change_state('title', 'exitall')
             elif(button_clicked == 1):
                 from module_state.play_state import cur_char, cur_stage
-                gf.change_state('play_state', 'exitall', \
-                    cur_char + cur_stage)
+                gf.change_state('play_state', 'exitall')
             elif(button_clicked == 2):
                 gf.change_state('option_setting', 'pause')
             elif(button_clicked == 3):

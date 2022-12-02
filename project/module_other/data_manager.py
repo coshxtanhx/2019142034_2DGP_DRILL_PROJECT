@@ -20,6 +20,11 @@ class EndState:
         if le >= 4: return 2
         return 1
 
+class VolumeData:
+    def __init__(self, vol_se = 64, vol_bgm = 64):
+        self.vol_se = vol_se
+        self.vol_bgm = vol_bgm
+
 def remove_save_data():
     save_file.is_valid_file = False
     file = open('data/save_data.sav', 'wb')
@@ -40,10 +45,27 @@ def load_cur_state():
     try:
         file = open('data/save_data.sav', 'rb')
         save_file = pickle.load(file)
+        file.close()
         if save_file.is_valid_file == False: return LOAD_FAILURE
         return LOAD_SUCCESS
     except:
         return LOAD_FAILURE
 
+def load_vol_data():
+    global volume_data
+    try:
+        file = open('data/volume.pickle', 'rb')
+        volume_data = pickle.load(file)
+    except:
+        file = open('data/volume.pickle', 'wb')
+        pickle.dump(volume_data, file)
+    file.close()
+
+def save_vol_data():
+    file = open('data/volume.pickle', 'wb')
+    pickle.dump(volume_data, file)
+    file.close()
+
 save_file = SaveFile()
 end_state = EndState(None, None, None)
+volume_data = VolumeData()

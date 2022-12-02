@@ -5,6 +5,7 @@ from module_object.ui.rank import *
 import module_other.game_framework as gf
 import module_other.game_world as gw
 import module_other.data_manager as dm
+import module_other.sound_manager as sm
 
 def handle_events():
     events = get_events()

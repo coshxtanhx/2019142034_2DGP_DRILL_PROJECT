@@ -3,7 +3,6 @@ from module_other.coordinates_module import *
 from collections import deque
 from module_other.term_table import *
 from module_other.event_table_module import *
-from module_object.bomb import *
 from module_object.mine import *
 from module_object.apple import *
 from module_object.skin_wall import *
@@ -28,6 +27,7 @@ class MOVE:
     def enter(self, event):
         pass
     def exit(self, event):
+        from module_object.bomb import Bomb
         if event == KED:
             if self.bomb_cool_down <= 0:
                 bx, by = self.bodies_pos[-1]
