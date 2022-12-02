@@ -1,6 +1,5 @@
 import pickle
 from module_other.term_table import *
-from module_object.snake_player import LENGTH_PER_GRID
 
 class SaveFile:
     def __init__(self, character = GENERAL_SNAKE):
@@ -15,6 +14,7 @@ class EndState:
         self.stage = stage
         self.length = length
     def get_star_num(self):
+        from module_object.snake_player import LENGTH_PER_GRID
         le = self.length // LENGTH_PER_GRID + 1
         if le >= 6: return 3
         if le >= 4: return 2

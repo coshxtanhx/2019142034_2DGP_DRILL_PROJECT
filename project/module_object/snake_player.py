@@ -31,7 +31,7 @@ class MOVE:
         if event == KED:
             if self.bomb_cool_down <= 0:
                 bx, by = self.bodies_pos[-1]
-                sv.bomb.appendleft(Bomb(bx, by, self.length))
+                sv.bomb.appendleft(Bomb(bx, by, self.length * 2))
                 gw.addleft_object(sv.bomb[0], 'bomb')
                 self.bomb_cool_down = 1
 
@@ -49,6 +49,8 @@ class MOVE:
                 self.bodies_pos[-1][1] = \
                     self.bodies_pos[0][1] + dy[self.cur_state.direction]
                 self.bodies_pos.rotate(1)
+                self.receive_order()
+                
 
 class MOVE_RIGHT(MOVE):
     direction = RIGHT
@@ -102,6 +104,7 @@ class Player:
     def update(self):
         self.unable_to_receive_order = True
         self.cur_state.do(self)
+    def receive_order(self):
         if self.event_que:
             if self.event_que[-1] != KED:
                 if self.bodies_pos[0][0] % 60 != 40 \
@@ -116,9 +119,9 @@ class Player:
         self.create_byproduct()
         if self.length >= MAX_LENGTH:
             return
-        self.length += 6
+        self.length += LENGTH_PER_GRID
         tail_pos = self.bodies_pos[-1]
-        self.bodies_pos += [tail_pos.copy() for _ in range(6)]
+        self.bodies_pos += [tail_pos.copy() for _ in range(LENGTH_PER_GRID)]
     def get_shorter(self):
         sm.sound_effect.play(SE_CRASHED)
         if self.length <= MIN_LENGTH:

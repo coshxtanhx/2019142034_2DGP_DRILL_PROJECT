@@ -53,7 +53,7 @@ BOMB_PROBABILITY_DICT = {
 class MOVE:
     def do(self):
         self.cumulative_time += gf.elapsed_time
-        move_times = int(self.cumulative_time / UNIT_TIME)
+        move_times = int(self.cumulative_time > UNIT_TIME)
         self.cumulative_time = self.cumulative_time % UNIT_TIME
         if self.bomb_cool_down > 0: self.bomb_cool_down -= gf.elapsed_time
         if self.invincible_timer > 0: self.invincible_timer -= gf.elapsed_time
