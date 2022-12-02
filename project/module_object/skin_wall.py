@@ -4,6 +4,7 @@ import module_other.game_world as gw
 import module_other.game_framework as gf
 from module_other.term_table import *
 import module_other.server as sv
+from module_object.fragment import *
 
 class Skin_wall:
     image = None
@@ -27,6 +28,7 @@ class Skin_wall:
             gw.remove_object(self)
     def handle_collision(self, other, group):
         if group in (COL_EHEAD_SKINWALL, COL_PHEAD_SKINWALL, COL_EXPLOSION_SKINWALL):
+            create_fragments(self)
             gw.remove_object(self)
     def delete_from_server(self):
         sv.skin_wall.remove(self)

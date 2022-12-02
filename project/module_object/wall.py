@@ -11,4 +11,4 @@ class Wall:
     def draw(self):
         pass
     def delete_from_server(self):
-        sv.wall = None
+        sv.wall.remove(self)

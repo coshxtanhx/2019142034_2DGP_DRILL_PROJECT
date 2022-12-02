@@ -6,23 +6,23 @@ import module_other.server as sv
 from module_object.fragment import *
 from module_other.term_table import *
 
-poisoned = False
+poisoned = 0
 mode = None
 
 def create_first_apple():
     global mode, poisoned
     from module_state.play_state import cur_char
     mode = cur_char
-    poisoned = True if (mode == POISON_APPLE_SNAKE) else False
+    poisoned = 1 if (mode == POISON_APPLE_SNAKE) else 0
     return Normal_apple(10, 0)
 
 def create_new_apple():
     global poisoned
-    if poisoned:
-        poisoned = False
+    if poisoned == 2:
+        poisoned = 0
         return Poison_apple()
     else:
-        poisoned = bool(mode == POISON_APPLE_SNAKE)
+        poisoned = (poisoned + bool(mode == POISON_APPLE_SNAKE)) % 3
         return Normal_apple()
 
 class Apple:
