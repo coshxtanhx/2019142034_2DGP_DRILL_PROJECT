@@ -1,6 +1,5 @@
 from module_other.coordinates_module import *
 from pico2d import *
-from module_object.bomb import *
 from module_object.mine_field import *
 from random import *
 import module_other.game_world as gw
@@ -40,6 +39,7 @@ class Mine:
             self.explode()
 
     def explode(self):
+        from module_object.bombs import Bomb
         sv.bomb.appendleft(Bomb(self.x, self.y, 0, MINE_BOMB))
         gw.addleft_object(sv.bomb[0], 'bomb')
         gw.remove_object(self)
