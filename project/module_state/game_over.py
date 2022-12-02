@@ -4,6 +4,7 @@ from module_other.event_table_module import *
 from module_object.ui.background import Background
 from module_object.ui.blinking_msg import Blinking_message
 import module_other.game_framework as gf
+from module_other.term_table import *
 import module_other.game_world as gw
 import module_other.sound_manager as sm
 

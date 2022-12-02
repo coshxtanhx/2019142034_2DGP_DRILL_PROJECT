@@ -1,6 +1,7 @@
 from module_other.coordinates_module import *
 from module_other.term_table import *
 from pico2d import *
+import module_other.sound_manager as sm
 
 class Rect_button:
     def isclicked(self, x, y):

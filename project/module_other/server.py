@@ -3,7 +3,7 @@ from collections import deque
 def clear_server():
     global bg, player, player_head, enemy, enemy_head, bomb, \
         apple, hp_bar, explosion, ice, mine, cloud, broken, \
-            skin_wall, wall, screen_off, fragment, mine_field
+            skin_wall, wall, screen_off, fragment, mine_field, info
     bg = None
     player = None
     player_head = None
@@ -22,6 +22,7 @@ def clear_server():
     wall = []
     screen_off = None
     fragment = []
+    info = None
 
 bg = None
 player = None
@@ -41,3 +42,4 @@ skin_wall = []
 wall = []
 screen_off = None
 fragment = []
+info = None

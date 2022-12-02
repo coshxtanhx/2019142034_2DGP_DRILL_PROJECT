@@ -5,6 +5,7 @@ from module_other.coordinates_module import *
 from module_other.event_table_module import *
 from module_object.apple import *
 from module_object.bomb import *
+from module_object.ui.menu_key_info import *
 from module_object.mine import *
 from module_object.skin_wall import *
 import module_object.snake_player as sp
@@ -62,6 +63,7 @@ def enter():
     sv.enemy = se.Enemy(cur_stage)
     sv.enemy_head = se.Enemy_head()
     sv.hp_bar = HP_bar(cur_stage)
+    sv.info = Menu_key_info()
 
     gw.add_object(sv.bg, 'bg')
     gw.add_object(sv.player, 'player')
@@ -70,6 +72,7 @@ def enter():
     gw.add_object(sv.enemy, 'enemy')
     gw.add_object(sv.enemy_head, 'enemy')
     gw.add_object(sv.hp_bar, 'ui')
+    gw.add_object(sv.info, 'ui')
     gw.add_objects(sv.wall, 0)
     sm.bgm = sm.Stage_bgm(cur_stage)
 

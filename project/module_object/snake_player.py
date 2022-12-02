@@ -141,6 +141,7 @@ class Player:
         elif group == COL_PLAYER_EHEAD:
             self.get_shorter()
         elif group in (COL_PHEAD_ENEMY, COL_PHEAD_WALL):
+            sm.sound_effect.play(SE_CRASHED)
             game_over()
         elif group in (COL_EXPLOSION_PLAYER, COL_PLAYER_ICE, COL_PHEAD_SKINWALL):
             if self.invincible_timer <= 0:
@@ -162,6 +163,7 @@ class Player:
             sv.mine.append(Mine())
             gw.add_object(sv.mine[-1], 'obj')
         elif self.character == SKIN_SHEDDER_SNAKE:
+            if self.length > 8: sm.sound_effect.play(SE_SKIN_SHED)
             for i in range(self.length - 1, 10, -1):
                 sv.skin_wall.append(Skin_wall(*self.bodies_pos[i]))
                 gw.add_object(sv.skin_wall[-1], 'breakable')

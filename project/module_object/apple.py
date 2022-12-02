@@ -29,17 +29,16 @@ class Apple:
     def handle_collision(self, other, group):
         if group in (COL_PHEAD_APPLE, COL_EHEAD_APPLE, COL_APPLE_SKINWALL):
             self.get_removed()
-        if group in (COL_EXPLOSION_APPLE, COL_APPLE_ICE):
+        elif group in (COL_EXPLOSION_APPLE, COL_APPLE_ICE):
             create_fragments(self)
             self.get_removed()
     def update(self):
         pass
     def get_removed(self):
         gw.remove_object(self)
+    def delete_from_server(self):
         sv.apple = create_new_apple()
         gw.addleft_object(sv.apple, 'obj')
-    def delete_from_server(self):
-        sv.apple = None
 
 class Normal_apple(Apple):
     image = None

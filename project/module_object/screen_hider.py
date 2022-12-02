@@ -6,6 +6,7 @@ import module_other.game_world as gw
 import module_other.game_framework as gf
 import module_other.server as sv
 from module_object.fragment import *
+import module_other.sound_manager as sm
 
 # Cloud Speed
 PIXEL_PER_MM = (1.0 / 1.6)  # 1 pixel 1.6 mm
@@ -38,6 +39,8 @@ class Screen_off:
     def __init__(self):
         self.remove_timer = 3.6
         self.blinking_timer = 0
+        self.turning_on = False
+        sm.sound_effect.play(SE_NOISE[0])
         if Screen_off.image1 == None:
             Screen_off.image1 = load_image('img/screen_off_0.png')
             Screen_off.image2 = load_image('img/screen_off_1.png')
@@ -52,6 +55,9 @@ class Screen_off:
         self.remove_timer -= gf.elapsed_time
         self.blinking_timer = (self.blinking_timer + gf.elapsed_time) % \
             (Screen_off.blinking_period * 2)
+        if self.remove_timer < 0.3 and self.turning_on == False: 
+            sm.sound_effect.play(SE_NOISE[1])
+            self.turning_on = True
         if self.remove_timer <= 0:
             gw.remove_object(self)
     def delete_from_server(self):

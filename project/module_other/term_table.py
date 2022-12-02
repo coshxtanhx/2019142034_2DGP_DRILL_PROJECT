@@ -36,8 +36,12 @@ LOAD_SUCCESS, LOAD_FAILURE = True, False
 
 # Sound effect
 SE_BOMB = 'snd/ttafi200.wav'
-SE_EAT = 'snd/eat.wav'
 SE_CRASHED = 'snd/crashed.wav'
+SE_EAT = 'snd/eat.wav'
+SE_SKIN_SHED = 'snd/zovtra01.wav'
+SE_BREAK = 'snd/break.wav'
+SE_FLIP = 'snd/NextPage.wav'
+SE_NOISE = [('snd/noise_' + i + '.wav') for i in '12']
 SE_PIANO = [('snd/piano_' + i + '.wav') for i in '1234']
 
 # Stage
