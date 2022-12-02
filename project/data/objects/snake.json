@@ -1,0 +1,7 @@
+{
+    "LENGTH_PER_GRID": 6,
+    "MAX_GRID": 10,
+    "MIN_GRID": 2,
+    "MOVE_SPEED_MMPS": 571,
+    "MOVE_PIXEL_PER_A_TIME": 10
+}

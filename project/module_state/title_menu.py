@@ -4,10 +4,10 @@ from module_other.event_table_module import *
 from module_object.ui.background import *
 import module_other.game_framework as gf
 import module_other.game_world as gw
-import module_other.data_manager as dm
+import module_other.save_file_manager as sfm
 
 def is_able_load():
-    is_valid_file = dm.load_cur_state()
+    is_valid_file = sfm.load_cur_state()
     if is_valid_file:
         return load_image('img/title_menu_loadgame.png'), True
     else:

@@ -39,7 +39,7 @@ class Mine:
             self.explode()
 
     def explode(self):
-        from module_object.bombs import Bomb
+        from module_object.bomb import Bomb
         sv.bomb.appendleft(Bomb(self.x, self.y, 0, MINE_BOMB))
         gw.addleft_object(sv.bomb[0], 'bomb')
         gw.remove_object(self)

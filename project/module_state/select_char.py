@@ -6,7 +6,7 @@ from module_object.ui.background import Background
 from module_object.ui.selection import Selection
 import module_other.game_framework as gf
 import module_other.game_world as gw
-import module_other.data_manager as dm
+import module_other.save_file_manager as sfm
 
 def handle_events():
     events = get_events()
@@ -23,7 +23,7 @@ def handle_events():
                     button_clicked = i
                     break
             if button_clicked == 0:
-                dm.save_file = dm.SaveFile(Selection.num)
+                sfm.save_file = sfm.SaveFile(Selection.num)
                 gf.change_state('play_state', None)
             if button_clicked == 1:
                 gf.change_state('how_to_play', 'pause')

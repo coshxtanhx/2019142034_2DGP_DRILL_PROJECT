@@ -4,7 +4,7 @@ from module_object.ui.background import *
 from module_object.ui.rank import *
 import module_other.game_framework as gf
 import module_other.game_world as gw
-import module_other.data_manager as dm
+import module_other.save_file_manager as sfm
 import module_other.sound_manager as sm
 
 def handle_events():
@@ -17,10 +17,10 @@ def handle_events():
             gf.change_state('title', None)
 
 def enter():
-    star_sum = dm.save_file.number_of_stars
+    star_sum = sfm.save_file.number_of_stars
     gw.add_object(Background('ends'), 0)
     gw.add_object(Rank(star_sum), 1)
-    dm.remove_save_data()
+    sfm.remove_save_data()
 
 def exit():
     gw.clear_world()

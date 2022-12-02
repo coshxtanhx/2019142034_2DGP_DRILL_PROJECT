@@ -18,15 +18,15 @@ import module_other.game_world as gw
 import module_other.sound_manager as sm
 import module_other.collision_manager as cm
 import module_other.server as sv
-import module_other.data_manager as dm
+import module_other.save_file_manager as sfm
 from pprint import pprint
 
 def is_game_ended():
     if isended == DEFEAT:
-        dm.end_state = dm.EndState(cur_char, cur_stage, None)
+        sfm.end_state = sfm.EndState(cur_char, cur_stage, None)
         gf.change_state('game_over', None)
     elif isended == VICTORY:
-        dm.end_state = dm.EndState(cur_char, cur_stage, sv.player.length)
+        sfm.end_state = sfm.EndState(cur_char, cur_stage, sv.player.length)
         gf.change_state('game_clear', 'exitall')
     return
 
@@ -44,8 +44,8 @@ def handle_events():
 
 def enter():
     global cur_char, cur_stage, isended
-    cur_char = dm.save_file.cur_character
-    cur_stage = dm.save_file.cur_stage
+    cur_char = sfm.save_file.cur_character
+    cur_stage = sfm.save_file.cur_stage
     isended = STILL_PLAYING
 
     for x in range(15):

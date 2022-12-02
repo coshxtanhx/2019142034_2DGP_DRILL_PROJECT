@@ -11,7 +11,6 @@ from module_object.mine import *
 from module_object.mine_field import *
 from module_object.wall import *
 import module_other.game_world as gw
-import module_other.server as sv
 
 def collide(a, b):
     if type(a) == Player_head and type(b) == Player:

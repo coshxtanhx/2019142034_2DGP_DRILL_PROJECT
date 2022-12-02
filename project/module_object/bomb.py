@@ -8,9 +8,9 @@ import module_other.sound_manager as sm
 import module_other.game_framework as gf
 import module_other.server as sv
 
+FRAMES_PER_ACTION = 3
 TIME_PER_ACTION = 0.2
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
-FRAMES_PER_ACTION = 3
 
 ICE_REMOVER = FIELD_DICT['enemy'] + FIELD_DICT['explode'] \
     + FIELD_DICT['bomb'] + FIELD_DICT['apple'] + FIELD_DICT['ice']

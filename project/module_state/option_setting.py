@@ -8,7 +8,7 @@ from module_object.ui.button.circle_button import *
 import module_other.game_framework as gf
 import module_other.game_world as gw
 import module_other.sound_manager as sm
-import module_other.data_manager as dm
+import module_other.save_file_manager as sfm
 from module_other.term_table import *
 
 MAX_VOL = 128
@@ -17,12 +17,12 @@ volumes = {BGM: 64, SE: 64}
 
 def change_volume(i):
     if(i == SAVE_CHANGES):
-        dm.save_vol_data()
-        sm.bgm.set_volume(dm.volume_data.vol_bgm)
+        sfm.save_vol_data()
+        sm.bgm.set_volume(sfm.volume_data.vol_bgm)
     elif(i == DISCARD_CHANGES):
-        dm.volume_data.vol_se = volumes[SE]
-        dm.volume_data.vol_bgm = volumes[BGM]
-        volumes[BGM] = dm.volume_data.vol_bgm
+        sfm.volume_data.vol_se = volumes[SE]
+        sfm.volume_data.vol_bgm = volumes[BGM]
+        volumes[BGM] = sfm.volume_data.vol_bgm
         sm.bgm.set_volume(volumes[BGM])
 
 def handle_events():
@@ -56,9 +56,9 @@ def handle_events():
 
 def enter():
     global img_bg, img_ui, volume_buttons, volume_lines, option_buttons
-    dm.load_vol_data()
-    volumes[SE] = dm.volume_data.vol_se
-    volumes[BGM] = dm.volume_data.vol_bgm
+    sfm.load_vol_data()
+    volumes[SE] = sfm.volume_data.vol_se
+    volumes[BGM] = sfm.volume_data.vol_bgm
     sm.volume_check_sound = sm.Volume_check_sound()
     img_ui = Option_ui()
     volume_buttons = [Option_volume_button(volume_to_button_pos(volumes[i]), \
@@ -94,8 +94,8 @@ def draw_all():
     update_canvas()
 
 def update():
-    dm.volume_data.vol_se = button_pos_to_volume(volume_buttons[0].x)
-    dm.volume_data.vol_bgm = button_pos_to_volume(volume_buttons[1].x)
+    sfm.volume_data.vol_se = button_pos_to_volume(volume_buttons[0].x)
+    sfm.volume_data.vol_bgm = button_pos_to_volume(volume_buttons[1].x)
     sm.bgm.update()
     sm.volume_check_sound.update()
     sm.sound_effect.update()

@@ -60,10 +60,10 @@ class MOVE:
         if self.screen_off_cool_down > 0: self.screen_off_cool_down -= gf.elapsed_time
         if move_times > 0:
             self.unable_to_receive_order = False
-            for i in range(-1, -1-move_times, -1):
-                self.bodies_pos[i][0] = \
+            for _ in range(move_times):
+                self.bodies_pos[-1][0] = \
                     self.bodies_pos[0][0] + dx[self.cur_state.direction]
-                self.bodies_pos[i][1] = \
+                self.bodies_pos[-1][1] = \
                     self.bodies_pos[0][1] + dy[self.cur_state.direction]
                 self.bodies_pos.rotate(1)
 

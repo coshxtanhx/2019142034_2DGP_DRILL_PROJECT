@@ -2,7 +2,7 @@ from pico2d import *
 from module_other.term_table import *
 from collections import defaultdict
 import module_state.option_setting as ops
-import module_other.data_manager as dm
+import module_other.save_file_manager as sfm
 
 class Game_bgm:
     def play(self):
@@ -12,7 +12,7 @@ class Game_bgm:
     def set_volume(self, v):
         self.bgm.set_volume(v)
     def update(self):
-        self.set_volume(dm.volume_data.vol_bgm)
+        self.set_volume(sfm.volume_data.vol_bgm)
 
 class Stage_bgm(Game_bgm):
     stage_bgm = [None for _ in range(5)]
@@ -22,7 +22,7 @@ class Stage_bgm(Game_bgm):
             Stage_bgm.stage_bgm[self.idx] = \
                 load_music('snd/stage' + str(stage_num) + '_bgm.mp3')
         self.bgm = Stage_bgm.stage_bgm[self.idx]
-        dm.load_vol_data()
+        sfm.load_vol_data()
         self.update()
         self.play()
 
@@ -32,7 +32,7 @@ class Title_bgm(Game_bgm):
         if Title_bgm.title_bgm == None:
             Title_bgm.title_bgm = load_music('snd/title_bgm.mp3')
         self.bgm = Title_bgm.title_bgm
-        dm.load_vol_data()
+        sfm.load_vol_data()
         self.update()
         self.play()
 
@@ -42,11 +42,11 @@ class Volume_check_sound:
     def __init__(self):
         if Volume_check_sound.sound == None:
             Volume_check_sound.sound = load_wav('snd/zrescue.wav')
-        Volume_check_sound.volume = dm.volume_data.vol_se
+        Volume_check_sound.volume = sfm.volume_data.vol_se
     def update(self):
-        if abs(Volume_check_sound.volume - dm.volume_data.vol_se) > 1\
+        if abs(Volume_check_sound.volume - sfm.volume_data.vol_se) > 1\
             and ops.volume_buttons[0].clicked == False:
-            Volume_check_sound.volume = dm.volume_data.vol_se
+            Volume_check_sound.volume = sfm.volume_data.vol_se
             self.sound.set_volume(Volume_check_sound.volume)
             self.play()
     def play(self):
@@ -59,9 +59,9 @@ class Sound_effect:
     se_len = 8
     se = [None for _ in range(se_len)]
     def __init__(self):
-        Sound_effect.volume = dm.volume_data.vol_se
+        Sound_effect.volume = sfm.volume_data.vol_se
     def update(self):
-        Sound_effect.volume = dm.volume_data.vol_se
+        Sound_effect.volume = sfm.volume_data.vol_se
     def play(self, snd):
         if Sound_effect.se_dict[snd] == '':
             Sound_effect.se_dict[snd] = load_wav(snd)

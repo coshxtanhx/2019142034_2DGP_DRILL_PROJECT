@@ -7,7 +7,7 @@ from module_object.ui.star import *
 from module_other.term_table import *
 import module_other.game_framework as gf
 import module_other.game_world as gw
-import module_other.data_manager as dm
+import module_other.save_file_manager as sfm
 import module_other.sound_manager as sm
 
 def handle_events():
@@ -25,10 +25,10 @@ def handle_events():
                 if buttons[i].isclicked(ex, ey):
                     isclicked = i
                     break
-            if isclicked == 0 and dm.save_file.cur_stage != ENDING:
+            if isclicked == 0 and sfm.save_file.cur_stage != ENDING:
                 gf.change_state('title', None)
             elif isclicked == 1:
-                if dm.save_file.cur_stage == ENDING:
+                if sfm.save_file.cur_stage == ENDING:
                     gf.change_state('ending', None)
                 else:
                     gf.change_state('play_state', None)
@@ -40,9 +40,9 @@ def enter():
     gw.add_object(Clear_ui(), 1)
     buttons = [Game_end_button(272 + 377*i, 115, i) for i in range(2)]
     gw.add_objects(buttons, 1)
-    star_num = dm.end_state.get_star_num()
+    star_num = sfm.end_state.get_star_num()
     gw.add_objects([Star(i) for i in range(star_num)], 2)
-    dm.save_cur_state()
+    sfm.save_cur_state()
 
 def exit():
     gw.clear_world()

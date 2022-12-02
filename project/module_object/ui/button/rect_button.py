@@ -65,7 +65,7 @@ class Game_end_button(Rect_button):
         self.x = x
         self.y = y
         self.n = n
-        import module_other.data_manager as dm
+        import module_other.save_file_manager as dm
         if dm.save_file.cur_stage == STAGE4 and self.n == 0: self.n = 3
         if(Game_end_button.image[self.n] == None):
             Game_end_button.image[self.n] = \
