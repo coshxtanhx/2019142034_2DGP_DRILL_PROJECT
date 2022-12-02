@@ -7,6 +7,7 @@ from module_object.ui.star import *
 from module_other.term_table import *
 import module_other.game_framework as gf
 import module_other.game_world as gw
+import module_other.data_manager as dm
 
 def handle_events():
     events = get_events()
@@ -29,35 +30,17 @@ def handle_events():
                 if cur_game_data[1] == ENDING:
                     gf.change_state('ending', None)
                 else:
-                    gf.change_state('play_state', None, cur_game_data)
+                    gf.change_state('play_state', None)
 
-def get_stars_num(n):
-    if n > 5: return 3
-    if n > 1: return 2
-    return 1
-
-def save_data(data):
-    file = open('data/savedata.txt', 'w')
-    file.write(data)
-    file.close()
-
-    idx = str(int(data[1]) - 1)
-    file = open('data/savestar' + idx + '.txt', 'w')
-    file.write(str(star_num))
-    file.close()
-
-def enter(option):
-    if not(option):
-        option = '114'
-    global cur_game_data, buttons, star_num
-    cur_game_data = option[:2]
-    star_num = get_stars_num(int(option[2]))
+def enter():
+    global buttons
     gw.add_object(Background('menu'), 0)
     gw.add_object(Clear_ui(), 1)
     buttons = [Game_end_button(272 + 377*i, 115, i) for i in range(2)]
     gw.add_objects(buttons, 1)
+    star_num = dm.end_state.get_star_num()
     gw.add_objects([Star(i) for i in range(star_num)], 2)
-    save_data(cur_game_data)
+    dm.save_cur_state()
 
 def exit():
     gw.clear_world()
@@ -75,4 +58,3 @@ def update():
 cur_game_data = None
 buttons = None
 stars = None
-star_num = 0

@@ -27,7 +27,7 @@ def load_score(n):
         return 0
     return num
 
-def enter(option):
+def enter():
     star_sum = 0
     for i in '1234':
         star_sum += load_score(i)

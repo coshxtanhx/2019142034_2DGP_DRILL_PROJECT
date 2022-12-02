@@ -28,7 +28,7 @@ def handle_events():
             elif button_clicked == 2:
                 gf.change_state('select_char', 'resume')
 
-def enter(option):
+def enter():
     global bg, book, cur_selecting, buttons
     bg = Background('howt')
     cur_selecting = 0

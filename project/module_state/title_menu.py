@@ -4,10 +4,10 @@ from module_other.event_table_module import *
 from module_object.ui.background import *
 import module_other.game_framework as gf
 import module_other.game_world as gw
-import module_other.save_file_manager as sfm
+import module_other.data_manager as dm
 
 def is_able_load():
-    is_valid_file = sfm.load_cur_state()
+    is_valid_file = dm.load_cur_state()
     if is_valid_file:
         return load_image('img/title_menu_loadgame.png'), True
     else:
@@ -30,13 +30,13 @@ def handle_events():
             if(button_clicked == 0):
                 gf.change_state('select_char', None)
             elif(button_clicked == 1):
-                gf.change_state('play_state', None, sfm.save_file)
+                gf.change_state('play_state', None)
             elif(button_clicked == 2):
                 gf.change_state('option_setting', 'pause')
             elif(button_clicked == 3):
                 gf.change_state('', None)
 
-def enter(option):
+def enter():
     global title_bg, buttons
     global img_menu_button
     title_bg = Background('main')

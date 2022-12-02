@@ -6,6 +6,7 @@ from module_object.ui.blinking_msg import Blinking_message
 import module_other.game_framework as gf
 import module_other.game_world as gw
 
+
 def handle_events():
     events = get_events()
     for raw_event in events:
@@ -24,11 +25,10 @@ def handle_events():
             if isclicked == 0:
                 gf.change_state('title', 'exitall')
             elif isclicked == 1:
-                gf.change_state('play_state', None, cur_game_data)
+                gf.change_state('play_state', None)
 
-def enter(option):
-    global buttons, cur_game_data
-    cur_game_data = option
+def enter():
+    global buttons
     gw.add_object(Background('over'), 0)
     gw.add_object(Blinking_message('over'), 1)
     buttons = [Game_end_button(270 + 190*i, 150, i) for i in (0,2)]

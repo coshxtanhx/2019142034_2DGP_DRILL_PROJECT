@@ -68,7 +68,7 @@ def handle_events():
             for i in range(2):
                 volume_buttons[i].clicked = False
 
-def enter(option):
+def enter():
     global img_bg
     global img_ui, volume_buttons, volume_lines, option_buttons
     load_volume_data()

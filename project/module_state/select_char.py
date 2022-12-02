@@ -6,6 +6,7 @@ from module_object.ui.background import Background
 from module_object.ui.selection import Selection
 import module_other.game_framework as gf
 import module_other.game_world as gw
+import module_other.data_manager as dm
 
 def handle_events():
     global cur_selecting
@@ -23,8 +24,8 @@ def handle_events():
                     button_clicked = i
                     break
             if button_clicked == 0:
-                gf.change_state('play_state', None, \
-                    str(Selection.num+1) + STAGE1)
+                dm.save_file = dm.SaveFile(cur_selecting)
+                gf.change_state('play_state', None)
             if button_clicked == 1:
                 gf.change_state('how_to_play', 'pause')
             elif button_clicked == 2:
@@ -32,7 +33,7 @@ def handle_events():
             elif button_clicked == 3:
                 Selection.change_img(+1)
 
-def enter(option):
+def enter():
     global bg, selection_images, cur_selecting, buttons
     bg = Background('selc')
     selection_images = Selection()

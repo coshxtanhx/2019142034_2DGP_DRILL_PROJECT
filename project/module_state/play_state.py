@@ -18,15 +18,16 @@ import module_other.game_world as gw
 import module_other.sound_manager as sm
 import module_other.collision_manager as cm
 import module_other.server as sv
+import module_other.data_manager as dm
 from pprint import pprint
 
 def is_game_ended():
     if isended == DEFEAT:
-        gf.change_state('game_over', None, cur_char + cur_stage)
+        dm.end_state = dm.EndState(cur_char, cur_stage, None)
+        gf.change_state('game_over', None)
     elif isended == VICTORY:
-        next_stage = str(int(cur_stage) + 1)
-        length = str(sv.player.length // sp.LENGTH_PER_GRID - 1) 
-        gf.change_state('game_clear', 'exitall', cur_char + next_stage + length)
+        dm.end_state = dm.EndState(cur_char, cur_stage, sv.player.length)
+        gf.change_state('game_clear', 'exitall')
     return
 
 def handle_events():
@@ -41,14 +42,10 @@ def handle_events():
             sv.player.handle_events(event)
         if raw_event.key == SDLK_p: sv.enemy.get_damaged(125)
 
-def enter(data):
-    global frame, isended
-    global cur_char, cur_stage
-    if(data == None): data = (GENERAL_SNAKE, STAGE1)
-    cur_char, cur_stage = data[0], data[1]
-    
-    frame = 0
-    field_array = field_array_reset()
+def enter():
+    global cur_char, cur_stage, isended
+    cur_char = dm.save_file.cur_character
+    cur_stage = dm.save_file.cur_stage
     isended = STILL_PLAYING
 
     for x in range(15):
@@ -77,9 +74,7 @@ def enter(data):
     sm.bgm = sm.Stage_bgm(cur_stage)
 
 def exit():
-    global frame, isended
-    global cur_char, cur_stage
-    frame = None
+    global isended, cur_char, cur_stage
     cur_char = None
     cur_stage = None
     isended = None
@@ -105,7 +100,6 @@ def update():
 
     is_game_ended()
 
-frame = None
 cur_char = None
 cur_stage = None
 isended = None

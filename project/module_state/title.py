@@ -19,7 +19,7 @@ def handle_events():
         elif event == KESCD:
             gf.change_state('', None)
 
-def enter(option):
+def enter():
     global img_title_msg, img_title_bg, img_title_text
     img_title_bg = Background('main')
     img_title_text = [Title(num) for num in range(2)]

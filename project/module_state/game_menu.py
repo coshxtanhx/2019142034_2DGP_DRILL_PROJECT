@@ -31,7 +31,7 @@ def handle_events():
             elif(button_clicked == 3):
                 gf.change_state('play_state', 'resume')
 
-def enter(option):
+def enter():
     global img_ui_bg, img_ui_text, buttons
     img_ui_bg = Background('menu')
     img_ui_text = Blinking_message('menu')
