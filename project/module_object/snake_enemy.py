@@ -169,7 +169,7 @@ class Enemy:
         bx, by = self.bodies_pos[-1]
         sv.bomb.appendleft(Bomb(bx, by, 0, self.bomb_type))
         gw.addleft_object(sv.bomb[0], 'bomb')
-        self.bomb_cool_down = 7
+        self.bomb_cool_down = 7.0
 
     def activate_enemy_ability(self):
         if self.color == 'brown':
@@ -185,6 +185,9 @@ class Enemy:
         elif self.color == 'purple':
             if self.bomb_cool_down > 0: return
             self.bomb_type = self.get_bomb_type()
+        elif self.color == 'green':
+            if self.bomb_cool_down > 4.2:
+                self.bomb_cool_down = 4.2
 
     def turn_off_screen(self):
         self.screen_off_cool_down = 10.0
