@@ -14,7 +14,7 @@ MOVE_SPEED_PPS = (MOVE_SPEED_MMPS * PIXEL_PER_MM)
 NUMBER_OF_FRAGMENTS = 12
 
 def create_fragments(obj, bigger=False):
-    sm.sound_effect.play(SE_BREAK)
+    sm.sound_effect.play(SE_CRASHED)
     sv.fragment += [Fragment(obj.gx, obj.gy) for _ in range(NUMBER_OF_FRAGMENTS)]
     gw.add_objects(sv.fragment[-1:-1-NUMBER_OF_FRAGMENTS:-1], 'fragment')
     if bigger:
