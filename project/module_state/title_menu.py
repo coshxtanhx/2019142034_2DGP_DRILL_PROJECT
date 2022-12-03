@@ -30,7 +30,10 @@ def handle_events():
             if(button_clicked == 0):
                 gf.change_state('select_char', None)
             elif(button_clicked == 1):
-                gf.change_state('play_state', None)
+                if sfm.save_file.cur_stage == ENDING:
+                    gf.change_state('ending', None)
+                else:
+                    gf.change_state('play_state', None)
             elif(button_clicked == 2):
                 gf.change_state('option_setting', 'pause')
             elif(button_clicked == 3):

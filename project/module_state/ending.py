@@ -17,6 +17,7 @@ def handle_events():
             gf.change_state('title', None)
 
 def enter():
+    sm.sound_effect.play(SE_WIN)
     star_sum = sfm.save_file.number_of_stars
     gw.add_object(Background('ends'), 0)
     gw.add_object(Rank(star_sum), 1)

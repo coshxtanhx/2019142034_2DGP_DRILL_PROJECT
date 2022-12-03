@@ -38,7 +38,9 @@ def enter():
     sm.bgm.stop()
     gw.add_object(Background('menu'), 0)
     gw.add_object(Clear_ui(), 1)
-    buttons = [Game_end_button(272 + 377*i, 115, i) for i in range(2)]
+    if sfm.end_state.stage == STAGE4: stage = (3,1)
+    else: stage = (0,1)
+    buttons = [Game_end_button(272 + 377*bool(i*(i-3)), 115, i) for i in stage]
     gw.add_objects(buttons, 1)
     star_num = sfm.end_state.get_star_num()
     gw.add_objects([Star(i) for i in range(star_num)], 2)
