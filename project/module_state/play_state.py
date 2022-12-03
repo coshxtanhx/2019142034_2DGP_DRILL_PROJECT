@@ -20,6 +20,7 @@ import module_other.sound_manager as sm
 import module_other.collision_manager as cm
 import module_other.server as sv
 import module_other.save_file_manager as sfm
+import module_other.cheat_key_manager as ckm
 from pprint import pprint
 
 def is_game_ended():
@@ -41,7 +42,8 @@ def handle_events():
             gf.change_state('game_menu', 'pause')
         else:
             sv.player.handle_events(event)
-        if raw_event.key == SDLK_p: sv.enemy.get_damaged(125)
+        if ckm.cheat_enabled and raw_event.key == SDLK_p:
+            sv.enemy.get_damaged(125)
 
 def enter():
     global cur_char, cur_stage, isended
